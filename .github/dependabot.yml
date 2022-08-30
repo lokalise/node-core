@@ -5,9 +5,13 @@ updates:
     schedule:
       interval: 'monthly'
     open-pull-requests-limit: 10
+    labels:
+      - 'skip-release'
 
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
     open-pull-requests-limit: 10
+    labels:
+      - 'skip-release'
