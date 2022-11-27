@@ -1,11 +1,15 @@
 import { MockAgent, setGlobalDispatcher } from 'undici'
 
-import { sendDelete, sendGet, sendPatch, sendPost, sendPut } from './httpClient'
+import { sendDelete, sendGet, sendPatch, sendPost, sendPut, sendPutBinary } from './httpClient'
 import mockProduct1 from './mock-data/mockProduct1.json'
 import mockProductsLimit3 from './mock-data/mockProductsLimit3.json'
 
 const JSON_HEADERS = {
   'content-type': 'application/json',
+}
+
+const TEXT_HEADERS = {
+  'content-type': 'text/plain',
 }
 
 describe('httpClient', () => {
@@ -39,9 +43,7 @@ describe('httpClient', () => {
           method: 'GET',
         })
         .reply(200, 'just text', {
-          headers: {
-            'content-type': 'text/plain',
-          },
+          headers: TEXT_HEADERS,
         })
 
       const result = await sendGet('https://fakestoreapi.com', 'products/1')
@@ -79,7 +81,7 @@ describe('httpClient', () => {
           path: '/products/1',
           method: 'DELETE',
         })
-        .reply(204)
+        .reply(204, undefined, { headers: TEXT_HEADERS })
 
       const result = await sendDelete('https://fakestoreapi.com', 'products/1')
 
@@ -100,7 +102,7 @@ describe('httpClient', () => {
           method: 'DELETE',
           query,
         })
-        .reply(204)
+        .reply(204, undefined, { headers: TEXT_HEADERS })
 
       const result = await sendDelete('https://fakestoreapi.com', 'products', {
         query,
@@ -135,7 +137,7 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPost('https://fakestoreapi.com', 'products')
+      const result = await sendPost('https://fakestoreapi.com', 'products', undefined)
 
       expect(result.body).toEqual({ id: 21 })
     })
@@ -200,7 +202,7 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPut('https://fakestoreapi.com', 'products/1')
+      const result = await sendPut('https://fakestoreapi.com', 'products/1', undefined)
 
       expect(result.body).toEqual({ id: 21 })
     })
@@ -241,6 +243,66 @@ describe('httpClient', () => {
     })
   })
 
+  describe('PUT binary', () => {
+    it('PUT without queryParams', async () => {
+      const client = mockAgent.get('https://fakestoreapi.com')
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'PUT',
+        })
+        .reply(200, { id: 21 }, { headers: JSON_HEADERS })
+
+      const result = await sendPutBinary(
+        'https://fakestoreapi.com',
+        'products/1',
+        Buffer.from('text'),
+      )
+
+      expect(result.body).toEqual({ id: 21 })
+    })
+
+    it('PUT with queryParams', async () => {
+      const client = mockAgent.get('https://fakestoreapi.com')
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'PUT',
+          query,
+        })
+        .reply(200, { id: 21 }, { headers: JSON_HEADERS })
+
+      const result = await sendPutBinary(
+        'https://fakestoreapi.com',
+        'products/1',
+        Buffer.from('text'),
+        {
+          query,
+        },
+      )
+
+      expect(result.body).toEqual({ id: 21 })
+    })
+
+    it('PUT that returns 400 throws an error', async () => {
+      const client = mockAgent.get('https://fakestoreapi.com')
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'PUT',
+        })
+        .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
+
+      await expect(
+        sendPutBinary('https://fakestoreapi.com', 'products/1', Buffer.from('text')),
+      ).rejects.toThrow('Response status code 400: Bad Request')
+    })
+  })
+
   describe('PATCH', () => {
     it('PATCH without queryParams', async () => {
       const client = mockAgent.get('https://fakestoreapi.com')
@@ -265,7 +327,7 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPatch('https://fakestoreapi.com', 'products/1')
+      const result = await sendPatch('https://fakestoreapi.com', 'products/1', undefined)
 
       expect(result.body).toEqual({ id: 21 })
     })

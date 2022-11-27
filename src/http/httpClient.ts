@@ -1,14 +1,21 @@
-import type { Dispatcher } from 'undici'
+import type { Readable } from 'stream'
+
 import { request } from 'undici'
+import type { Dispatcher, FormData } from 'undici'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RecordObject = Record<string, any>
+
+export type HttpRequestContext = {
+  reqId: string
+}
 
 export type GetRequestOptions = {
   headers?: RecordObject
   query?: RecordObject
   timeout?: number
   throwOnError?: boolean
+  reqContext?: HttpRequestContext
 }
 
 export type DeleteRequestOptions = GetRequestOptions
@@ -18,6 +25,7 @@ export type RequestOptions = {
   query?: RecordObject
   timeout?: number
   throwOnError?: boolean
+  reqContext?: HttpRequestContext
 }
 
 const defaultOptions: GetRequestOptions = {
@@ -40,7 +48,10 @@ export async function sendGet<T>(
   const response = await request(url, {
     method: 'GET',
     query: options.query,
-    headers: options.headers,
+    headers: {
+      'x-request-id': options.reqContext?.reqId,
+      ...options.headers,
+    },
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -65,7 +76,10 @@ export async function sendDelete<T>(
   const response = await request(url, {
     method: 'DELETE',
     query: options.query,
-    headers: options.headers,
+    headers: {
+      'x-request-id': options.reqContext?.reqId,
+      ...options.headers,
+    },
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -84,7 +98,7 @@ export async function sendDelete<T>(
 export async function sendPost<T>(
   baseUrl: string,
   path: string,
-  body?: RecordObject | undefined,
+  body: RecordObject | undefined,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
   const url = resolveUrl(baseUrl, path)
@@ -92,7 +106,10 @@ export async function sendPost<T>(
     method: 'POST',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
-    headers: options.headers,
+    headers: {
+      'x-request-id': options.reqContext?.reqId,
+      ...options.headers,
+    },
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -111,7 +128,7 @@ export async function sendPost<T>(
 export async function sendPut<T>(
   baseUrl: string,
   path: string,
-  body?: RecordObject | undefined,
+  body: RecordObject | undefined,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
   const url = resolveUrl(baseUrl, path)
@@ -119,7 +136,40 @@ export async function sendPut<T>(
     method: 'PUT',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
-    headers: options.headers,
+    headers: {
+      'x-request-id': options.reqContext?.reqId,
+      ...options.headers,
+    },
+    bodyTimeout: options.timeout,
+    throwOnError: options.throwOnError,
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const resolvedBody = await resolveBody(response)
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    body: resolvedBody,
+    headers: response.headers,
+    statusCode: response.statusCode,
+  }
+}
+
+export async function sendPutBinary<T>(
+  baseUrl: string,
+  path: string,
+  body: Buffer | Uint8Array | Readable | null | FormData,
+  options: RequestOptions = defaultOptions,
+): Promise<Response<T>> {
+  const url = resolveUrl(baseUrl, path)
+  const response = await request(url, {
+    method: 'PUT',
+    body,
+    query: options.query,
+    headers: {
+      'x-request-id': options.reqContext?.reqId,
+      ...options.headers,
+    },
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -138,7 +188,7 @@ export async function sendPut<T>(
 export async function sendPatch<T>(
   baseUrl: string,
   path: string,
-  body?: RecordObject | undefined,
+  body: RecordObject | undefined,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
   const url = resolveUrl(baseUrl, path)
@@ -146,7 +196,10 @@ export async function sendPatch<T>(
     method: 'PATCH',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
-    headers: options.headers,
+    headers: {
+      'x-request-id': options.reqContext?.reqId,
+      ...options.headers,
+    },
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -165,7 +218,7 @@ export async function sendPatch<T>(
 async function resolveBody(response: Dispatcher.ResponseData) {
   const contentType = response.headers['content-type']
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return contentType?.startsWith('application/json')
+  return !contentType || contentType?.startsWith('application/json')
     ? await response.body.json()
     : await response.body.text()
 }
