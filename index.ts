@@ -1,5 +1,6 @@
 export {
   sendPut,
+  sendPutBinary,
   sendDelete,
   sendPatch,
   sendGet,
@@ -11,4 +12,5 @@ export type {
   DeleteRequestOptions,
   RequestOptions,
   Response,
+  HttpRequestContext,
 } from './src/http/httpClient'
