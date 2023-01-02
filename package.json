@@ -16,6 +16,9 @@
     "LICENSE",
     "README.md"
   ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
   "publishConfig": {
     "access": "public"
   },
