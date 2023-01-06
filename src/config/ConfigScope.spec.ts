@@ -3,6 +3,7 @@ import * as process from 'process'
 import { ConfigScope } from './ConfigScope'
 import { ensureClosingSlashTransformer } from './configTransformers'
 import type { EnvValueValidator } from './configTypes'
+import { createRangeValidator } from './configValidators'
 
 describe('ConfigScope', () => {
   describe('getMandatoryInteger', () => {
@@ -28,6 +29,45 @@ describe('ConfigScope', () => {
 
       expect(() => configScope.getMandatoryInteger('value')).toThrow(
         /Missing mandatory configuration parameter/,
+      )
+    })
+  })
+
+  describe('getMandatoryValidatedInteger', () => {
+    const validator = createRangeValidator(0, 15)
+    it('accepts a valid integer', () => {
+      process.env.value = '15'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getMandatoryValidatedInteger('value', validator)
+
+      expect(resolvedValue).toBe(15)
+    })
+
+    it('throws an error on non-number', () => {
+      process.env.value = 'abc'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryValidatedInteger('value', validator)).toThrow(
+        /must be a number/,
+      )
+    })
+
+    it('throws an error on missing value', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryInteger('value')).toThrow(
+        /Missing mandatory configuration parameter/,
+      )
+    })
+
+    it('throws an error on invalid number', () => {
+      process.env.value = '16'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryValidatedInteger('value', validator)).toThrow(
+        /is invalid for parameter value/,
       )
     })
   })
@@ -111,7 +151,7 @@ describe('ConfigScope', () => {
   })
 
   describe('getOptionalValidated', () => {
-    const validator: EnvValueValidator = (val) => {
+    const validator: EnvValueValidator<string | null | undefined> = (val) => {
       return (val && val.length < 5) || false
     }
 

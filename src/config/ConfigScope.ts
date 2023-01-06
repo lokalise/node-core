@@ -1,5 +1,7 @@
 import { InternalError } from '../errors/InternalError'
 
+import type { EnvValueValidator } from './configTypes'
+
 export type EnvType = {
   [key: string]: string | undefined
 }
@@ -50,6 +52,17 @@ export class ConfigScope {
     )
   }
 
+  getMandatoryValidatedInteger(param: string, validator: EnvValueValidator<number>): number {
+    const value = this.getMandatoryInteger(param)
+    if (!validator(value)) {
+      throw new InternalError({
+        message: `Value ${value} is invalid for parameter ${param}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+    return value
+  }
+
   getOptionalNullable<T extends string | null | undefined>(
     param: string,
     defaultValue: T,
@@ -60,7 +73,7 @@ export class ConfigScope {
   getOptionalValidated(
     param: string,
     defaultValue: string,
-    validator: (value: string) => boolean,
+    validator: EnvValueValidator<string>,
   ): string {
     const value = this.env[param] ?? defaultValue
     if (!validator(value)) {
