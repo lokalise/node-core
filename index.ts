@@ -23,6 +23,7 @@ export type { ErrorDetails, InternalErrorParams } from './src/errors/InternalErr
 
 export { ConfigScope } from './src/config/ConfigScope'
 export { ensureClosingSlashTransformer } from './src/config/configTransformers'
+export { createRangeValidator } from './src/config/configValidators'
 export type {
   EnvValueValidator,
   EnvValueTransformer,
