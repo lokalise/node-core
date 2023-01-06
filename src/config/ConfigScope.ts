@@ -1,7 +1,7 @@
 import { InternalError } from '../errors/InternalError'
 
 export type EnvType = {
-  [x: string]: string | undefined
+  [key: string]: string | undefined
 }
 
 export class ConfigScope {
@@ -117,8 +117,7 @@ export function validateOneOf<T>(
   errorText?: string,
 ): T {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const index = expectedOneOfEntities.indexOf(validatedEntity as T)
-  if (index === -1) {
+  if (!expectedOneOfEntities.includes(validatedEntity as T)) {
     throw new InternalError({
       message:
         errorText ||
