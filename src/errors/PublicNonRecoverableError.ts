@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 import type { ErrorDetails } from './InternalError'
 
 export type PublicNonRecoverableErrorParams = {

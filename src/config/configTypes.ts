@@ -3,7 +3,10 @@ export type EnvValueTransformer<InputType, OutputType> = (value: InputType) => O
 
 export type RedisConfig = {
   host: string
-  db: number // can be 0-15
+  /**
+   * An integer from 0 to 15, inclusive
+   */
+  db: number
   port: number
   username?: string
   password?: string
