@@ -1,13 +1,14 @@
 import { InternalError } from '../errors/InternalError'
 
-export class ConfigScope {
-  private env: {
-    [x: string]: string | undefined
-    TZ?: string | undefined
-  }
+export type EnvType = {
+  [x: string]: string | undefined
+}
 
-  constructor() {
-    this.env = { ...process.env }
+export class ConfigScope {
+  private env: EnvType
+
+  constructor(envOverride?: EnvType) {
+    this.env = envOverride ?? { ...process.env }
   }
 
   updateEnv() {
@@ -111,13 +112,12 @@ export class ConfigScope {
 }
 
 export function validateOneOf<T>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validatedEntity: any,
+  validatedEntity: unknown,
   expectedOneOfEntities: T[],
   errorText?: string,
 ): T {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const index = expectedOneOfEntities.indexOf(validatedEntity)
+  const index = expectedOneOfEntities.indexOf(validatedEntity as T)
   if (index === -1) {
     throw new InternalError({
       message:
@@ -128,11 +128,10 @@ export function validateOneOf<T>(
     })
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return validatedEntity
+  return validatedEntity as T
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function validateNumber(validatedObject: any, errorText: string): number {
+export function validateNumber(validatedObject: unknown, errorText: string): number {
   if (!Number.isFinite(validatedObject)) {
     throw new InternalError({
       message: errorText,
