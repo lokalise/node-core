@@ -30,3 +30,5 @@ export type {
   AppConfig,
   RedisConfig,
 } from './src/config/configTypes'
+
+export type { Either } from './src/errors/either'
