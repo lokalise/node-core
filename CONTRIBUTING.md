@@ -18,7 +18,6 @@ Releases are done automatically after pull requests are merged.
 Please label your PR in accordance with requirements of [SemVer](https://semver.org/)
 Do not bump version numbers in pull requests.
 
-<a id="developers-certificate-of-origin"></a>
 ## Developer's Certificate of Origin 1.1
 
 By making a contribution to this project, I certify that:
