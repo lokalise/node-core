@@ -21,6 +21,31 @@ describe('httpClient', () => {
   })
 
   describe('GET', () => {
+    it('returns original payload when breaking during parsing', async () => {
+      expect.assertions(1)
+      const client = mockAgent.get('https://fakestoreapi.com')
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, 'this is not a real json', { headers: JSON_HEADERS })
+
+      try {
+        await sendGet('https://fakestoreapi.com', 'products/1', { safeParseJson: true })
+      } catch (err) {
+        // This is needed, because built-in error assertions do not assert nested fields
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(err).toMatchObject({
+          message: 'Error while parsing HTTP JSON response',
+          errorCode: 'INVALID_HTTP_RESPONSE_JSON',
+          details: {
+            rawBody: 'this is not a real json',
+          },
+        })
+      }
+    })
+
     it('GET without queryParams', async () => {
       const client = mockAgent.get('https://fakestoreapi.com')
       client
@@ -45,6 +70,20 @@ describe('httpClient', () => {
         .reply(200, 'just text', {
           headers: TEXT_HEADERS,
         })
+
+      const result = await sendGet('https://fakestoreapi.com', 'products/1')
+
+      expect(result.body).toBe('just text')
+    })
+
+    it('GET returning text without content type', async () => {
+      const client = mockAgent.get('https://fakestoreapi.com')
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, 'just text', {})
 
       const result = await sendGet('https://fakestoreapi.com', 'products/1')
 
