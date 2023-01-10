@@ -3,6 +3,8 @@ import type { Readable } from 'stream'
 import { request } from 'undici'
 import type { Dispatcher, FormData } from 'undici'
 
+import { InternalError } from '../errors/InternalError'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RecordObject = Record<string, any>
 
@@ -16,6 +18,7 @@ export type GetRequestOptions = {
   timeout?: number
   throwOnError?: boolean
   reqContext?: HttpRequestContext
+  safeParseJson?: boolean
 }
 
 export type DeleteRequestOptions = GetRequestOptions
@@ -26,6 +29,7 @@ export type RequestOptions = {
   timeout?: number
   throwOnError?: boolean
   reqContext?: HttpRequestContext
+  safeParseJson?: boolean
 }
 
 const defaultOptions: GetRequestOptions = {
@@ -57,7 +61,7 @@ export async function sendGet<T>(
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const resolvedBody = await resolveBody(response)
+  const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -85,7 +89,7 @@ export async function sendDelete<T>(
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const resolvedBody = await resolveBody(response)
+  const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -115,7 +119,7 @@ export async function sendPost<T>(
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const resolvedBody = await resolveBody(response)
+  const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -145,7 +149,7 @@ export async function sendPut<T>(
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const resolvedBody = await resolveBody(response)
+  const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -175,7 +179,7 @@ export async function sendPutBinary<T>(
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const resolvedBody = await resolveBody(response)
+  const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -205,7 +209,7 @@ export async function sendPatch<T>(
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const resolvedBody = await resolveBody(response)
+  const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -215,12 +219,29 @@ export async function sendPatch<T>(
   }
 }
 
-async function resolveBody(response: Dispatcher.ResponseData) {
+async function resolveBody(response: Dispatcher.ResponseData, safeParseJson = false) {
   const contentType = response.headers['content-type']
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return !contentType || contentType?.startsWith('application/json')
-    ? await response.body.json()
-    : await response.body.text()
+  if (contentType?.startsWith('application/json')) {
+    if (!safeParseJson) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return await response.body.json()
+    } else {
+      const rawBody = await response.body.text()
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return JSON.parse(rawBody)
+      } catch (err) {
+        throw new InternalError({
+          message: 'Error while parsing HTTP JSON response',
+          errorCode: 'INVALID_HTTP_RESPONSE_JSON',
+          details: {
+            rawBody,
+          },
+        })
+      }
+    }
+  }
+  return await response.body.text()
 }
 
 function resolveUrl(baseUrl: string, path: string): string {
