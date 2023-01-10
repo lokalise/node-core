@@ -225,20 +225,19 @@ async function resolveBody(response: Dispatcher.ResponseData, safeParseJson = fa
     if (!safeParseJson) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return await response.body.json()
-    } else {
-      const rawBody = await response.body.text()
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return JSON.parse(rawBody)
-      } catch (err) {
-        throw new InternalError({
-          message: 'Error while parsing HTTP JSON response',
-          errorCode: 'INVALID_HTTP_RESPONSE_JSON',
-          details: {
-            rawBody,
-          },
-        })
-      }
+    }
+    const rawBody = await response.body.text()
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return JSON.parse(rawBody)
+    } catch (err) {
+      throw new InternalError({
+        message: 'Error while parsing HTTP JSON response',
+        errorCode: 'INVALID_HTTP_RESPONSE_JSON',
+        details: {
+          rawBody,
+        },
+      })
     }
   }
   return await response.body.text()
