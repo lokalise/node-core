@@ -4,12 +4,8 @@
 
 There are a few basic ground-rules for contributors:
 
-1. **No `--force` pushes** on `main` or modifying the Git history in any way
-   after a PR has been merged.
 1. **Non-main branches** ought to be used for ongoing work.
 1. Contributors should attempt to adhere to the prevailing code-style.
-1. At least one core member must approve pull-requests prior to merging.
-1. All integrated CI services must be green before a pull-request can be merged.
 1. Before submitting a PR for a major new feature, or introducing a significant change, please open an issue to discuss the proposal with maintainers.
 
 ## Releases
