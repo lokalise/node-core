@@ -10,9 +10,9 @@ There are a few basic ground-rules for contributors:
 
 ## Releases
 
-Releases are done automatically after pull requests are merged.
-Please label your PR in accordance with requirements of [SemVer](https://semver.org/)
-Do not bump version numbers in pull requests.
+* Releases are done automatically after pull requests are merged.
+* Please label your PR in accordance with requirements of [SemVer](https://semver.org/) ( `major`, `minor` or `patch`), or add `skip-release` label to avoid releasing after merging pull request.
+* Do not bump version numbers in pull requests.
 
 ## Developer's Certificate of Origin 1.1
 
