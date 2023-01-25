@@ -32,3 +32,12 @@ export type {
 } from './src/config/configTypes'
 
 export type { Either } from './src/errors/either'
+
+export { chunk } from './src/utils/arrayUtils'
+export {
+  groupBy,
+  pick,
+  pickWithoutUndefined,
+  copyWithoutUndefined,
+  isEmptyObject,
+} from './src/utils/objectUtils'

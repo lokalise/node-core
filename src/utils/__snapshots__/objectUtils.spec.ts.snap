@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`groupBy Correctly groups by number values 1`] = `
+{
+  "10": [
+    {
+      "count": 10,
+      "id": 1,
+    },
+    {
+      "count": 10,
+      "id": 2,
+    },
+  ],
+  "20": [
+    {
+      "count": 20,
+      "id": 3,
+    },
+  ],
+  "30": [
+    {
+      "count": 30,
+      "id": 4,
+    },
+  ],
+}
+`;
+
+exports[`groupBy Correctly groups by string values 1`] = `
+{
+  "a": [
+    {
+      "id": 1,
+      "name": "a",
+    },
+    {
+      "id": 4,
+      "name": "a",
+    },
+  ],
+  "b": [
+    {
+      "id": 3,
+      "name": "b",
+    },
+  ],
+  "c": [
+    {
+      "id": 2,
+      "name": "c",
+    },
+  ],
+}
+`;
+
+exports[`groupBy Correctly handles undefined 1`] = `
+{
+  "45": [
+    {
+      "id": 1,
+      "name": "45",
+    },
+    {
+      "id": 4,
+      "name": "45",
+    },
+  ],
+  "undefined": [
+    {
+      "id": 2,
+    },
+    {
+      "id": 3,
+    },
+  ],
+}
+`;
+
+exports[`objectUtils copyWithoutUndefined Does nothing when there are no undefined fields 1`] = `
+{
+  "a": "a",
+  "b": "",
+  "c": " ",
+  "d": null,
+  "e": {},
+}
+`;
+
+exports[`objectUtils copyWithoutUndefined Removes undefined fields 1`] = `
+{
+  "b": "a",
+  "c": "",
+  "e": " ",
+  "f": null,
+  "g": {},
+}
+`;
+
+exports[`pick Ignores missing fields 1`] = `
+{
+  "a": "a",
+}
+`;
+
+exports[`pick Includes undefined fields 1`] = `
+{
+  "a": "a",
+  "b": undefined,
+}
+`;
+
+exports[`pick Picks specified fields 1`] = `
+{
+  "a": "a",
+  "c": " ",
+  "e": {},
+}
+`;
+
+exports[`pickWithoutUndefined Ignores missing fields 1`] = `
+{
+  "a": "a",
+}
+`;
+
+exports[`pickWithoutUndefined Picks specified fields 1`] = `
+{
+  "a": "a",
+  "c": " ",
+  "e": {},
+}
+`;
+
+exports[`pickWithoutUndefined Skips undefined fields 1`] = `
+{
+  "a": "a",
+}
+`;
