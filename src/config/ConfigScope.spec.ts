@@ -150,6 +150,46 @@ describe('ConfigScope', () => {
     })
   })
 
+  describe('getOptional', () => {
+    it('accepts value', () => {
+      process.env.value = 'val'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('val')
+    })
+
+    it('uses default value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('def')
+    })
+  })
+
+  describe('getOptionalInteger', () => {
+    it('accepts value', () => {
+      process.env.value = '3'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalInteger('value', 1)
+
+      expect(resolvedValue).toBe(3)
+    })
+
+    it('uses default value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalInteger('value', 1)
+
+      expect(resolvedValue).toBe(1)
+    })
+  })
+
   describe('getOptionalValidated', () => {
     const validator: EnvValueValidator<string | null | undefined> = (val) => {
       return (val && val.length < 5) || false
