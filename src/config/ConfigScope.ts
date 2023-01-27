@@ -70,6 +70,21 @@ export class ConfigScope {
     return this.env[param] ?? defaultValue
   }
 
+  getOptional<T extends string>(param: string, defaultValue: T): T | string {
+    return this.env[param] ?? defaultValue
+  }
+
+  getOptionalInteger(param: string, defaultValue: number): number {
+    const rawValue = this.env[param]
+    if (!rawValue) {
+      return defaultValue
+    }
+    return validateNumber(
+      Number.parseInt(rawValue),
+      `Configuration parameter ${param}\` must be a number, but was ${rawValue}`,
+    )
+  }
+
   getOptionalValidated(
     param: string,
     defaultValue: string,
