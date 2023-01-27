@@ -70,7 +70,7 @@ export class ConfigScope {
     return this.env[param] ?? defaultValue
   }
 
-  getOptional<T extends string>(param: string, defaultValue: T): T | string {
+  getOptional(param: string, defaultValue: string): string {
     return this.env[param] ?? defaultValue
   }
 
