@@ -221,6 +221,7 @@ export async function sendPatch<T>(
 
 async function resolveBody(response: Dispatcher.ResponseData, safeParseJson = false) {
   const contentType = response.headers['content-type']
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   if (contentType?.startsWith('application/json')) {
     if (!safeParseJson) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
