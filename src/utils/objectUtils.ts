@@ -1,7 +1,7 @@
-export function copyWithoutUndefined<T extends Record<K, V>, K extends string | number | symbol, V>(
-  originalValue: T,
-): T {
-  return Object.keys(originalValue).reduce((acc, key) => {
+export function copyWithoutUndefined<SourceKeys extends string | number | symbol, SourceValues>(
+  originalValue: Record<SourceKeys, SourceValues>,
+): Record<SourceKeys, Exclude<SourceValues, undefined>> {
+  const result = Object.keys(originalValue).reduce((acc, key) => {
     // @ts-ignore
     if (originalValue[key] !== undefined) {
       // @ts-ignore
@@ -9,7 +9,9 @@ export function copyWithoutUndefined<T extends Record<K, V>, K extends string | 
       acc[key] = originalValue[key]
     }
     return acc
-  }, {} as Record<string, unknown>) as T
+  }, {} as Record<string, unknown>) as Record<SourceKeys, Exclude<SourceValues, undefined>>
+
+  return result
 }
 
 export function pick<T, K extends string | number | symbol>(

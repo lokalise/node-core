@@ -32,6 +32,12 @@ describe('objectUtils', () => {
         h: undefined,
       })
 
+      const varWithNarrowedType = result satisfies Record<
+        string,
+        string | Record<string, unknown> | null
+      >
+      expect(varWithNarrowedType).toBeTruthy()
+
       expect(result).toMatchSnapshot()
     })
   })
