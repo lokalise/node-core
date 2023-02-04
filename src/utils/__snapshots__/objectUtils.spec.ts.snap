@@ -93,7 +93,9 @@ exports[`objectUtils copyWithoutUndefined Removes undefined fields 1`] = `
   "c": "",
   "e": " ",
   "f": null,
-  "g": {},
+  "g": {
+    "someParam": 12,
+  },
 }
 `;
 

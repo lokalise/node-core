@@ -28,7 +28,9 @@ describe('objectUtils', () => {
         d: undefined,
         e: ' ',
         f: null,
-        g: {},
+        g: {
+          someParam: 12,
+        },
         h: undefined,
       })
 
@@ -36,7 +38,15 @@ describe('objectUtils', () => {
         string,
         string | Record<string, unknown> | null
       >
-      expect(varWithNarrowedType).toBeTruthy()
+      const bValue: string = varWithNarrowedType.b
+      const gValue: {
+        someParam: number
+      } = varWithNarrowedType.g
+
+      expect(bValue).toBe('a')
+      expect(gValue).toEqual({
+        someParam: 12,
+      })
 
       expect(result).toMatchSnapshot()
     })
