@@ -11,7 +11,6 @@ export function copyWithoutUndefined<
     // @ts-ignore
     if (originalValue[key] !== undefined) {
       // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       acc[key] = originalValue[key]
     }
     return acc
@@ -28,7 +27,6 @@ export function pick<T, K extends string | number | symbol>(
     // @ts-ignore
     if (propNames[idx] in source) {
       // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       result[propNames[idx]] = source[propNames[idx]]
     }
     idx += 1
@@ -46,7 +44,6 @@ export function pickWithoutUndefined<T, K extends string | number | symbol>(
     // @ts-ignore
     if (propNames[idx] in source && source[propNames[idx]] !== undefined) {
       // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       result[propNames[idx]] = source[propNames[idx]]
     }
     idx += 1
@@ -66,7 +63,7 @@ export function isEmptyObject(params: Record<string, unknown>): boolean {
 export function groupBy<T>(inputArray: T[], propName: string): Record<string, T[]> {
   return inputArray.reduce((result, entry) => {
     // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const key = entry[propName]
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

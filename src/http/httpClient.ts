@@ -1,6 +1,6 @@
 import type { Readable } from 'stream'
 
-import { request } from 'undici'
+import { Client } from 'undici'
 import type { Dispatcher, FormData } from 'undici'
 
 import { InternalError } from '../errors/InternalError'
@@ -13,17 +13,6 @@ export type HttpRequestContext = {
   reqId: string
 }
 
-export type GetRequestOptions = {
-  headers?: RecordObject
-  query?: RecordObject
-  timeout?: number
-  throwOnError?: boolean
-  reqContext?: HttpRequestContext
-  safeParseJson?: boolean
-}
-
-export type DeleteRequestOptions = GetRequestOptions
-
 export type RequestOptions = {
   headers?: RecordObject
   query?: RecordObject
@@ -31,11 +20,18 @@ export type RequestOptions = {
   throwOnError?: boolean
   reqContext?: HttpRequestContext
   safeParseJson?: boolean
+  disableKeepAlive?: boolean
+  clientOptions?: Client.Options
 }
 
-const defaultOptions: GetRequestOptions = {
+const defaultOptions: RequestOptions = {
   throwOnError: true,
   timeout: 30000,
+}
+
+const defaultClientOptions: Partial<Client.Options> = {
+  keepAliveMaxTimeout: 300_000,
+  keepAliveTimeout: 4000,
 }
 
 export type Response<T> = {
@@ -45,27 +41,26 @@ export type Response<T> = {
 }
 
 export async function sendGet<T>(
-  baseUrl: string,
+  client: Client,
   path: string,
-  options: GetRequestOptions = defaultOptions,
+  options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
-  const url = resolveUrl(baseUrl, path)
-  const response = await request(url, {
+  const response = await client.request({
+    path: path,
     method: 'GET',
     query: options.query,
     headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
     }),
+    reset: options.disableKeepAlive ?? false,
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: resolvedBody,
     headers: response.headers,
     statusCode: response.statusCode,
@@ -73,27 +68,26 @@ export async function sendGet<T>(
 }
 
 export async function sendDelete<T>(
-  baseUrl: string,
+  client: Client,
   path: string,
-  options: DeleteRequestOptions = defaultOptions,
+  options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
-  const url = resolveUrl(baseUrl, path)
-  const response = await request(url, {
+  const response = await client.request({
+    path: path,
     method: 'DELETE',
     query: options.query,
     headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
     }),
+    reset: options.disableKeepAlive ?? false,
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: resolvedBody,
     headers: response.headers,
     statusCode: response.statusCode,
@@ -101,13 +95,13 @@ export async function sendDelete<T>(
 }
 
 export async function sendPost<T>(
-  baseUrl: string,
+  client: Client,
   path: string,
   body: RecordObject | undefined,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
-  const url = resolveUrl(baseUrl, path)
-  const response = await request(url, {
+  const response = await client.request({
+    path: path,
     method: 'POST',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
@@ -115,15 +109,14 @@ export async function sendPost<T>(
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
     }),
+    reset: options.disableKeepAlive ?? false,
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: resolvedBody,
     headers: response.headers,
     statusCode: response.statusCode,
@@ -131,13 +124,13 @@ export async function sendPost<T>(
 }
 
 export async function sendPut<T>(
-  baseUrl: string,
+  client: Client,
   path: string,
   body: RecordObject | undefined,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
-  const url = resolveUrl(baseUrl, path)
-  const response = await request(url, {
+  const response = await client.request({
+    path: path,
     method: 'PUT',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
@@ -145,15 +138,14 @@ export async function sendPut<T>(
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
     }),
+    reset: options.disableKeepAlive ?? false,
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: resolvedBody,
     headers: response.headers,
     statusCode: response.statusCode,
@@ -161,13 +153,13 @@ export async function sendPut<T>(
 }
 
 export async function sendPutBinary<T>(
-  baseUrl: string,
+  client: Client,
   path: string,
   body: Buffer | Uint8Array | Readable | null | FormData,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
-  const url = resolveUrl(baseUrl, path)
-  const response = await request(url, {
+  const response = await client.request({
+    path: path,
     method: 'PUT',
     body,
     query: options.query,
@@ -175,15 +167,14 @@ export async function sendPutBinary<T>(
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
     }),
+    reset: options.disableKeepAlive ?? false,
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: resolvedBody,
     headers: response.headers,
     statusCode: response.statusCode,
@@ -191,13 +182,13 @@ export async function sendPutBinary<T>(
 }
 
 export async function sendPatch<T>(
-  baseUrl: string,
+  client: Client,
   path: string,
   body: RecordObject | undefined,
   options: RequestOptions = defaultOptions,
 ): Promise<Response<T>> {
-  const url = resolveUrl(baseUrl, path)
-  const response = await request(url, {
+  const response = await client.request({
+    path: path,
     method: 'PATCH',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
@@ -205,15 +196,14 @@ export async function sendPatch<T>(
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
     }),
+    reset: options.disableKeepAlive ?? false,
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resolvedBody = await resolveBody(response, options.safeParseJson)
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: resolvedBody,
     headers: response.headers,
     statusCode: response.statusCode,
@@ -245,8 +235,12 @@ async function resolveBody(response: Dispatcher.ResponseData, safeParseJson = fa
   return await response.body.text()
 }
 
-function resolveUrl(baseUrl: string, path: string): string {
-  return new URL(path, baseUrl).href
+export function buildClient(baseUrl: string, clientOptions?: Client.Options) {
+  const newClient = new Client(baseUrl, {
+    ...defaultClientOptions,
+    ...clientOptions,
+  })
+  return newClient
 }
 
 export const httpClient = {
