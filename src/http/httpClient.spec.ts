@@ -1,6 +1,15 @@
-import { MockAgent, setGlobalDispatcher } from 'undici'
+import type { Interceptable } from 'undici'
+import { Client, MockAgent, setGlobalDispatcher } from 'undici'
 
-import { sendDelete, sendGet, sendPatch, sendPost, sendPut, sendPutBinary } from './httpClient'
+import {
+  buildClient,
+  sendDelete,
+  sendGet,
+  sendPatch,
+  sendPost,
+  sendPut,
+  sendPutBinary,
+} from './httpClient'
 import mockProduct1 from './mock-data/mockProduct1.json'
 import mockProductsLimit3 from './mock-data/mockProductsLimit3.json'
 
@@ -12,18 +21,28 @@ const TEXT_HEADERS = {
   'content-type': 'text/plain',
 }
 
+const baseUrl = 'https://fakestoreapi.com'
+
 describe('httpClient', () => {
   let mockAgent: MockAgent
+  let client: Client & Interceptable
   beforeEach(() => {
     mockAgent = new MockAgent()
     mockAgent.disableNetConnect()
     setGlobalDispatcher(mockAgent)
+    client = mockAgent.get(baseUrl) as unknown as Client & Interceptable
+  })
+
+  describe('buildClient', () => {
+    it('creates a client', () => {
+      const client = buildClient(baseUrl)
+      expect(client).toBeInstanceOf(Client)
+    })
   })
 
   describe('GET', () => {
     it('returns original payload when breaking during parsing', async () => {
       expect.assertions(1)
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -32,7 +51,7 @@ describe('httpClient', () => {
         .reply(200, 'this is not a real json', { headers: JSON_HEADERS })
 
       try {
-        await sendGet('https://fakestoreapi.com', 'products/1', { safeParseJson: true })
+        await sendGet(client, '/products/1', { safeParseJson: true })
       } catch (err) {
         // This is needed, because built-in error assertions do not assert nested fields
         // eslint-disable-next-line jest/no-conditional-expect
@@ -47,7 +66,6 @@ describe('httpClient', () => {
     })
 
     it('GET without queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -55,13 +73,12 @@ describe('httpClient', () => {
         })
         .reply(200, mockProduct1, { headers: JSON_HEADERS })
 
-      const result = await sendGet('https://fakestoreapi.com', 'products/1')
+      const result = await sendGet(client, '/products/1')
 
       expect(result.body).toEqual(mockProduct1)
     })
 
     it('GET returning text', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -71,13 +88,12 @@ describe('httpClient', () => {
           headers: TEXT_HEADERS,
         })
 
-      const result = await sendGet('https://fakestoreapi.com', 'products/1')
+      const result = await sendGet(client, '/products/1')
 
       expect(result.body).toBe('just text')
     })
 
     it('GET returning text without content type', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -85,13 +101,12 @@ describe('httpClient', () => {
         })
         .reply(200, 'just text', {})
 
-      const result = await sendGet('https://fakestoreapi.com', 'products/1')
+      const result = await sendGet(client, '/products/1')
 
       expect(result.body).toBe('just text')
     })
 
     it('GET with queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       const query = {
         limit: 3,
       }
@@ -104,7 +119,7 @@ describe('httpClient', () => {
         })
         .reply(200, mockProductsLimit3, { headers: JSON_HEADERS })
 
-      const result = await sendGet('https://fakestoreapi.com', 'products', {
+      const result = await sendGet(client, '/products', {
         query,
       })
 
@@ -114,7 +129,6 @@ describe('httpClient', () => {
 
   describe('DELETE', () => {
     it('DELETE without queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -122,15 +136,13 @@ describe('httpClient', () => {
         })
         .reply(204, undefined, { headers: TEXT_HEADERS })
 
-      const result = await sendDelete('https://fakestoreapi.com', 'products/1')
+      const result = await sendDelete(client, '/products/1')
 
       expect(result.statusCode).toBe(204)
       expect(result.body).toBe('')
     })
 
     it('DELETE with queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
-
       const query = {
         limit: 3,
       }
@@ -143,7 +155,7 @@ describe('httpClient', () => {
         })
         .reply(204, undefined, { headers: TEXT_HEADERS })
 
-      const result = await sendDelete('https://fakestoreapi.com', 'products', {
+      const result = await sendDelete(client, '/products', {
         query,
       })
 
@@ -154,7 +166,6 @@ describe('httpClient', () => {
 
   describe('POST', () => {
     it('POST without queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products',
@@ -162,13 +173,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPost('https://fakestoreapi.com', 'products', mockProduct1)
+      const result = await sendPost(client, '/products', mockProduct1)
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('POST without body', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products',
@@ -176,13 +186,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPost('https://fakestoreapi.com', 'products', undefined)
+      const result = await sendPost(client, '/products', undefined)
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('POST with queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       const query = {
         limit: 3,
       }
@@ -195,7 +204,7 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPost('https://fakestoreapi.com', 'products', mockProduct1, {
+      const result = await sendPost(client, '/products', mockProduct1, {
         query,
       })
 
@@ -203,7 +212,6 @@ describe('httpClient', () => {
     })
 
     it('POST that returns 400 throws an error', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products',
@@ -211,7 +219,7 @@ describe('httpClient', () => {
         })
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
-      await expect(sendPost('https://fakestoreapi.com', 'products', mockProduct1)).rejects.toThrow(
+      await expect(sendPost(client, '/products', mockProduct1)).rejects.toThrow(
         'Response status code 400: Bad Request',
       )
     })
@@ -219,7 +227,6 @@ describe('httpClient', () => {
 
   describe('PUT', () => {
     it('PUT without queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -227,13 +234,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPut('https://fakestoreapi.com', 'products/1', mockProduct1)
+      const result = await sendPut(client, '/products/1', mockProduct1)
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('PUT without body', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -241,13 +247,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPut('https://fakestoreapi.com', 'products/1', undefined)
+      const result = await sendPut(client, '/products/1', undefined)
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('PUT with queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       const query = {
         limit: 3,
       }
@@ -260,7 +265,7 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPut('https://fakestoreapi.com', 'products/1', mockProduct1, {
+      const result = await sendPut(client, '/products/1', mockProduct1, {
         query,
       })
 
@@ -268,7 +273,6 @@ describe('httpClient', () => {
     })
 
     it('PUT that returns 400 throws an error', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -276,7 +280,7 @@ describe('httpClient', () => {
         })
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
-      await expect(sendPut('https://fakestoreapi.com', 'products/1', mockProduct1)).rejects.toThrow(
+      await expect(sendPut(client, '/products/1', mockProduct1)).rejects.toThrow(
         'Response status code 400: Bad Request',
       )
     })
@@ -284,7 +288,6 @@ describe('httpClient', () => {
 
   describe('PUT binary', () => {
     it('PUT without queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -292,17 +295,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPutBinary(
-        'https://fakestoreapi.com',
-        'products/1',
-        Buffer.from('text'),
-      )
+      const result = await sendPutBinary(client, '/products/1', Buffer.from('text'))
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('PUT with queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       const query = {
         limit: 3,
       }
@@ -315,20 +313,14 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPutBinary(
-        'https://fakestoreapi.com',
-        'products/1',
-        Buffer.from('text'),
-        {
-          query,
-        },
-      )
+      const result = await sendPutBinary(client, '/products/1', Buffer.from('text'), {
+        query,
+      })
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('PUT that returns 400 throws an error', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -336,15 +328,14 @@ describe('httpClient', () => {
         })
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
-      await expect(
-        sendPutBinary('https://fakestoreapi.com', 'products/1', Buffer.from('text')),
-      ).rejects.toThrow('Response status code 400: Bad Request')
+      await expect(sendPutBinary(client, '/products/1', Buffer.from('text'))).rejects.toThrow(
+        'Response status code 400: Bad Request',
+      )
     })
   })
 
   describe('PATCH', () => {
     it('PATCH without queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -352,13 +343,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPatch('https://fakestoreapi.com', 'products/1', mockProduct1)
+      const result = await sendPatch(client, '/products/1', mockProduct1)
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('PATCH without body', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -366,13 +356,12 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPatch('https://fakestoreapi.com', 'products/1', undefined)
+      const result = await sendPatch(client, '/products/1', undefined)
 
       expect(result.body).toEqual({ id: 21 })
     })
 
     it('PATCH with queryParams', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       const query = {
         limit: 3,
       }
@@ -385,7 +374,7 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPatch('https://fakestoreapi.com', 'products/1', mockProduct1, {
+      const result = await sendPatch(client, '/products/1', mockProduct1, {
         query,
       })
 
@@ -393,7 +382,6 @@ describe('httpClient', () => {
     })
 
     it('PATCH that returns 400 throws an error', async () => {
-      const client = mockAgent.get('https://fakestoreapi.com')
       client
         .intercept({
           path: '/products/1',
@@ -401,9 +389,9 @@ describe('httpClient', () => {
         })
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
-      await expect(
-        sendPatch('https://fakestoreapi.com', 'products/1', mockProduct1),
-      ).rejects.toThrow('Response status code 400: Bad Request')
+      await expect(sendPatch(client, '/products/1', mockProduct1)).rejects.toThrow(
+        'Response status code 400: Bad Request',
+      )
     })
   })
 })
