@@ -1,6 +1,12 @@
-export function copyWithoutUndefined<T extends Record<K, V>, K extends string | number | symbol, V>(
-  originalValue: T,
-): T {
+export function copyWithoutUndefined<
+  T extends Record<string | number | symbol, unknown>,
+  TargetRecordType = Pick<
+    T,
+    {
+      [Prop in keyof T]: T[Prop] extends null | undefined ? never : Prop
+    }[keyof T]
+  >,
+>(originalValue: T): TargetRecordType {
   return Object.keys(originalValue).reduce((acc, key) => {
     // @ts-ignore
     if (originalValue[key] !== undefined) {
@@ -9,7 +15,7 @@ export function copyWithoutUndefined<T extends Record<K, V>, K extends string | 
       acc[key] = originalValue[key]
     }
     return acc
-  }, {} as Record<string, unknown>) as T
+  }, {} as Record<string, unknown>) as TargetRecordType
 }
 
 export function pick<T, K extends string | number | symbol>(

@@ -4,6 +4,7 @@ import { request } from 'undici'
 import type { Dispatcher, FormData } from 'undici'
 
 import { InternalError } from '../errors/InternalError'
+import { copyWithoutUndefined } from '../utils/objectUtils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RecordObject = Record<string, any>
@@ -52,10 +53,10 @@ export async function sendGet<T>(
   const response = await request(url, {
     method: 'GET',
     query: options.query,
-    headers: {
+    headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
-    },
+    }),
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -80,10 +81,10 @@ export async function sendDelete<T>(
   const response = await request(url, {
     method: 'DELETE',
     query: options.query,
-    headers: {
+    headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
-    },
+    }),
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -110,10 +111,10 @@ export async function sendPost<T>(
     method: 'POST',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
-    headers: {
+    headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
-    },
+    }),
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -140,10 +141,10 @@ export async function sendPut<T>(
     method: 'PUT',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
-    headers: {
+    headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
-    },
+    }),
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -170,10 +171,10 @@ export async function sendPutBinary<T>(
     method: 'PUT',
     body,
     query: options.query,
-    headers: {
+    headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
-    },
+    }),
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -200,10 +201,10 @@ export async function sendPatch<T>(
     method: 'PATCH',
     body: body ? JSON.stringify(body) : undefined,
     query: options.query,
-    headers: {
+    headers: copyWithoutUndefined({
       'x-request-id': options.reqContext?.reqId,
       ...options.headers,
-    },
+    }),
     bodyTimeout: options.timeout,
     throwOnError: options.throwOnError,
   })
@@ -220,7 +221,8 @@ export async function sendPatch<T>(
 }
 
 async function resolveBody(response: Dispatcher.ResponseData, safeParseJson = false) {
-  const contentType = response.headers['content-type']
+  // There can never be multiple content-type headers, see https://www.rfc-editor.org/rfc/rfc7230#section-3.2.2
+  const contentType = response.headers['content-type'] as string | undefined
   if (contentType?.startsWith('application/json')) {
     if (!safeParseJson) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
