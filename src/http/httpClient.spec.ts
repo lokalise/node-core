@@ -177,6 +177,40 @@ describe('httpClient', () => {
         },
       })
     })
+
+    it('Works with retry', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'GET',
+          query,
+        })
+        .reply(500, 'Invalid request')
+      client
+        .intercept({
+          path: '/products',
+          method: 'GET',
+          query,
+        })
+        .reply(200, 'OK')
+
+      const response = await sendGet(client, '/products', {
+        query,
+        retryConfig: {
+          statusCodesToRetry: [500],
+          retryOnTimeout: false,
+          delayBetweenAttemptsInMsecs: 0,
+          maxAttempts: 2,
+        },
+      })
+
+      expect(response.result.body).toBe('OK')
+    })
   })
 
   describe('DELETE', () => {
