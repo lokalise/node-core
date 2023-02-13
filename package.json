@@ -34,7 +34,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "undici": "^5.19.0",
+    "undici": "^5.19.1",
     "undici-retry": "^1.1.0"
   },
   "devDependencies": {
