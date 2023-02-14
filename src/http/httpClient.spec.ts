@@ -75,7 +75,7 @@ describe('httpClient', () => {
 
       const result = await sendGet(client, '/products/1')
 
-      expect(result.body).toEqual(mockProduct1)
+      expect(result.result.body).toEqual(mockProduct1)
     })
 
     it('GET returning text', async () => {
@@ -90,7 +90,7 @@ describe('httpClient', () => {
 
       const result = await sendGet(client, '/products/1')
 
-      expect(result.body).toBe('just text')
+      expect(result.result.body).toBe('just text')
     })
 
     it('GET returning text without content type', async () => {
@@ -101,9 +101,9 @@ describe('httpClient', () => {
         })
         .reply(200, 'just text', {})
 
-      const result = await sendGet(client, '/products/1')
+      const result = await sendGet<string>(client, '/products/1')
 
-      expect(result.body).toBe('just text')
+      expect(result.result.body).toBe('just text')
     })
 
     it('GET with queryParams', async () => {
@@ -123,7 +123,93 @@ describe('httpClient', () => {
         query,
       })
 
-      expect(result.body).toEqual(mockProductsLimit3)
+      expect(result.result.body).toEqual(mockProductsLimit3)
+    })
+
+    it('Throws an error on internal error', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'GET',
+          query,
+        })
+        .replyWithError(new Error('connection error'))
+
+      await expect(
+        sendGet(client, '/products', {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'connection error',
+      })
+    })
+
+    it('Returns error response', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'GET',
+          query,
+        })
+        .reply(400, 'Invalid request')
+
+      await expect(
+        sendGet(client, '/products', {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'Response status code 400',
+        details: {
+          response: {
+            body: 'Invalid request',
+            statusCode: 400,
+          },
+        },
+      })
+    })
+
+    it('Works with retry', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'GET',
+          query,
+        })
+        .reply(500, 'Invalid request')
+      client
+        .intercept({
+          path: '/products',
+          method: 'GET',
+          query,
+        })
+        .reply(200, 'OK')
+
+      const response = await sendGet(client, '/products', {
+        query,
+        retryConfig: {
+          statusCodesToRetry: [500],
+          retryOnTimeout: false,
+          delayBetweenAttemptsInMsecs: 0,
+          maxAttempts: 2,
+        },
+      })
+
+      expect(response.result.body).toBe('OK')
     })
   })
 
@@ -138,8 +224,8 @@ describe('httpClient', () => {
 
       const result = await sendDelete(client, '/products/1')
 
-      expect(result.statusCode).toBe(204)
-      expect(result.body).toBe('')
+      expect(result.result.statusCode).toBe(204)
+      expect(result.result.body).toBe('')
     })
 
     it('DELETE with queryParams', async () => {
@@ -159,8 +245,31 @@ describe('httpClient', () => {
         query,
       })
 
-      expect(result.statusCode).toBe(204)
-      expect(result.body).toBe('')
+      expect(result.result.statusCode).toBe(204)
+      expect(result.result.body).toBe('')
+    })
+
+    it('Throws an error on internal error', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'DELETE',
+          query,
+        })
+        .replyWithError(new Error('connection error'))
+
+      await expect(
+        sendDelete(client, '/products', {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'connection error',
+      })
     })
   })
 
@@ -175,7 +284,7 @@ describe('httpClient', () => {
 
       const result = await sendPost(client, '/products', mockProduct1)
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('POST without body', async () => {
@@ -188,7 +297,7 @@ describe('httpClient', () => {
 
       const result = await sendPost(client, '/products', undefined)
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('POST with queryParams', async () => {
@@ -208,7 +317,7 @@ describe('httpClient', () => {
         query,
       })
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('POST that returns 400 throws an error', async () => {
@@ -220,8 +329,31 @@ describe('httpClient', () => {
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
       await expect(sendPost(client, '/products', mockProduct1)).rejects.toThrow(
-        'Response status code 400: Bad Request',
+        'Response status code 400',
       )
+    })
+
+    it('Throws an error on internal error', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'POST',
+          query,
+        })
+        .replyWithError(new Error('connection error'))
+
+      await expect(
+        sendPost(client, '/products', undefined, {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'connection error',
+      })
     })
   })
 
@@ -236,7 +368,7 @@ describe('httpClient', () => {
 
       const result = await sendPut(client, '/products/1', mockProduct1)
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PUT without body', async () => {
@@ -249,7 +381,7 @@ describe('httpClient', () => {
 
       const result = await sendPut(client, '/products/1', undefined)
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PUT with queryParams', async () => {
@@ -269,7 +401,7 @@ describe('httpClient', () => {
         query,
       })
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PUT that returns 400 throws an error', async () => {
@@ -281,8 +413,31 @@ describe('httpClient', () => {
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
       await expect(sendPut(client, '/products/1', mockProduct1)).rejects.toThrow(
-        'Response status code 400: Bad Request',
+        'Response status code 400',
       )
+    })
+
+    it('Throws an error on internal error', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'PUT',
+          query,
+        })
+        .replyWithError(new Error('connection error'))
+
+      await expect(
+        sendPut(client, '/products', undefined, {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'connection error',
+      })
     })
   })
 
@@ -297,7 +452,7 @@ describe('httpClient', () => {
 
       const result = await sendPutBinary(client, '/products/1', Buffer.from('text'))
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PUT with queryParams', async () => {
@@ -317,7 +472,7 @@ describe('httpClient', () => {
         query,
       })
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PUT that returns 400 throws an error', async () => {
@@ -329,8 +484,31 @@ describe('httpClient', () => {
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
       await expect(sendPutBinary(client, '/products/1', Buffer.from('text'))).rejects.toThrow(
-        'Response status code 400: Bad Request',
+        'Response status code 400',
       )
+    })
+
+    it('Throws an error on internal error', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'PUT',
+          query,
+        })
+        .replyWithError(new Error('connection error'))
+
+      await expect(
+        sendPutBinary(client, '/products', null, {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'connection error',
+      })
     })
   })
 
@@ -345,7 +523,7 @@ describe('httpClient', () => {
 
       const result = await sendPatch(client, '/products/1', mockProduct1)
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PATCH without body', async () => {
@@ -358,7 +536,7 @@ describe('httpClient', () => {
 
       const result = await sendPatch(client, '/products/1', undefined)
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PATCH with queryParams', async () => {
@@ -378,7 +556,7 @@ describe('httpClient', () => {
         query,
       })
 
-      expect(result.body).toEqual({ id: 21 })
+      expect(result.result.body).toEqual({ id: 21 })
     })
 
     it('PATCH that returns 400 throws an error', async () => {
@@ -390,8 +568,31 @@ describe('httpClient', () => {
         .reply(400, { errorCode: 'err' }, { headers: JSON_HEADERS })
 
       await expect(sendPatch(client, '/products/1', mockProduct1)).rejects.toThrow(
-        'Response status code 400: Bad Request',
+        'Response status code 400',
       )
+    })
+
+    it('Throws an error on internal error', async () => {
+      expect.assertions(1)
+      const query = {
+        limit: 3,
+      }
+
+      client
+        .intercept({
+          path: '/products',
+          method: 'PATCH',
+          query,
+        })
+        .replyWithError(new Error('connection error'))
+
+      await expect(
+        sendPatch(client, '/products', undefined, {
+          query,
+        }),
+      ).rejects.toMatchObject({
+        message: 'connection error',
+      })
     })
   })
 })
