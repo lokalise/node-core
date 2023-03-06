@@ -168,6 +168,15 @@ describe('ConfigScope', () => {
 
       expect(resolvedValue).toBe('def')
     })
+
+    it('uses default value if empty', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('def')
+    })
   })
 
   describe('getOptionalInteger', () => {
@@ -182,6 +191,15 @@ describe('ConfigScope', () => {
 
     it('uses default value if not set', () => {
       delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalInteger('value', 1)
+
+      expect(resolvedValue).toBe(1)
+    })
+
+    it('uses default value if empty', () => {
+      process.env.value = ''
       const configScope = new ConfigScope()
 
       const resolvedValue = configScope.getOptionalInteger('value', 1)
