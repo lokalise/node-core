@@ -17,7 +17,7 @@ export function chunk<T>(array: T[], chunkSize: number): T[][] {
 
 export async function callChunked<T>(
   chunkSize: number,
-  array: T[],
+  array: readonly T[],
   processFn: (arrayChunk: T[]) => Promise<void>,
 ): Promise<void> {
   for (let i = 0; i < array.length; i += chunkSize) {
