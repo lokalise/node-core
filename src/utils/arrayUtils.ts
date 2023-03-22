@@ -14,3 +14,16 @@ export function chunk<T>(array: T[], chunkSize: number): T[][] {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return result
 }
+
+export async function callChunked<T>(
+  chunkSize: number,
+  array: T[],
+  processFn: (arrayChunk: T[]) => void,
+): Promise<void> {
+  for (let i = 0; i < array.length; i += chunkSize) {
+    const arrayChunk = array.slice(i, i + chunkSize)
+
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await processFn(arrayChunk)
+  }
+}
