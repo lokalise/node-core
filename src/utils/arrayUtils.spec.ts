@@ -37,8 +37,8 @@ describe('chunk', () => {
     const array = [1, 2, 3, 4, 5]
     const myMock = jest.fn()
     myMock.mockReturnValueOnce([1, 2]).mockReturnValueOnce([3, 4]).mockReturnValue([5])
-    await callChunked(2, array, (arrayChunk) => {
-      expect(arrayChunk).toStrictEqual(myMock())
+    await callChunked(2, array, async (arrayChunk) => {
+      expect(arrayChunk).toStrictEqual(await myMock())
     })
   })
 })
