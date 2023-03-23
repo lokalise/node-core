@@ -15,10 +15,10 @@ export function chunk<T>(array: T[], chunkSize: number): T[][] {
   return result
 }
 
-export async function callChunked<T>(
+export async function callChunked<Item>(
   chunkSize: number,
-  array: readonly T[],
-  processFn: (arrayChunk: T[]) => Promise<void>,
+  array: readonly Item[],
+  processFn: (arrayChunk: Item[]) => Promise<unknown>,
 ): Promise<void> {
   for (let i = 0; i < array.length; i += chunkSize) {
     const arrayChunk = array.slice(i, i + chunkSize)
