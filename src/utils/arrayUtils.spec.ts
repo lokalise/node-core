@@ -1,4 +1,4 @@
-import { chunk } from './arrayUtils'
+import { callChunked, chunk } from './arrayUtils'
 
 describe('chunk', () => {
   it('empty array returns empty array', () => {
@@ -32,5 +32,14 @@ describe('chunk', () => {
       [1, 2, 3, 4, 5],
       [6, 7],
     ])
+  })
+  it('should call function with chunked array', async () => {
+    const array = [1, 2, 3, 4, 5]
+    const myMock = jest.fn()
+    expect.assertions(3)
+    myMock.mockReturnValueOnce([1, 2]).mockReturnValueOnce([3, 4]).mockReturnValue([5])
+    await callChunked(2, array, async (arrayChunk) => {
+      expect(arrayChunk).toStrictEqual(await myMock())
+    })
   })
 })
