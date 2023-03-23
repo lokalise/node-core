@@ -6,10 +6,10 @@ Splits `array` into an array of arrays, each sub-array being no larger than the 
 preserving original order of the elements.
 
 ```typescript
-async function callChunked<T>(
+async function callChunked<Item>(
   chunkSize: number,
-  array: readonly T[],
-  processFn: (arrayChunk: T[]) => Promise<unknown>,
+  array: readonly Item[],
+  processFn: (arrayChunk: Item[]) => Promise<unknown>,
 ): Promise<void>
 ```
 
