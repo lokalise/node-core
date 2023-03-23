@@ -9,7 +9,7 @@ preserving original order of the elements.
 async function callChunked<T>(
   chunkSize: number,
   array: readonly T[],
-  processFn: (arrayChunk: T[]) => Promise<void>,
+  processFn: (arrayChunk: T[]) => Promise<unknown>,
 ): Promise<void>
 ```
 
