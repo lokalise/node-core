@@ -169,6 +169,9 @@ describe('ConfigScope', () => {
       expect(resolvedValue).toBe('def')
     })
 
+    // This case can happen when variable is in .env file, but is left empty.
+    // Just like this:
+    // VAR1=
     it('uses default value if set to empty string', () => {
       process.env.value = ''
       const configScope = new ConfigScope()
@@ -205,8 +208,8 @@ describe('ConfigScope', () => {
       expect(resolvedValue).toBe('undefined')
     })
 
-    // Side effect of the current implementation that maybe should be fixated
-    it('returns undefined (string) if set to undefined (object)', () => {
+    // Side effect of how node.js handles assigning undefined to process.env
+    it('returns undefined (string) if set to undefined (undefined)', () => {
       process.env.value = undefined
       const configScope = new ConfigScope()
 

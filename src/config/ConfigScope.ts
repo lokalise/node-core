@@ -71,7 +71,8 @@ export class ConfigScope {
   }
 
   getOptional(param: string, defaultValue: string): string {
-    return this.env[param] ?? defaultValue
+    // Using the `||` operator instead of `??`, since '' is not a valid value, and 0 (number) is not expected here
+    return this.env[param] || defaultValue
   }
 
   getOptionalInteger(param: string, defaultValue: number): number {
