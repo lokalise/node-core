@@ -168,6 +168,64 @@ describe('ConfigScope', () => {
 
       expect(resolvedValue).toBe('def')
     })
+
+    // This case can happen when variable is in .env file, but is left empty.
+    // Just like this:
+    // VAR1=
+    it('uses default value if set to empty string', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('def')
+    })
+
+    it('returns false if set to false', () => {
+      process.env.value = 'false'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('false')
+    })
+
+    it('returns 0 if set to 0', () => {
+      process.env.value = '0'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('0')
+    })
+
+    it('returns undefined if set to undefined', () => {
+      process.env.value = 'undefined'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('undefined')
+    })
+
+    // Side effect of how node.js handles assigning undefined to process.env
+    it('returns undefined (string) if set to undefined (undefined)', () => {
+      process.env.value = undefined
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('undefined')
+    })
+
+    it('returns null if set to null', () => {
+      process.env.value = 'null'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptional('value', 'def')
+
+      expect(resolvedValue).toBe('null')
+    })
   })
 
   describe('getOptionalInteger', () => {
