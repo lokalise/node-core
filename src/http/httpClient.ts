@@ -16,7 +16,12 @@ export type HttpRequestContext = {
   reqId: string
 }
 
-export type RequestOptions = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ResponseSchema<Output = any> = {
+  parse(data: unknown): Output
+}
+
+export type RequestOptions<T> = {
   headers?: RecordObject
   query?: RecordObject
   timeout: number | undefined
@@ -26,12 +31,15 @@ export type RequestOptions = {
   disableKeepAlive?: boolean
   retryConfig?: Omit<RetryConfig, 'safeParseJson'>
   clientOptions?: Client.Options
+  responseSchema?: ResponseSchema<T>
+  validateResponse: boolean
 }
 
 const DEFAULT_OPTIONS = {
+  validateResponse: false,
   throwOnError: true,
   timeout: 30000,
-} satisfies RequestOptions
+} satisfies RequestOptions<unknown>
 
 const defaultClientOptions: Partial<Client.Options> = {
   keepAliveMaxTimeout: 300_000,
@@ -47,7 +55,7 @@ export type Response<T> = {
 export async function sendGet<T>(
   client: Client,
   path: string,
-  options: Partial<RequestOptions> = {},
+  options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
     client,
@@ -67,13 +75,18 @@ export async function sendGet<T>(
     resolveRetryConfig(options),
   )
 
-  return resolveResult(result, options.throwOnError ?? DEFAULT_OPTIONS.throwOnError)
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
 }
 
 export async function sendDelete<T>(
   client: Client,
   path: string,
-  options: Partial<RequestOptions> = {},
+  options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
     client,
@@ -93,14 +106,19 @@ export async function sendDelete<T>(
     resolveRetryConfig(options),
   )
 
-  return resolveResult(result, options.throwOnError ?? DEFAULT_OPTIONS.throwOnError)
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
 }
 
 export async function sendPost<T>(
   client: Client,
   path: string,
   body: RecordObject | undefined,
-  options: Partial<RequestOptions> = {},
+  options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
     client,
@@ -121,14 +139,19 @@ export async function sendPost<T>(
     resolveRetryConfig(options),
   )
 
-  return resolveResult(result, options.throwOnError ?? DEFAULT_OPTIONS.throwOnError)
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
 }
 
 export async function sendPut<T>(
   client: Client,
   path: string,
   body: RecordObject | undefined,
-  options: Partial<RequestOptions> = {},
+  options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
     client,
@@ -149,14 +172,19 @@ export async function sendPut<T>(
     resolveRetryConfig(options),
   )
 
-  return resolveResult(result, options.throwOnError ?? DEFAULT_OPTIONS.throwOnError)
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
 }
 
 export async function sendPutBinary<T>(
   client: Client,
   path: string,
   body: Buffer | Uint8Array | Readable | null | FormData,
-  options: Partial<RequestOptions> = {},
+  options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
     client,
@@ -177,14 +205,19 @@ export async function sendPutBinary<T>(
     resolveRetryConfig(options),
   )
 
-  return resolveResult(result, options.throwOnError ?? DEFAULT_OPTIONS.throwOnError)
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
 }
 
 export async function sendPatch<T>(
   client: Client,
   path: string,
   body: RecordObject | undefined,
-  options: Partial<RequestOptions> = {},
+  options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
     client,
@@ -205,10 +238,15 @@ export async function sendPatch<T>(
     resolveRetryConfig(options),
   )
 
-  return resolveResult(result, options.throwOnError ?? DEFAULT_OPTIONS.throwOnError)
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
 }
 
-function resolveRetryConfig(options: Partial<RequestOptions>): RetryConfig {
+function resolveRetryConfig(options: Partial<RequestOptions<unknown>>): RetryConfig {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return options.retryConfig
     ? {
@@ -232,6 +270,8 @@ export function buildClient(baseUrl: string, clientOptions?: Client.Options) {
 function resolveResult<T>(
   requestResult: Either<RequestResult<unknown>, RequestResult<T>>,
   throwOnError: boolean,
+  validateResponse: boolean,
+  validationSchema?: ResponseSchema,
 ): DefiniteEither<RequestResult<unknown>, RequestResult<T>> {
   if (requestResult.error && throwOnError) {
     throw new InternalError({
@@ -242,6 +282,10 @@ function resolveResult<T>(
       errorCode: 'REQUEST_ERROR',
     })
   }
+  if (requestResult.result && validateResponse && validationSchema) {
+    requestResult.result.body = validationSchema.parse(requestResult.result.body)
+  }
+
   return requestResult as DefiniteEither<RequestResult<unknown>, RequestResult<T>>
 }
 

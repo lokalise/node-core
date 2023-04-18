@@ -8,7 +8,12 @@ export {
   httpClient,
   buildClient,
 } from './src/http/httpClient'
-export type { RequestOptions, Response, HttpRequestContext } from './src/http/httpClient'
+export type {
+  RequestOptions,
+  Response,
+  HttpRequestContext,
+  ResponseSchema,
+} from './src/http/httpClient'
 
 export { PublicNonRecoverableError } from './src/errors/PublicNonRecoverableError'
 export type { PublicNonRecoverableErrorParams } from './src/errors/PublicNonRecoverableError'
