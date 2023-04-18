@@ -36,7 +36,7 @@ export type RequestOptions<T> = {
 }
 
 const DEFAULT_OPTIONS = {
-  validateResponse: false,
+  validateResponse: true,
   throwOnError: true,
   timeout: 30000,
 } satisfies RequestOptions<unknown>
