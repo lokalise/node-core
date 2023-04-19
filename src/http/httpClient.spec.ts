@@ -1,5 +1,6 @@
 import type { Interceptable } from 'undici'
 import { Client, MockAgent, setGlobalDispatcher } from 'undici'
+import { z } from 'zod'
 
 import {
   buildClient,
@@ -41,6 +42,90 @@ describe('httpClient', () => {
   })
 
   describe('GET', () => {
+    it('validates response structure with provided schema, throws an error', async () => {
+      const schema = z.object({
+        id: z.string(),
+      })
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      await expect(
+        sendGet(client, '/products/1', {
+          responseSchema: schema,
+          validateResponse: true,
+        }),
+      ).rejects.toThrow(/Expected string, received number/)
+    })
+
+    it('validates response structure with provided schema, passes validation', async () => {
+      const schema = z.object({
+        category: z.string(),
+        description: z.string(),
+        id: z.number(),
+        image: z.string(),
+        price: z.number(),
+        rating: z.object({
+          count: z.number(),
+          rate: z.number(),
+        }),
+        title: z.string(),
+      })
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      const result = await sendGet(client, '/products/1', {
+        responseSchema: schema,
+        validateResponse: true,
+      })
+
+      expect(result.result.body).toEqual(mockProduct1)
+    })
+
+    it('validates response structure with provided schema, skips validation', async () => {
+      const schema = z.object({
+        id: z.string(),
+      })
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      const result = await sendGet(client, '/products/1', {
+        responseSchema: schema,
+        validateResponse: false,
+      })
+
+      expect(result.result.body).toEqual(mockProduct1)
+    })
+
+    it('validates response structure with provided schema, no validation specified', async () => {
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      const result = await sendGet(client, '/products/1', {
+        validateResponse: true,
+      })
+
+      expect(result.result.body).toEqual(mockProduct1)
+    })
+
     it('returns original payload when breaking during parsing', async () => {
       expect.assertions(1)
       client
@@ -274,6 +359,90 @@ describe('httpClient', () => {
   })
 
   describe('POST', () => {
+    it('validates response structure with provided schema, throws an error', async () => {
+      const schema = z.object({
+        id: z.string(),
+      })
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'POST',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      await expect(
+        sendPost(
+          client,
+          '/products/1',
+          {},
+          {
+            responseSchema: schema,
+            validateResponse: true,
+          },
+        ),
+      ).rejects.toThrow(/Expected string, received number/)
+    })
+
+    it('validates response structure with provided schema, passes validation', async () => {
+      const schema = z.object({
+        category: z.string(),
+        description: z.string(),
+        id: z.number(),
+        image: z.string(),
+        price: z.number(),
+        rating: z.object({
+          count: z.number(),
+          rate: z.number(),
+        }),
+        title: z.string(),
+      })
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'POST',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      const result = await sendPost(
+        client,
+        '/products/1',
+        {},
+        {
+          responseSchema: schema,
+          validateResponse: true,
+        },
+      )
+
+      expect(result.result.body).toEqual(mockProduct1)
+    })
+
+    it('validates response structure with provided schema, skips validation', async () => {
+      const schema = z.object({
+        id: z.string(),
+      })
+
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'POST',
+        })
+        .reply(200, mockProduct1, { headers: JSON_HEADERS })
+
+      const result = await sendPost(
+        client,
+        '/products/1',
+        {},
+        {
+          responseSchema: schema,
+          validateResponse: false,
+        },
+      )
+
+      expect(result.result.body).toEqual(mockProduct1)
+    })
+
     it('POST without queryParams', async () => {
       client
         .intercept({
