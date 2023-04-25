@@ -13,8 +13,10 @@ export class ResponseStatusError extends InternalError {
     super({
       message: `Response status code ${requestResult.statusCode}`,
       details: {
-        statusCode: requestResult.statusCode,
-        body: requestResult.body,
+        response: {
+          statusCode: requestResult.statusCode,
+          body: requestResult.body,
+        },
       },
       errorCode: 'REQUEST_ERROR',
     })
