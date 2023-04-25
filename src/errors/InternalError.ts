@@ -1,16 +1,16 @@
 export type ErrorDetails = Record<string, unknown>
 
-export type InternalErrorParams = {
+export type InternalErrorParams<T = ErrorDetails> = {
   message: string
   errorCode: string
-  details?: ErrorDetails
+  details?: T
 }
 
-export class InternalError extends Error {
-  public readonly details?: ErrorDetails
+export class InternalError<T = ErrorDetails> extends Error {
+  public readonly details?: T
   public readonly errorCode: string
 
-  constructor(params: InternalErrorParams) {
+  constructor(params: InternalErrorParams<T>) {
     super(params.message)
     this.name = 'InternalError'
     this.details = params.details
