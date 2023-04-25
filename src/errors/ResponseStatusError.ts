@@ -2,14 +2,12 @@ import type { RequestResult } from 'undici-retry'
 
 import { InternalError } from './InternalError'
 
-export type ResponseStatusErrorDetails = {
-  response: RequestResult<unknown>
-}
-
 export class ResponseStatusError extends InternalError {
-  public readonly response: RequestResult<unknown>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public readonly response: RequestResult<any>
 
-  constructor(requestResult: RequestResult<unknown>) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(requestResult: RequestResult<any>) {
     super({
       message: `Response status code ${requestResult.statusCode}`,
       details: {
@@ -21,5 +19,6 @@ export class ResponseStatusError extends InternalError {
       errorCode: 'REQUEST_ERROR',
     })
     this.response = requestResult
+    this.name = 'ResponseStatusError'
   }
 }
