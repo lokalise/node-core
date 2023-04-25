@@ -6,14 +6,20 @@ export type ResponseStatusErrorDetails = {
   response: RequestResult<unknown>
 }
 
-export class ResponseStatusError extends InternalError<ResponseStatusErrorDetails> {
+export class ResponseStatusError extends InternalError {
+  public readonly response: RequestResult<unknown>
+
   constructor(requestResult: RequestResult<unknown>) {
     super({
       message: `Response status code ${requestResult.statusCode}`,
       details: {
-        response: requestResult,
+        response: {
+          statusCode: requestResult.statusCode,
+          body: requestResult.body,
+        },
       },
       errorCode: 'REQUEST_ERROR',
     })
+    this.response = requestResult
   }
 }

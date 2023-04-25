@@ -254,6 +254,10 @@ describe('httpClient', () => {
         }),
       ).rejects.toMatchObject({
         message: 'Response status code 400',
+        response: {
+          body: 'Invalid request',
+          statusCode: 400,
+        },
         details: {
           response: {
             body: 'Invalid request',
