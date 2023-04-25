@@ -19,6 +19,7 @@ export { PublicNonRecoverableError } from './src/errors/PublicNonRecoverableErro
 export type { PublicNonRecoverableErrorParams } from './src/errors/PublicNonRecoverableError'
 
 export { InternalError } from './src/errors/InternalError'
+export { ResponseStatusError } from './src/errors/ResponseStatusError'
 export type { ErrorDetails, InternalErrorParams } from './src/errors/InternalError'
 
 export { ConfigScope } from './src/config/ConfigScope'
