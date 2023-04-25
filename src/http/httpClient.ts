@@ -5,7 +5,7 @@ import type { FormData } from 'undici'
 import type { RequestResult, RetryConfig } from 'undici-retry'
 import { DEFAULT_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
 
-import { InternalError } from '../errors/InternalError'
+import { ResponseStatusError } from '../errors/ResponseStatusError'
 import type { DefiniteEither, Either } from '../errors/either'
 import { copyWithoutUndefined } from '../utils/objectUtils'
 
@@ -274,13 +274,7 @@ function resolveResult<T>(
   validationSchema?: ResponseSchema,
 ): DefiniteEither<RequestResult<unknown>, RequestResult<T>> {
   if (requestResult.error && throwOnError) {
-    throw new InternalError({
-      message: `Response status code ${requestResult.error.statusCode}`,
-      details: {
-        response: requestResult.error,
-      },
-      errorCode: 'REQUEST_ERROR',
-    })
+    throw new ResponseStatusError(requestResult.error)
   }
   if (requestResult.result && validateResponse && validationSchema) {
     requestResult.result.body = validationSchema.parse(requestResult.result.body)
