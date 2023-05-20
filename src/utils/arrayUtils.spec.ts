@@ -1,3 +1,5 @@
+import { vitest } from 'vitest'
+
 import { callChunked, chunk } from './arrayUtils'
 
 describe('chunk', () => {
@@ -35,7 +37,7 @@ describe('chunk', () => {
   })
   it('should call function with chunked array', async () => {
     const array = [1, 2, 3, 4, 5]
-    const myMock = jest.fn()
+    const myMock = vitest.fn()
     expect.assertions(3)
     myMock.mockReturnValueOnce([1, 2]).mockReturnValueOnce([3, 4]).mockReturnValue([5])
     await callChunked(2, array, async (arrayChunk) => {

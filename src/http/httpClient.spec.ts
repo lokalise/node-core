@@ -2,6 +2,7 @@ import type { Interceptable } from 'undici'
 import { Client, MockAgent, setGlobalDispatcher } from 'undici'
 import { z } from 'zod'
 
+import type { HttpRequestContext } from './httpClient'
 import {
   buildClient,
   sendDelete,
@@ -23,6 +24,9 @@ const TEXT_HEADERS = {
 }
 
 const baseUrl = 'https://fakestoreapi.com'
+const reqContext: HttpRequestContext = {
+  reqId: 'dummyId',
+}
 
 describe('httpClient', () => {
   let mockAgent: MockAgent
@@ -57,6 +61,7 @@ describe('httpClient', () => {
       await expect(
         sendGet(client, '/products/1', {
           responseSchema: schema,
+          reqContext,
           validateResponse: true,
         }),
       ).rejects.toThrow(/Expected string, received number/)
@@ -139,7 +144,7 @@ describe('httpClient', () => {
         await sendGet(client, '/products/1', { safeParseJson: true })
       } catch (err) {
         // This is needed, because built-in error assertions do not assert nested fields
-        // eslint-disable-next-line jest/no-conditional-expect
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(err).toMatchObject({
           message: 'Error while parsing HTTP JSON response',
           errorCode: 'INVALID_HTTP_RESPONSE_JSON',
@@ -311,7 +316,9 @@ describe('httpClient', () => {
         })
         .reply(204, undefined, { headers: TEXT_HEADERS })
 
-      const result = await sendDelete(client, '/products/1')
+      const result = await sendDelete(client, '/products/1', {
+        reqContext,
+      })
 
       expect(result.result.statusCode).toBe(204)
       expect(result.result.body).toBe('')
@@ -416,6 +423,7 @@ describe('httpClient', () => {
         {
           responseSchema: schema,
           validateResponse: true,
+          reqContext,
         },
       )
 
@@ -539,7 +547,9 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPut(client, '/products/1', mockProduct1)
+      const result = await sendPut(client, '/products/1', mockProduct1, {
+        reqContext,
+      })
 
       expect(result.result.body).toEqual({ id: 21 })
     })
@@ -623,7 +633,9 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPutBinary(client, '/products/1', Buffer.from('text'))
+      const result = await sendPutBinary(client, '/products/1', Buffer.from('text'), {
+        reqContext,
+      })
 
       expect(result.result.body).toEqual({ id: 21 })
     })
@@ -727,6 +739,7 @@ describe('httpClient', () => {
 
       const result = await sendPatch(client, '/products/1', mockProduct1, {
         query,
+        reqContext,
       })
 
       expect(result.result.body).toEqual({ id: 21 })
