@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loggerConfigResolver resolveLoggerConfiguration resolves dev configuration 1`] = `
+{
+  "formatters": {
+    "level": [Function],
+  },
+  "level": "debug",
+  "transport": {
+    "options": {
+      "colorize": true,
+      "ignore": "hostname,pid",
+      "translateTime": "SYS:standard",
+    },
+    "target": "pino-pretty",
+  },
+}
+`;
+
+exports[`loggerConfigResolver resolveLoggerConfiguration resolves prod configuration 1`] = `
+{
+  "formatters": {
+    "level": [Function],
+  },
+  "level": "warn",
+}
+`;
