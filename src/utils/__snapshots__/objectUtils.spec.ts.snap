@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`groupBy Correctly groups by number values 1`] = `
+exports[`groupBy > Correctly groups by number values 1`] = `
 {
   "10": [
     {
@@ -27,7 +27,7 @@ exports[`groupBy Correctly groups by number values 1`] = `
 }
 `;
 
-exports[`groupBy Correctly groups by string values 1`] = `
+exports[`groupBy > Correctly groups by string values 1`] = `
 {
   "a": [
     {
@@ -54,7 +54,7 @@ exports[`groupBy Correctly groups by string values 1`] = `
 }
 `;
 
-exports[`groupBy Correctly handles undefined 1`] = `
+exports[`groupBy > Correctly handles undefined 1`] = `
 {
   "45": [
     {
@@ -77,7 +77,7 @@ exports[`groupBy Correctly handles undefined 1`] = `
 }
 `;
 
-exports[`objectUtils copyWithoutUndefined Does nothing when there are no undefined fields 1`] = `
+exports[`objectUtils > copyWithoutUndefined > Does nothing when there are no undefined fields 1`] = `
 {
   "a": "a",
   "b": "",
@@ -87,7 +87,7 @@ exports[`objectUtils copyWithoutUndefined Does nothing when there are no undefin
 }
 `;
 
-exports[`objectUtils copyWithoutUndefined Removes undefined fields 1`] = `
+exports[`objectUtils > copyWithoutUndefined > Removes undefined fields 1`] = `
 {
   "b": "a",
   "c": "",
@@ -99,20 +99,20 @@ exports[`objectUtils copyWithoutUndefined Removes undefined fields 1`] = `
 }
 `;
 
-exports[`pick Ignores missing fields 1`] = `
+exports[`pick > Ignores missing fields 1`] = `
 {
   "a": "a",
 }
 `;
 
-exports[`pick Includes undefined fields 1`] = `
+exports[`pick > Includes undefined fields 1`] = `
 {
   "a": "a",
   "b": undefined,
 }
 `;
 
-exports[`pick Picks specified fields 1`] = `
+exports[`pick > Picks specified fields 1`] = `
 {
   "a": "a",
   "c": " ",
@@ -120,13 +120,13 @@ exports[`pick Picks specified fields 1`] = `
 }
 `;
 
-exports[`pickWithoutUndefined Ignores missing fields 1`] = `
+exports[`pickWithoutUndefined > Ignores missing fields 1`] = `
 {
   "a": "a",
 }
 `;
 
-exports[`pickWithoutUndefined Picks specified fields 1`] = `
+exports[`pickWithoutUndefined > Picks specified fields 1`] = `
 {
   "a": "a",
   "c": " ",
@@ -134,7 +134,7 @@ exports[`pickWithoutUndefined Picks specified fields 1`] = `
 }
 `;
 
-exports[`pickWithoutUndefined Skips undefined fields 1`] = `
+exports[`pickWithoutUndefined > Skips undefined fields 1`] = `
 {
   "a": "a",
 }
