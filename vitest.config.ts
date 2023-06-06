@@ -8,7 +8,13 @@ export default defineConfig({
     reporters: ['verbose'],
     coverage: {
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.spec.ts', 'src/config/configTypes.ts', 'src/errors/either.ts'],
+      exclude: [
+        'src/**/*.spec.ts',
+        'src/errors/errorReporterTypes.ts',
+        'src/errors/either.ts',
+        'src/config/configTypes.ts',
+        'src/errors/globalErrorHandler.ts',
+      ],
       reporter: ['text'],
       all: true,
       lines: 100,

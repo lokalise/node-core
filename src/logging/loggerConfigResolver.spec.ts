@@ -1,4 +1,5 @@
 import { pino } from 'pino'
+import { expect } from 'vitest'
 
 import { resolveLoggerConfiguration } from './loggerConfigResolver'
 
@@ -30,7 +31,9 @@ describe('loggerConfigResolver', () => {
 
       const logger = pino(loggerConfig)
 
-      logger.warn('test')
+      expect(() => {
+        logger.warn('test')
+      }).not.toThrow()
     })
   })
 })

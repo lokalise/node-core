@@ -24,5 +24,13 @@ describe('globalErrorHandler', () => {
 
       expect(resolvedError).toBe('text')
     })
+
+    it('converts something unexpected to fixed string', () => {
+      const error = () => {}
+
+      const resolvedError = resolveGlobalErrorLogObject(error)
+
+      expect(resolvedError).toBe('Unknown global error')
+    })
   })
 })

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`loggerConfigResolver resolveLoggerConfiguration resolves dev configuration 1`] = `
+exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves dev configuration 1`] = `
 {
   "formatters": {
     "level": [Function],
@@ -17,7 +17,7 @@ exports[`loggerConfigResolver resolveLoggerConfiguration resolves dev configurat
 }
 `;
 
-exports[`loggerConfigResolver resolveLoggerConfiguration resolves prod configuration 1`] = `
+exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves prod configuration 1`] = `
 {
   "formatters": {
     "level": [Function],
