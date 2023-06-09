@@ -1,7 +1,8 @@
 import type { InternalError } from '../errors/InternalError'
 
+// Error structure commonly used in libraries, e. g. fastify
 export type StandardizedError = {
-  errorCode: string
+  code: string
   message: string
 }
 
@@ -14,7 +15,7 @@ export function isObject(maybeObject: unknown): maybeObject is Record<PropertyKe
 }
 
 export function isStandardizedError(error: unknown): error is StandardizedError {
-  return isObject(error) && typeof error.errorCode === 'string' && typeof error.message === 'string'
+  return isObject(error) && typeof error.code === 'string' && typeof error.message === 'string'
 }
 
 export function isInternalError(error: unknown): error is InternalError {
