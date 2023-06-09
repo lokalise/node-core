@@ -1,5 +1,6 @@
 import type { InternalError } from '../errors/InternalError'
 
+// Error structure commonly used in libraries, e. g. fastify
 export type StandardizedError = {
   code: string
   message: string

@@ -92,10 +92,10 @@ describe('typeUtils', () => {
 
   describe('isStandardizedError', () => {
     it('true for standardized error', () => {
-      const error = new InternalError({
+      const error = {
         message: 'dummy',
-        errorCode: 'code',
-      })
+        code: 'code',
+      }
 
       expect(isStandardizedError(error)).toBe(true)
     })
