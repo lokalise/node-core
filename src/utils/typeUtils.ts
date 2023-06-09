@@ -1,7 +1,7 @@
 import type { InternalError } from '../errors/InternalError'
 
 export type StandardizedError = {
-  code: string
+  errorCode: string
   message: string
 }
 
