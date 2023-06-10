@@ -86,10 +86,10 @@ export class ConfigScope {
     )
   }
 
-  getOptionalNullableInteger(
+  getOptionalNullableInteger<T extends number | null | undefined>(
     param: string,
-    defaultValue: number | null | undefined,
-  ): number | null | undefined {
+    defaultValue: T,
+  ): T | number {
     const rawValue = this.env[param]
     if (!rawValue) {
       return defaultValue
