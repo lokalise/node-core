@@ -10,6 +10,8 @@ export type RedisConfig = {
   port: number
   username?: string
   password?: string
+  commandTimeout?: boolean
+  connectTimeout?: boolean
   useTls: boolean
 }
 
