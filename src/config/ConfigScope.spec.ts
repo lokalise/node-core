@@ -248,6 +248,44 @@ describe('ConfigScope', () => {
     })
   })
 
+  describe('getOptionalNullableInteger', () => {
+    it('accepts value', () => {
+      process.env.value = '3'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableInteger('value', 1)
+
+      expect(resolvedValue).toBe(3)
+    })
+
+    it('uses default value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableInteger('value', 1)
+
+      expect(resolvedValue).toBe(1)
+    })
+
+    it('uses default undefined value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableInteger('value', undefined)
+
+      expect(resolvedValue).toBeUndefined()
+    })
+
+    it('uses default null value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableInteger('value', null)
+
+      expect(resolvedValue).toBeNull()
+    })
+  })
+
   describe('getOptionalValidated', () => {
     const validator: EnvValueValidator<string | null | undefined> = (val) => {
       return (val && val.length < 5) || false
