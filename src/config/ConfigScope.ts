@@ -86,6 +86,20 @@ export class ConfigScope {
     )
   }
 
+  getOptionalNullableInteger(
+    param: string,
+    defaultValue: number | null | undefined,
+  ): number | null | undefined {
+    const rawValue = this.env[param]
+    if (!rawValue) {
+      return defaultValue
+    }
+    return validateNumber(
+      Number.parseInt(rawValue),
+      `Configuration parameter ${param}\` must be a number, but was ${rawValue}`,
+    )
+  }
+
   getOptionalValidated(
     param: string,
     defaultValue: string,
