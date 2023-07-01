@@ -43,7 +43,7 @@ export class ConfigScope {
     return result
   }
 
-  getMandatoryOneOf<T>(param: string, supportedValues: T[]): T {
+  getMandatoryOneOf<const T>(param: string, supportedValues: T[]): T {
     const result = this.getMandatory(param)
     return validateOneOf(
       result,
@@ -154,7 +154,7 @@ export class ConfigScope {
   }
 }
 
-export function validateOneOf<T>(
+export function validateOneOf<const T>(
   validatedEntity: unknown,
   expectedOneOfEntities: T[],
   errorText?: string,
