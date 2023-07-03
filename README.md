@@ -45,7 +45,7 @@ All _send_ methods accept a type parameter and the following arguments:
     * `timeout`, the timeout after which a request will time out, in milliseconds;
     * `throwOnError`;`
     * `reqContext`;
-    * `safeParseJson`;
+    * `safeParseJson`, used when the response content-type is `application/json`. If `true`, the response body will be parsed as JSON and a `ResponseError` will be thrown in case of syntax errors. If `false`, errors are not handled;
     * `disableKeepAlive`;`
     * `retryConfig`, defined by:
         * `maxAttempts`, the maximum number of times a request should be retried;
