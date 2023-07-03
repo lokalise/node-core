@@ -42,7 +42,7 @@ All _send_ methods accept a type parameter and the following arguments:
 * `options` – (optional). Possible values are:
     * `headers`;
     * `query`;
-    * `timeout`;
+    * `timeout`, the timeout after which a request will time out, in milliseconds;
     * `throwOnError`;`
     * `reqContext`;
     * `safeParseJson`;
