@@ -103,7 +103,7 @@ Once the class is instantiated, you can leverage the following `ConfigScope` met
     * `param`, the configuration parameter name;
 * `getMandatoryInteger()`, returns the value of a mandatory configuration parameter and validates that it is a number. If the value is missing or is not a number, an `InternalError` is thrown. Parameters are:
     * `param`, the configuration parameter name;
-* `getMandatoryOneOf()`, returns the value a mandatory configuration parameter and validates that it is one of the supported values. If the value is missing or is not supported, an `InternalError` is thrown. Parameters are:
+* `getMandatoryOneOf()`, returns the value a mandatory configuration parameter and validates that it is one of the supported values. If the value is missing or is not supported, an `InternalError` is thrown. The method also serves as a type guard, narrowing the type of the passed value down to one of the supported options. Parameters are:
     * `param`, the configuration parameter name;
     * `supportedValues`;
 * `getMandatoryValidatedInteger()`, similar to `getMandatoryInteger()`, but also takes a `validator` in input and will throw an `InternalError` if the number is not valid. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
