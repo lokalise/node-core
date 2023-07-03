@@ -158,7 +158,7 @@ Ad-hoc validators and transformers can be built leveraging the `EnvValueValidato
 
 The library provides classes and methods for error handling.
 
-### Gloabl Error Handler
+### Global Error Handler
 
 Public methods to leverage a global error handler are provided to be used when the process is run outside of the context of the request (e. g. in a queue where no one would catch an error if thrown):
 * `resolveGlobalErrorLogObject()`, which accepts `err` and optionally `correlationID` as parameters and converts the plain error into a serializable object. If the error is not a built-in `Error` type and doesn't have any message, a fixed string is returned instead;
