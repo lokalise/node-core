@@ -41,7 +41,7 @@ All _send_ methods accept a type parameter and the following arguments:
 * `path`;
 * `options` – (optional). Possible values are:
     * `headers`;
-    * `query`;
+    * `query`, query string params to be embedded in the request URL;
     * `timeout`, the timeout after which a request will time out, in milliseconds;
     * `throwOnError`;`
     * `reqContext`;
