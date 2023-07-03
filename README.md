@@ -53,7 +53,7 @@ All _send_ methods accept a type parameter and the following arguments:
         * `statusCodesToRetry`, the status codes that trigger a retry;
         * `retryOnTimeout`;
     * `clientOptions`;
-    * `responseSchema`;
+    * `responseSchema`, used both for inferring the response type of the call, and also (if `validateResponse` is `true`) for validating the response structure;
     * `validateResponse`;
     
     The following options are applied by default:
