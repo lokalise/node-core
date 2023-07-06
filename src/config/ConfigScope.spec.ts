@@ -228,6 +228,44 @@ describe('ConfigScope', () => {
     })
   })
 
+  describe('getOptionalOneOf', () => {
+    it('returns env value if it exists on the list', () => {
+      process.env.value = 'g'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalOneOf('value', 'default', ['a', 'g', 'b'])
+
+      expect(resolvedValue).toBe('g')
+    })
+
+    it('returns default if env value not exists and the default one exists on the list', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalOneOf('value', 'g', ['a', 'g', 'b'])
+
+      expect(resolvedValue).toBe('g')
+    })
+
+    it('throws an error on env value item not from list', () => {
+      process.env.value = 'c'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getOptionalOneOf('value', 'default', ['a', 'g', 'b'])).toThrow(
+        /Unsupported value/,
+      )
+    })
+
+    it('throws an error if env value not exists and the default one not exists on the list', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getOptionalOneOf('value', 'default', ['a'])).toThrow(
+        /Unsupported value/,
+      )
+    })
+  })
+
   describe('getOptionalInteger', () => {
     it('accepts value', () => {
       process.env.value = '3'

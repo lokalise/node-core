@@ -100,6 +100,15 @@ export class ConfigScope {
     )
   }
 
+  getOptionalOneOf(param: string, defaultValue: string, supportedValues: string[]): string {
+    const result = this.getOptional(param, defaultValue)
+    return validateOneOf(
+      result,
+      supportedValues,
+      `Unsupported ${param}: ${result}. Supported values: ${supportedValues.toString()}`,
+    )
+  }
+
   getOptionalValidated(
     param: string,
     defaultValue: string,
