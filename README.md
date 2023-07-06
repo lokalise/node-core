@@ -133,6 +133,10 @@ Once the class is instantiated, you can leverage the following `ConfigScope` met
 * `getOptionalBoolean()`, returns the value of an optional configuration parameter and validates that it is a boolean. It the value is missing, it is assigned the `defaultValue`. If it is not a boolean, an `InternalError` is thrown. Parameters are:
     * `param`, the configuration parameter name;
     * `defaultValue`.
+* `getOptionalOneOf()`, returns the value of an optional configuration parameter, if the value is missing, it falls back to the specified default value, and validates that it is one of the supported values. If the value is not supported, an `InternalError` is thrown. Parameters are:
+    * `param`, the configuration parameter name;
+    * `defaultValue`
+    * `supportedValues`;
 
 ### Environment Configuration Parameter
 

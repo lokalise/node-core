@@ -100,6 +100,19 @@ export class ConfigScope {
     )
   }
 
+  getOptionalOneOf<const T extends string>(
+    param: string,
+    defaultValue: T,
+    supportedValues: T[],
+  ): T {
+    const result = this.getOptional(param, defaultValue)
+    return validateOneOf(
+      result,
+      supportedValues,
+      `Unsupported ${param}: ${result}. Supported values: ${supportedValues.toString()}`,
+    )
+  }
+
   getOptionalValidated(
     param: string,
     defaultValue: string,
