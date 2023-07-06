@@ -100,7 +100,7 @@ export class ConfigScope {
     )
   }
 
-  getOptionalOneOf(param: string, defaultValue: string, supportedValues: string[]): string {
+  getOptionalOneOf<T extends string>(param: string, defaultValue: T, supportedValues: T[]): T {
     const result = this.getOptional(param, defaultValue)
     return validateOneOf(
       result,
