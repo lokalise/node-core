@@ -12,6 +12,7 @@ export default defineConfig({
         'src/**/*.spec.ts',
         'src/errors/errorReporterTypes.ts',
         'src/errors/either.ts',
+        'src/common/may-omit.ts',
         'src/config/configTypes.ts',
         'src/errors/globalErrorHandler.ts',
       ],
