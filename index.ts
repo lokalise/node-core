@@ -62,3 +62,5 @@ export {
   globalLogger,
   resolveGlobalErrorLogObject,
 } from './src/errors/globalErrorHandler'
+
+export type { MayOmit } from './src/common/may-omit'
