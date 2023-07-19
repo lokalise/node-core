@@ -618,7 +618,11 @@ describe('httpClient', () => {
         })
         .reply(200, { id: 21 }, { headers: JSON_HEADERS })
 
-      const result = await sendPostBinary(client, '/products', mockProduct1)
+      const result = await sendPostBinary(
+        client,
+        '/products',
+        Buffer.from(JSON.stringify(mockProduct1)),
+      )
 
       expect(result.result.body).toEqual({ id: 21 })
     })
