@@ -147,6 +147,39 @@ export async function sendPost<T>(
   )
 }
 
+export async function sendPostBinary<T>(
+  client: Client,
+  path: string,
+  body: Buffer | Uint8Array | Readable | FormData | null,
+  options: Partial<RequestOptions<T>> = {},
+): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
+  const result = await sendWithRetry<T>(
+    client,
+    {
+      ...DEFAULT_OPTIONS,
+      path: path,
+      method: 'POST',
+      body,
+      query: options.query,
+      headers: copyWithoutUndefined({
+        'x-request-id': options.reqContext?.reqId,
+        ...options.headers,
+      }),
+      reset: options.disableKeepAlive ?? false,
+      bodyTimeout: options.timeout,
+      throwOnError: false,
+    },
+    resolveRetryConfig(options),
+  )
+
+  return resolveResult(
+    result,
+    options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
+    options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
+    options.responseSchema,
+  )
+}
+
 export async function sendPut<T>(
   client: Client,
   path: string,
@@ -183,7 +216,7 @@ export async function sendPut<T>(
 export async function sendPutBinary<T>(
   client: Client,
   path: string,
-  body: Buffer | Uint8Array | Readable | null | FormData,
+  body: Buffer | Uint8Array | Readable | FormData | null,
   options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
