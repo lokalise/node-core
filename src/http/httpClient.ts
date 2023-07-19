@@ -150,7 +150,7 @@ export async function sendPost<T>(
 export async function sendPostBinary<T>(
   client: Client,
   path: string,
-  body: Buffer | Uint8Array | Readable | null | FormData,
+  body: Buffer | Uint8Array | Readable | FormData | null,
   options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
@@ -216,7 +216,7 @@ export async function sendPut<T>(
 export async function sendPutBinary<T>(
   client: Client,
   path: string,
-  body: Buffer | Uint8Array | Readable | null | FormData,
+  body: Buffer | Uint8Array | Readable | FormData | null,
   options: Partial<RequestOptions<T>> = {},
 ): Promise<DefiniteEither<RequestResult<unknown>, RequestResult<T>>> {
   const result = await sendWithRetry<T>(
