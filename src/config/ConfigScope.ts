@@ -128,6 +128,23 @@ export class ConfigScope {
     return value
   }
 
+  getOptionalValidatedInteger(
+    param: string,
+    defaultValue: number,
+    validator: EnvValueValidator<number>,
+  ): number {
+    const value = this.getOptionalInteger(param, defaultValue)
+
+    if (!validator(value)) {
+      throw new InternalError({
+        message: `Value ${value} is invalid for parameter ${param}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+
+    return value
+  }
+
   getOptionalTransformed(
     param: string,
     defaultValue: string,

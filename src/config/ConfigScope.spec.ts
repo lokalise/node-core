@@ -284,6 +284,56 @@ describe('ConfigScope', () => {
 
       expect(resolvedValue).toBe(1)
     })
+
+    it('uses default value on empty string', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalInteger('value', 3)
+      expect(resolvedValue).toBe(3)
+    })
+  })
+
+  describe('getOptionalValidatedInteger', () => {
+    const validator: EnvValueValidator<number> = (val) => {
+      return val > 2
+    }
+
+    it('accepts value', () => {
+      process.env.value = '3'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalValidatedInteger('value', 4, validator)
+
+      expect(resolvedValue).toBe(3)
+    })
+
+    it('uses default value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalValidatedInteger('value', 4, validator)
+
+      expect(resolvedValue).toBe(4)
+    })
+
+    it('throws when real value fails validation', () => {
+      process.env.value = '2'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getOptionalValidatedInteger('value', 4, validator)).toThrow(
+        /Value 2 is invalid for parameter value/,
+      )
+    })
+
+    it('throws when default value fails validation', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getOptionalValidatedInteger('value', 2, validator)).toThrow(
+        /Value 2 is invalid for parameter value/,
+      )
+    })
   })
 
   describe('getOptionalNullableInteger', () => {
