@@ -148,6 +148,15 @@ describe('ConfigScope', () => {
 
       expect(resolvedValue).toBeNull()
     })
+
+    it('uses default on empty string', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullable('value', 'def')
+
+      expect(resolvedValue).toBe('def')
+    })
   })
 
   describe('getOptional', () => {
@@ -397,6 +406,15 @@ describe('ConfigScope', () => {
       expect(resolvedValue).toBe('def')
     })
 
+    it('uses default value on empty string', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalValidated('value', 'def', validator)
+
+      expect(resolvedValue).toBe('def')
+    })
+
     it('throws an error if failing validation', () => {
       process.env.value = '12345678900'
       const configScope = new ConfigScope()
@@ -423,6 +441,19 @@ describe('ConfigScope', () => {
 
     it('uses default value if not set', () => {
       delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalTransformed(
+        'value',
+        'def',
+        ensureClosingSlashTransformer,
+      )
+
+      expect(resolvedValue).toBe('def/')
+    })
+
+    it('uses default value on empty string', () => {
+      process.env.value = ''
       const configScope = new ConfigScope()
 
       const resolvedValue = configScope.getOptionalTransformed(
