@@ -133,14 +133,7 @@ export class ConfigScope {
     defaultValue: number,
     validator: EnvValueValidator<number>,
   ): number {
-    const raw = this.env[param]
-    let value
-
-    if (raw === null || raw === undefined) {
-      value = defaultValue
-    } else {
-      value = parseInt(raw)
-    }
+    const value = this.getOptionalInteger(param, defaultValue)
 
     if (!validator(value)) {
       throw new InternalError({
