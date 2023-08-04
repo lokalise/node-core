@@ -67,7 +67,7 @@ export class ConfigScope {
     param: string,
     defaultValue: T,
   ): T | string {
-    return this.env[param] ?? defaultValue
+    return this.env[param] || defaultValue
   }
 
   getOptional(param: string, defaultValue: string): string {
@@ -118,7 +118,7 @@ export class ConfigScope {
     defaultValue: string,
     validator: EnvValueValidator<string>,
   ): string {
-    const value = this.env[param] ?? defaultValue
+    const value = this.env[param] || defaultValue
     if (!validator(value)) {
       throw new InternalError({
         message: `Value ${value} is invalid for parameter ${param}`,
@@ -150,7 +150,7 @@ export class ConfigScope {
     defaultValue: string,
     transformer: (value: string) => string,
   ): string {
-    const value = this.env[param] ?? defaultValue
+    const value = this.env[param] || defaultValue
     return transformer(value)
   }
 
