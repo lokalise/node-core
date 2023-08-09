@@ -15,6 +15,7 @@ export default defineConfig({
         'src/common/may-omit.ts',
         'src/config/configTypes.ts',
         'src/errors/globalErrorHandler.ts',
+        'src/config/configTransformers.ts'
       ],
       reporter: ['text'],
       all: true,
