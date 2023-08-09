@@ -1,5 +1,3 @@
-import * as process from 'process'
-
 import { ConfigScope } from './ConfigScope'
 import { ensureClosingSlashTransformer } from './configTransformers'
 import type { EnvValueValidator } from './configTypes'
