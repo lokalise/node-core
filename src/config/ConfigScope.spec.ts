@@ -5,6 +5,18 @@ import { ensureClosingSlashTransformer } from './configTransformers'
 import type { EnvValueValidator } from './configTypes'
 import { createRangeValidator } from './configValidators'
 
+const maybeEnsureClosingSlashTransformer = <T extends string | undefined | null>(value: T): T => {
+  if (!value) {
+    return undefined as T
+  }
+
+  const lastChar = value.at(-1)
+  if (lastChar !== '/') {
+    return `${value}/` as T
+  }
+  return value
+}
+
 describe('ConfigScope', () => {
   describe('getMandatoryInteger', () => {
     it('accepts an integer', () => {
@@ -460,6 +472,60 @@ describe('ConfigScope', () => {
         'value',
         'def',
         ensureClosingSlashTransformer,
+      )
+
+      expect(resolvedValue).toBe('def/')
+    })
+  })
+
+  describe('getOptionalNullableTransformed', () => {
+    it('transforms value', () => {
+      process.env.value = 'val'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableTransformed(
+        'value',
+        'def/',
+        maybeEnsureClosingSlashTransformer,
+      )
+
+      expect(resolvedValue).toBe('val/')
+    })
+
+    it('uses default value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableTransformed(
+        'value',
+        'def',
+        maybeEnsureClosingSlashTransformer,
+      )
+
+      expect(resolvedValue).toBe('def/')
+    })
+
+    it('uses default undefined value if not set', () => {
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableTransformed(
+        'value',
+        undefined,
+        maybeEnsureClosingSlashTransformer,
+      )
+
+      expect(resolvedValue).toBeUndefined()
+    })
+
+    it('uses default value on empty string', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableTransformed(
+        'value',
+        'def',
+        maybeEnsureClosingSlashTransformer,
       )
 
       expect(resolvedValue).toBe('def/')

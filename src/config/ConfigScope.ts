@@ -154,6 +154,15 @@ export class ConfigScope {
     return transformer(value)
   }
 
+  getOptionalNullableTransformed<T extends string | undefined>(
+    param: string,
+    defaultValue: T,
+    transformer: (value: T | string) => T | string,
+  ): T | string {
+    const value = this.env[param] || defaultValue
+    return transformer(value as T)
+  }
+
   getMandatoryTransformed(param: string, transformer: (value: string) => string) {
     const value = this.getMandatory(param)
 
