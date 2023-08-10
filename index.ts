@@ -64,3 +64,5 @@ export {
 } from './src/errors/globalErrorHandler'
 
 export type { MayOmit } from './src/common/may-omit'
+
+export { waitAndRetry } from './src/utils/waitUtils'
