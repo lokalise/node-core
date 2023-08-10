@@ -201,3 +201,22 @@ It's up to the caller of the function to handle the received error or throw an e
 Read [this article](https://antman-does-software.com/stop-catching-errors-in-typescript-use-the-either-type-to-make-your-code-predictable) for more information on how `Either` works and its benefits.
 
 Additionally, `DefineEither` is also provided. It is a variation of the aforementioned `Either`, which may or may not have `error` set, but always has `result`.
+
+### waitAndRetry
+
+There is helper function available for writing event-driven assertions in automated tests, which rely on something eventually happening:
+
+```ts
+import {waitAndRetry} from "@lokalise/node-core";
+
+const result = await waitAndRetry(
+        () => {
+          return someEventEmitter.emittedEvents.length > 0
+        },
+        20, // sleepTime between attempts
+        30, // maxRetryCount before timeout
+)
+
+expect(result).toBe(false) // resolves to what the last attempt has returned
+expect(someEventEmitter.emittedEvents.length).toBe(1)
+```
