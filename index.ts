@@ -59,6 +59,7 @@ export type { ErrorReport, ErrorReporter, ErrorResolver } from './src/errors/err
 export {
   executeAsyncAndHandleGlobalErrors,
   executeAndHandleGlobalErrors,
+  executeSettleAllAndHandleGlobalErrors,
   globalLogger,
   resolveGlobalErrorLogObject,
 } from './src/errors/globalErrorHandler'
