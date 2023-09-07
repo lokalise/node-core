@@ -47,3 +47,25 @@ export async function executeAsyncAndHandleGlobalErrors<T>(
     }
   }
 }
+
+export async function executeSettleAllAndHandleGlobalErrors(
+  promises: Promise<unknown>[],
+  stopOnError = true,
+) {
+  const result = await Promise.allSettled(promises)
+
+  let errorsHappened
+  for (const entry of result) {
+    if (entry.status === 'rejected') {
+      const logObject = resolveGlobalErrorLogObject(entry.reason)
+      globalLogger.error(logObject)
+      errorsHappened = true
+    }
+  }
+
+  if (stopOnError && errorsHappened) {
+    process.exit(1)
+  }
+
+  return result
+}
