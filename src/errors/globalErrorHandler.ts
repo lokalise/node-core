@@ -1,10 +1,17 @@
 import { types } from 'node:util'
 
-import { pino, stdSerializers } from 'pino'
+import { pino, levels, stdSerializers } from 'pino'
 
 import { hasMessage } from '../utils/typeUtils'
 
-export const globalLogger = pino()
+export const globalLogger = pino({
+  formatters: {
+    level: (label, numericLevel): { level: string } => {
+      const level = levels.labels[numericLevel] || 'unknown'
+      return { level }
+    },
+  },
+})
 
 export function resolveGlobalErrorLogObject(err: unknown, correlationID?: string) {
   if (types.isNativeError(err)) {
