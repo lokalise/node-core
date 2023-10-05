@@ -7,14 +7,17 @@ export function copyWithoutUndefined<
     }[keyof T]
   >,
 >(originalValue: T): TargetRecordType {
-  return Object.keys(originalValue).reduce((acc, key) => {
-    // @ts-ignore
-    if (originalValue[key] !== undefined) {
+  return Object.keys(originalValue).reduce(
+    (acc, key) => {
       // @ts-ignore
-      acc[key] = originalValue[key]
-    }
-    return acc
-  }, {} as Record<string, unknown>) as TargetRecordType
+      if (originalValue[key] !== undefined) {
+        // @ts-ignore
+        acc[key] = originalValue[key]
+      }
+      return acc
+    },
+    {} as Record<string, unknown>,
+  ) as TargetRecordType
 }
 
 export function pick<T, K extends string | number | symbol>(
