@@ -25,3 +25,7 @@ export async function callChunked<Item>(
     await processFn(arrayChunk)
   }
 }
+
+export function removeNullish<T>(array: readonly (T | null | undefined)[]): T[] {
+  return array.filter((e) => e !== undefined && e !== null) as T[]
+}
