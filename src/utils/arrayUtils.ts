@@ -29,3 +29,7 @@ export async function callChunked<Item>(
 export function removeNullish<T>(array: readonly (T | null | undefined)[]): T[] {
   return array.filter((e) => e !== undefined && e !== null) as T[]
 }
+
+export function removeFalsy<T>(array: readonly (T | null | undefined)[]): T[] {
+  return array.filter((e) => e) as T[]
+}

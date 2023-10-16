@@ -1,7 +1,7 @@
 import { describe, vitest } from 'vitest'
 import { n } from 'vitest/dist/types-198fd1d9'
 
-import { callChunked, chunk, removeNullish } from './arrayUtils'
+import { callChunked, chunk, removeFalsy, removeNullish } from './arrayUtils'
 
 describe('arrayUtils', () => {
   describe('chunk', () => {
@@ -56,6 +56,14 @@ describe('arrayUtils', () => {
       const array = ['', false, null, 'valid', 1, undefined, 0]
       const result: (string | number | boolean)[] = removeNullish(array)
       expect(result).toEqual(['', false, 'valid', 1, 0])
+    })
+  })
+
+  describe('removeFalsy', () => {
+    it('should remove all falsy values', () => {
+      const array = ['', false, null, 'valid', 1, undefined, 0]
+      const result: (string | number | boolean)[] = removeFalsy(array)
+      expect(result).toEqual(['valid', 1])
     })
   })
 })
