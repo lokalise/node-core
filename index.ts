@@ -35,7 +35,7 @@ export type {
 
 export type { Either } from './src/errors/either'
 
-export { chunk, callChunked } from './src/utils/arrayUtils'
+export { chunk, callChunked, removeFalsy, removeNullish } from './src/utils/arrayUtils'
 export {
   groupBy,
   pick,
