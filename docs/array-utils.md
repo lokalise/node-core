@@ -27,10 +27,10 @@ console.log(removeNullish(array)) // result: ['', false, 'valid', 1, 0]
 
 
 
-`removeNullish<const T>(array: readonly (T | null | undefined)[]): T[]`
+`removeFalsy<const T>(array: readonly (T | null | undefined)[]): T[]`
 
 Return a copy of the given array without falsy values (eg: false, 0, '', null, undefined).
 ```typescript
 const array = ['', false, null, 'valid', 1, undefined, 0]
-console.log(removeNullish(array)) // result: ['valid', 1]
+console.log(removeFalsy(array)) // result: ['valid', 1]
 ```
