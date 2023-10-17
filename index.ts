@@ -5,6 +5,7 @@ export {
   sendPatch,
   sendGet,
   sendPost,
+  sendPostBinary,
   httpClient,
   buildClient,
 } from './src/http/httpClient'
