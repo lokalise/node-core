@@ -35,21 +35,22 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "pino": "^8.15.6",
-    "undici": "^5.25.4",
-    "undici-retry": "^2.1.0"
+    "pino": "^8.16.1",
+    "undici": "^5.27.0",
+    "undici-retry": "^3.1.2"
   },
   "devDependencies": {
-    "@types/node": "^20.8.2",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
+    "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
     "@vitest/coverage-v8": "^0.34.6",
     "auto-changelog": "^2.4.0",
-    "eslint": "^8.50.0",
+    "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-vitest": "^0.3.2",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-vitest": "^0.3.8",
+    "mockttp": "^3.9.4",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6",

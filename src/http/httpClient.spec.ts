@@ -1,5 +1,6 @@
 import type { Interceptable } from 'undici'
 import { Client, MockAgent, setGlobalDispatcher } from 'undici'
+import { isInternalRequestError } from 'undici-retry'
 import { z } from 'zod'
 
 import type { HttpRequestContext } from './httpClient'
@@ -142,7 +143,7 @@ describe('httpClient', () => {
         .reply(200, 'this is not a real json', { headers: JSON_HEADERS })
 
       try {
-        await sendGet(client, '/products/1', { safeParseJson: true })
+        await sendGet(client, '/products/1', { safeParseJson: true, requestLabel: 'label' })
       } catch (err) {
         // This is needed, because built-in error assertions do not assert nested fields
         // eslint-disable-next-line vitest/no-conditional-expect
@@ -151,6 +152,7 @@ describe('httpClient', () => {
           errorCode: 'INVALID_HTTP_RESPONSE_JSON',
           details: {
             rawBody: 'this is not a real json',
+            requestLabel: 'label',
           },
         })
       }
@@ -240,6 +242,26 @@ describe('httpClient', () => {
       })
     })
 
+    it('Throws an error with a label on internal error', async () => {
+      expect.assertions(2)
+      const query = {
+        limit: 3,
+      }
+
+      try {
+        await sendGet(buildClient('http://127.0.0.1'), '/dummy', {
+          requestLabel: 'label',
+          query,
+        })
+      } catch (err) {
+        if (!isInternalRequestError(err)) {
+          throw new Error('Invalid error type')
+        }
+        expect(err.message).toBe('connect ECONNREFUSED 127.0.0.1:80')
+        expect(err.details!.requestLabel).toBe('label')
+      }
+    })
+
     it('Returns error response', async () => {
       expect.assertions(1)
       const query = {
@@ -257,6 +279,7 @@ describe('httpClient', () => {
       await expect(
         sendGet(client, '/products', {
           query,
+          requestLabel: 'label',
         }),
       ).rejects.toMatchObject({
         message: 'Response status code 400',
@@ -265,6 +288,7 @@ describe('httpClient', () => {
           statusCode: 400,
         },
         details: {
+          requestLabel: 'label',
           response: {
             body: 'Invalid request',
             statusCode: 400,
