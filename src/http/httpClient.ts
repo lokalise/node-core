@@ -2,7 +2,7 @@ import type { Readable } from 'stream'
 
 import { Client } from 'undici'
 import type { FormData } from 'undici'
-import type { RequestResult, RetryConfig } from 'undici-retry'
+import type { RequestResult, RequestParams, RetryConfig } from 'undici-retry'
 import { DEFAULT_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
 
 import { ResponseStatusError } from '../errors/ResponseStatusError'
@@ -27,9 +27,13 @@ export type RequestOptions<T> = {
   timeout: number | undefined
   throwOnError?: boolean
   reqContext?: HttpRequestContext
+
   safeParseJson?: boolean
+  blobResponseBody?: boolean
+  requestLabel?: string
+
   disableKeepAlive?: boolean
-  retryConfig?: Omit<RetryConfig, 'safeParseJson'>
+  retryConfig?: RetryConfig
   clientOptions?: Client.Options
   responseSchema?: ResponseSchema<T>
   validateResponse: boolean
@@ -73,6 +77,7 @@ export async function sendGet<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -80,6 +85,7 @@ export async function sendGet<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
@@ -104,6 +110,7 @@ export async function sendDelete<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -137,6 +144,7 @@ export async function sendPost<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -170,6 +178,7 @@ export async function sendPostBinary<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -203,6 +212,7 @@ export async function sendPut<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -236,6 +246,7 @@ export async function sendPutBinary<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -269,6 +280,7 @@ export async function sendPatch<T>(
       throwOnError: false,
     },
     resolveRetryConfig(options),
+    resolveRequestConfig(options),
   )
 
   return resolveResult(
@@ -279,17 +291,17 @@ export async function sendPatch<T>(
   )
 }
 
+function resolveRequestConfig(options: Partial<RequestOptions<unknown>>): RequestParams {
+  return {
+    safeParseJson: options.safeParseJson ?? false,
+    blobBody: options.blobResponseBody ?? false,
+    throwOnInternalError: true,
+    requestLabel: options.requestLabel,
+  }
+}
+
 function resolveRetryConfig(options: Partial<RequestOptions<unknown>>): RetryConfig {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return options.retryConfig
-    ? {
-        ...options.retryConfig,
-        safeParseJson: options.safeParseJson ?? false,
-      }
-    : {
-        ...DEFAULT_RETRY_CONFIG,
-        safeParseJson: options.safeParseJson ?? false,
-      }
+  return options.retryConfig ?? DEFAULT_RETRY_CONFIG
 }
 
 export function buildClient(baseUrl: string, clientOptions?: Client.Options) {
@@ -305,9 +317,11 @@ function resolveResult<T>(
   throwOnError: boolean,
   validateResponse: boolean,
   validationSchema?: ResponseSchema,
+  requestLabel?: string,
 ): DefiniteEither<RequestResult<unknown>, RequestResult<T>> {
+  // Throw response error
   if (requestResult.error && throwOnError) {
-    throw new ResponseStatusError(requestResult.error)
+    throw new ResponseStatusError(requestResult.error, requestLabel)
   }
   if (requestResult.result && validateResponse && validationSchema) {
     requestResult.result.body = validationSchema.parse(requestResult.result.body)
