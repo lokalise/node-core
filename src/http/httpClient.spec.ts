@@ -249,7 +249,7 @@ describe('httpClient', () => {
       }
 
       try {
-        await sendGet(buildClient('http://127.0.0.1'), '/dummy', {
+        await sendGet(buildClient('http://127.0.0.1:999'), '/dummy', {
           requestLabel: 'label',
           query,
         })
@@ -257,7 +257,7 @@ describe('httpClient', () => {
         if (!isInternalRequestError(err)) {
           throw new Error('Invalid error type')
         }
-        expect(err.message).toBe('connect ECONNREFUSED 127.0.0.1:80')
+        expect(err.message).toBe('connect ECONNREFUSED 127.0.0.1:999')
         expect(err.details!.requestLabel).toBe('label')
       }
     })
