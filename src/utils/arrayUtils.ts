@@ -59,17 +59,23 @@ export function arrayToRecord<T extends { [K in keyof T]: RecordKeyType }, K ext
   arrayValue = true,
 ) {
   if (arrayValue) {
-    return array.reduce((acc, item) => {
-      if (!acc[item[selector]]) {
-        acc[item[selector]] = []
-      }
-      acc[item[selector]].push(item)
-      return acc
-    }, {} as Record<T[K], T[]>)
+    return array.reduce(
+      (acc, item) => {
+        if (!acc[item[selector]]) {
+          acc[item[selector]] = []
+        }
+        acc[item[selector]].push(item)
+        return acc
+      },
+      {} as Record<T[K], T[]>,
+    )
   } else {
-    return array.reduce((acc, item) => {
-      acc[item[selector]] = item
-      return acc
-    }, {} as Record<T[K], T>)
+    return array.reduce(
+      (acc, item) => {
+        acc[item[selector]] = item
+        return acc
+      },
+      {} as Record<T[K], T>,
+    )
   }
 }
