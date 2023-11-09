@@ -1,6 +1,6 @@
-import { describe, vitest } from 'vitest'
+import { describe, expect, vitest } from 'vitest'
 
-import { callChunked, chunk, removeFalsy, removeNullish } from './arrayUtils'
+import { arrayToRecord, callChunked, chunk, removeFalsy, removeNullish } from './arrayUtils'
 
 describe('arrayUtils', () => {
   describe('chunk', () => {
@@ -63,6 +63,40 @@ describe('arrayUtils', () => {
       const array = ['', false, null, 'valid', 1, undefined, 0]
       const result: (string | number | boolean)[] = removeFalsy(array)
       expect(result).toEqual(['valid', 1])
+    })
+  })
+
+  describe('arrayToRecord', () => {
+    it('emptyArray', () => {
+      const array: { id: string }[] = []
+      const result = arrayToRecord(array, 'id')
+      expect(Object.keys(result)).length(0)
+    })
+
+    it('Record with array value', () => {
+      const array: { value: string }[] = [
+        { value: 'hello' },
+        { value: 'my' },
+        { value: 'friend' },
+        { value: 'my' },
+        { value: 'hello' },
+      ]
+      const result: Record<string, { value: string }[]> = arrayToRecord(array, 'value')
+      expect(result).toMatchObject({
+        hello: [{ value: 'hello' }, { value: 'hello' }],
+        my: [{ value: 'my' }, { value: 'my' }],
+        friend: [{ value: 'friend' }],
+      })
+    })
+
+    it('Record with single value', () => {
+      const array: { id: string }[] = [{ id: 'hello' }, { id: 'my' }, { id: 'friend' }]
+      const result: Record<string, { id: string }> = arrayToRecord(array, 'id', false)
+      expect(result).toMatchObject({
+        hello: { id: 'hello' },
+        my: { id: 'my' },
+        friend: { id: 'friend' },
+      })
     })
   })
 })
