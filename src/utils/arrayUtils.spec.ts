@@ -1,4 +1,4 @@
-import { arrayToRecord, callChunked, chunk, removeFalsy, removeNullish } from './arrayUtils'
+import { callChunked, chunk, keyArrayBy, removeFalsy, removeNullish } from './arrayUtils'
 
 describe('arrayUtils', () => {
   describe('chunk', () => {
@@ -64,10 +64,10 @@ describe('arrayUtils', () => {
     })
   })
 
-  describe('arrayToRecord', () => {
-    it('emptyArray', () => {
+  describe('keyArrayBy', () => {
+    it('Empty array', () => {
       const array: { id: string }[] = []
-      const result = arrayToRecord(array, 'id')
+      const result = keyArrayBy(array, 'id')
       expect(Object.keys(result)).length(0)
     })
 
@@ -79,7 +79,7 @@ describe('arrayUtils', () => {
         { value: 'my' },
         { value: 'hello' },
       ]
-      const result: Record<string, { value: string }[]> = arrayToRecord(array, 'value')
+      const result: Record<string, { value: string }[]> = keyArrayBy(array, 'value')
       expect(result).toMatchObject({
         hello: [{ value: 'hello' }, { value: 'hello' }],
         my: [{ value: 'my' }, { value: 'my' }],
@@ -89,7 +89,7 @@ describe('arrayUtils', () => {
 
     it('Record with single value', () => {
       const array: { id: string }[] = [{ id: 'hello' }, { id: 'my' }, { id: 'friend' }]
-      const result: Record<string, { id: string }> = arrayToRecord(array, 'id', false)
+      const result: Record<string, { id: string }> = keyArrayBy(array, 'id', false)
       expect(result).toMatchObject({
         hello: { id: 'hello' },
         my: { id: 'my' },

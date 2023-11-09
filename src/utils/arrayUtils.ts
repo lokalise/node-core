@@ -43,17 +43,17 @@ export function removeFalsy<const T>(
 }
 
 export type RecordKeyType = string | number | symbol
-export function arrayToRecord<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(
+export function keyArrayBy<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(
   array: T[],
   selector: K,
   arrayValue?: true,
 ): Record<T[K], T[]>
-export function arrayToRecord<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(
+export function keyArrayBy<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(
   array: T[],
   selector: K,
   arrayValue: false,
 ): Record<T[K], T>
-export function arrayToRecord<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(
+export function keyArrayBy<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(
   array: T[],
   selector: K,
   arrayValue = true,
