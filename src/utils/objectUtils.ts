@@ -56,7 +56,7 @@ export function pickWithoutUndefined<T, K extends string | number | symbol>(
 
 export function isEmptyObject(params: Record<string, unknown>): boolean {
   for (const key in params) {
-    if (Object.prototype.hasOwnProperty.call(params, key) && params[key] !== undefined) {
+    if (Object.hasOwn(params, key) && params[key] !== undefined) {
       return false
     }
   }
