@@ -72,3 +72,25 @@ exports[`groupBy > Correctly handles undefined 1`] = `
   ],
 }
 `;
+
+exports[`objectUtils > copyWithoutUndefined > Does nothing when there are no undefined fields 1`] = `
+{
+  "a": "a",
+  "b": "",
+  "c": " ",
+  "d": null,
+  "e": {},
+}
+`;
+
+exports[`objectUtils > copyWithoutUndefined > Removes undefined fields 1`] = `
+{
+  "b": "a",
+  "c": "",
+  "e": " ",
+  "f": null,
+  "g": {
+    "someParam": 12,
+  },
+}
+`;

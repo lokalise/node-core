@@ -66,8 +66,7 @@ describe('pick', () => {
       },
       ['a', 'c', 'e'],
     )
-
-    expect(result).toMatchSnapshot()
+    expect(result).toStrictEqual({ a: 'a', c: ' ', e: {} })
   })
 
   it('Ignores missing fields', () => {
@@ -82,7 +81,7 @@ describe('pick', () => {
       ['a', 'f', 'g'],
     )
 
-    expect(result).toMatchSnapshot()
+    expect(result).toStrictEqual({ a: 'a' })
   })
 
   it('Includes undefined fields', () => {
@@ -95,7 +94,7 @@ describe('pick', () => {
       ['a', 'b'],
     )
 
-    expect(result).toMatchSnapshot()
+    expect(result).toStrictEqual({ a: 'a', b: undefined })
   })
 })
 
@@ -112,7 +111,7 @@ describe('pickWithoutUndefined', () => {
       ['a', 'c', 'e'],
     )
 
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchObject({ a: 'a', c: ' ', e: {} })
   })
 
   it('Ignores missing fields', () => {
@@ -127,7 +126,7 @@ describe('pickWithoutUndefined', () => {
       ['a', 'f', 'g'],
     )
 
-    expect(result).toMatchSnapshot()
+    expect(result).toStrictEqual({ a: 'a' })
   })
 
   it('Skips undefined fields', () => {
@@ -140,7 +139,7 @@ describe('pickWithoutUndefined', () => {
       ['a', 'b'],
     )
 
-    expect(result).toMatchSnapshot()
+    expect(result).toStrictEqual({ a: 'a' })
   })
 })
 
