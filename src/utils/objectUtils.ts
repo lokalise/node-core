@@ -63,22 +63,23 @@ export function isEmptyObject(params: Record<string, unknown>): boolean {
   return true
 }
 
-export function groupBy<T>(inputArray: T[], propName: string): Record<string, T[]> {
-  return inputArray.reduce((result, entry) => {
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const key = entry[propName]
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    if (Object.hasOwnProperty.call(result, key)) {
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-      result[key].push(entry)
-    } else {
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      result[key] = [entry]
-    }
-    return result
-  }, {})
+export type RecordKeyType = string | number | symbol
+export function groupBy<T extends { [K in keyof T]: unknown }, K extends keyof T>(
+  array: T[],
+  selector: K,
+): Record<RecordKeyType, T[]> {
+  return array.reduce(
+    (acc, item) => {
+      if (!item) {
+        return acc
+      }
+      const key = item[selector] as RecordKeyType
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(item)
+      return acc
+    },
+    {} as Record<RecordKeyType, T[]>,
+  )
 }

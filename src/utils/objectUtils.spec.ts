@@ -171,7 +171,7 @@ describe('isEmptyObject', () => {
 
 describe('groupBy', () => {
   it('Correctly groups by string values', () => {
-    const input = [
+    const input: { name: string }[] = [
       {
         id: 1,
         name: 'a',
@@ -188,43 +188,57 @@ describe('groupBy', () => {
         id: 4,
         name: 'a',
       },
-    ]
+    ] as never[]
 
-    const result = groupBy(input, 'name')
+    const result: Record<string, { name: string }[]> = groupBy(input, 'name')
 
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchObject({
+      a: [
+        { id: 1, name: 'a' },
+        { id: 4, name: 'a' },
+      ],
+      b: [{ id: 3, name: 'b' }],
+      c: [{ id: 2, name: 'c' }],
+    })
   })
 
   it('Correctly groups by number values', () => {
-    const input = [
+    const input: { count: number }[] = [
       {
         id: 1,
         count: 10,
       },
       {
         id: 2,
-        count: 10,
-      },
-      {
-        id: 3,
         count: 20,
       },
       {
-        id: 4,
+        id: 3,
         count: 30,
       },
-    ]
+      {
+        id: 4,
+        count: 10,
+      },
+    ] as never[]
 
-    const result = groupBy(input, 'count')
+    const result: Record<number, { count: number }[]> = groupBy(input, 'count')
 
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchObject({
+      10: [
+        { id: 1, count: 10 },
+        { id: 4, count: 10 },
+      ],
+      20: [{ id: 2, count: 20 }],
+      30: [{ id: 3, count: 30 }],
+    })
   })
 
   it('Correctly handles undefined', () => {
-    const input = [
+    const input: { name?: string }[] = [
       {
         id: 1,
-        name: '45',
+        name: 'name',
       },
       {
         id: 2,
@@ -234,12 +248,17 @@ describe('groupBy', () => {
       },
       {
         id: 4,
-        name: '45',
+        name: 'name',
       },
-    ]
+    ] as never[]
 
-    const result = groupBy(input, 'name')
+    const result: Record<string, { name: string }[]> = groupBy(input, 'name')
 
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchObject({
+      name: [
+        { id: 1, name: 'name' },
+        { id: 4, name: 'name' },
+      ],
+    })
   })
 })
