@@ -1,4 +1,3 @@
-import { keyArrayBy } from './arrayUtils'
 import {
   copyWithoutUndefined,
   groupBy,
@@ -174,7 +173,7 @@ describe('isEmptyObject', () => {
 describe('groupBy', () => {
   it('Empty array', () => {
     const array: { id: string }[] = []
-    const result = keyArrayBy(array, 'id')
+    const result = groupBy(array, 'id')
     expect(Object.keys(result)).length(0)
   })
 
@@ -269,82 +268,82 @@ describe('groupBy', () => {
       ],
     })
   })
-})
 
-describe('groupByUnique', () => {
-  it('Empty array', () => {
-    const array: { id: string }[] = []
-    const result = keyArrayBy(array, 'id')
-    expect(Object.keys(result)).length(0)
-  })
-
-  it('Correctly groups by string values', () => {
-    const input: { name: string }[] = [
-      {
-        id: 1,
-        name: 'a',
-      },
-      {
-        id: 2,
-        name: 'c',
-      },
-      {
-        id: 3,
-        name: 'a',
-      },
-    ] as never[]
-
-    const result: Record<string, { name: string }> = groupByUnique(input, 'name')
-
-    expect(result).toMatchObject({
-      a: { id: 3, name: 'a' },
-      c: { id: 2, name: 'c' },
+  describe('groupByUnique', () => {
+    it('Empty array', () => {
+      const array: { id: string }[] = []
+      const result = groupByUnique(array, 'id')
+      expect(Object.keys(result)).length(0)
     })
-  })
 
-  it('Correctly groups by number values', () => {
-    const input: { count: number }[] = [
-      {
-        id: 1,
-        count: 10,
-      },
-      {
-        id: 2,
-        count: 20,
-      },
-      {
-        id: 3,
-        count: 10,
-      },
-    ] as never[]
+    it('Correctly groups by string values', () => {
+      const input: { name: string }[] = [
+        {
+          id: 1,
+          name: 'a',
+        },
+        {
+          id: 2,
+          name: 'c',
+        },
+        {
+          id: 3,
+          name: 'a',
+        },
+      ] as never[]
 
-    const result: Record<number, { count: number }> = groupByUnique(input, 'count')
+      const result: Record<string, { name: string }> = groupByUnique(input, 'name')
 
-    expect(result).toMatchObject({
-      10: { id: 3, count: 10 },
-      20: { id: 2, count: 20 },
+      expect(result).toMatchObject({
+        a: { id: 3, name: 'a' },
+        c: { id: 2, name: 'c' },
+      })
     })
-  })
 
-  it('Correctly handles undefined', () => {
-    const input: { name?: string }[] = [
-      {
-        id: 1,
-        name: 'name',
-      },
-      {
-        id: 2,
-      },
-      {
-        id: 3,
-        name: 'name',
-      },
-    ] as never[]
+    it('Correctly groups by number values', () => {
+      const input: { count: number }[] = [
+        {
+          id: 1,
+          count: 10,
+        },
+        {
+          id: 2,
+          count: 20,
+        },
+        {
+          id: 3,
+          count: 10,
+        },
+      ] as never[]
 
-    const result = groupByUnique(input, 'name')
+      const result: Record<number, { count: number }> = groupByUnique(input, 'count')
 
-    expect(result).toMatchObject({
-      name: { id: 3, name: 'name' },
+      expect(result).toMatchObject({
+        10: { id: 3, count: 10 },
+        20: { id: 2, count: 20 },
+      })
+    })
+
+    it('Correctly handles undefined', () => {
+      const input: { name?: string }[] = [
+        {
+          id: 1,
+          name: 'name',
+        },
+        {
+          id: 2,
+        },
+        {
+          id: 3,
+          name: 'name',
+        },
+      ] as never[]
+
+      const result = groupByUnique(input, 'name')
+
+      expect(result).toMatchObject({
+        name: { id: 3, name: 'name' },
+      })
     })
   })
 })

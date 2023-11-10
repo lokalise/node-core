@@ -34,12 +34,3 @@ Return a copy of the given array without falsy values (eg: false, 0, '', null, u
 const array = ['', false, null, 'valid', 1, undefined, 0]
 console.log(removeFalsy(array)) // result: ['valid', 1]
 ```
-
-
-
-`keyArrayBy<T extends { [K in keyof T]: RecordKeyType }, K extends keyof T>(array: T[], selector: K, arrayValue: boolean = true): Record<T[K], T | T[]>`
-
-Creates a Record composed of keys from `selector`. 
-The corresponding value of each key is:
-- If `arrayValue` is `true` an array of all elements with the same `selector`.
-- else the last element found for each key.
