@@ -64,16 +64,16 @@ export function isEmptyObject(params: Record<string, unknown>): boolean {
 }
 
 type RecordKeyType = string | number | symbol
-export function groupBy<T extends { [K in keyof T]: unknown }, K extends keyof T>(
-  array: T[],
-  selector: K,
-): Record<RecordKeyType, T[]> {
+export function groupBy<
+  T extends { [K in keyof T]: RecordKeyType | null | undefined },
+  K extends keyof T,
+>(array: T[], selector: K): Record<RecordKeyType, T[]> {
   return array.reduce(
     (acc, item) => {
-      if (!item) {
+      const key = item[selector]
+      if (key === undefined || key === null) {
         return acc
       }
-      const key = item[selector] as RecordKeyType
       if (!acc[key]) {
         acc[key] = []
       }
@@ -84,16 +84,16 @@ export function groupBy<T extends { [K in keyof T]: unknown }, K extends keyof T
   )
 }
 
-export function groupByUnique<T extends { [K in keyof T]: unknown }, K extends keyof T>(
-  array: T[],
-  selector: K,
-): Record<RecordKeyType, T> {
+export function groupByUnique<
+  T extends { [K in keyof T]: RecordKeyType | null | undefined },
+  K extends keyof T,
+>(array: T[], selector: K): Record<RecordKeyType, T> {
   return array.reduce(
     (acc, item) => {
-      if (!item) {
+      const key = item[selector]
+      if (key === undefined || key === null) {
         return acc
       }
-      const key = item[selector] as RecordKeyType
       acc[key] = item
       return acc
     },
