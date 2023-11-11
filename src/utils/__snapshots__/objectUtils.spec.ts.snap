@@ -31,23 +31,19 @@ exports[`groupBy > Correctly groups by string values 1`] = `
 {
   "a": [
     {
-      "id": 1,
       "name": "a",
     },
     {
-      "id": 4,
       "name": "a",
     },
   ],
   "b": [
     {
-      "id": 3,
       "name": "b",
     },
   ],
   "c": [
     {
-      "id": 2,
       "name": "c",
     },
   ],
@@ -96,46 +92,5 @@ exports[`objectUtils > copyWithoutUndefined > Removes undefined fields 1`] = `
   "g": {
     "someParam": 12,
   },
-}
-`;
-
-exports[`pick > Ignores missing fields 1`] = `
-{
-  "a": "a",
-}
-`;
-
-exports[`pick > Includes undefined fields 1`] = `
-{
-  "a": "a",
-  "b": undefined,
-}
-`;
-
-exports[`pick > Picks specified fields 1`] = `
-{
-  "a": "a",
-  "c": " ",
-  "e": {},
-}
-`;
-
-exports[`pickWithoutUndefined > Ignores missing fields 1`] = `
-{
-  "a": "a",
-}
-`;
-
-exports[`pickWithoutUndefined > Picks specified fields 1`] = `
-{
-  "a": "a",
-  "c": " ",
-  "e": {},
-}
-`;
-
-exports[`pickWithoutUndefined > Skips undefined fields 1`] = `
-{
-  "a": "a",
 }
 `;

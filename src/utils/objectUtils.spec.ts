@@ -1,6 +1,9 @@
+import { expect } from 'vitest'
+
 import {
   copyWithoutUndefined,
   groupBy,
+  groupByUnique,
   isEmptyObject,
   pick,
   pickWithoutUndefined,
@@ -51,195 +54,321 @@ describe('objectUtils', () => {
       expect(result).toMatchSnapshot()
     })
   })
-})
 
-describe('pick', () => {
-  it('Picks specified fields', () => {
-    const result = pick(
-      {
-        a: 'a',
-        b: '',
-        c: ' ',
-        d: null,
-        e: {},
-      },
-      ['a', 'c', 'e'],
-    )
+  describe('pick', () => {
+    it('Picks specified fields', () => {
+      const result = pick(
+        {
+          a: 'a',
+          b: '',
+          c: ' ',
+          d: null,
+          e: {},
+        },
+        ['a', 'c', 'e'],
+      )
+      expect(result).toStrictEqual({ a: 'a', c: ' ', e: {} })
+    })
 
-    expect(result).toMatchSnapshot()
+    it('Ignores missing fields', () => {
+      const result = pick(
+        {
+          a: 'a',
+          b: '',
+          c: ' ',
+          d: null,
+          e: {},
+        },
+        ['a', 'f', 'g'],
+      )
+
+      expect(result).toStrictEqual({ a: 'a' })
+    })
+
+    it('Includes undefined fields', () => {
+      const result = pick(
+        {
+          a: 'a',
+          b: undefined,
+          c: {},
+        },
+        ['a', 'b'],
+      )
+
+      expect(result).toStrictEqual({ a: 'a', b: undefined })
+    })
   })
 
-  it('Ignores missing fields', () => {
-    const result = pick(
-      {
-        a: 'a',
-        b: '',
-        c: ' ',
-        d: null,
-        e: {},
-      },
-      ['a', 'f', 'g'],
-    )
+  describe('pickWithoutUndefined', () => {
+    it('Picks specified fields', () => {
+      const result = pickWithoutUndefined(
+        {
+          a: 'a',
+          b: '',
+          c: ' ',
+          d: null,
+          e: {},
+        },
+        ['a', 'c', 'e'],
+      )
 
-    expect(result).toMatchSnapshot()
+      expect(result).toMatchObject({ a: 'a', c: ' ', e: {} })
+    })
+
+    it('Ignores missing fields', () => {
+      const result = pickWithoutUndefined(
+        {
+          a: 'a',
+          b: '',
+          c: ' ',
+          d: null,
+          e: {},
+        },
+        ['a', 'f', 'g'],
+      )
+
+      expect(result).toStrictEqual({ a: 'a' })
+    })
+
+    it('Skips undefined fields', () => {
+      const result = pickWithoutUndefined(
+        {
+          a: 'a',
+          b: undefined,
+          c: {},
+        },
+        ['a', 'b'],
+      )
+
+      expect(result).toStrictEqual({ a: 'a' })
+    })
   })
 
-  it('Includes undefined fields', () => {
-    const result = pick(
-      {
-        a: 'a',
-        b: undefined,
-        c: {},
-      },
-      ['a', 'b'],
-    )
+  describe('isEmptyObject', () => {
+    it('Returns true for completely empty object', () => {
+      const params = {}
+      const result = isEmptyObject(params)
+      expect(result).toBe(true)
+    })
 
-    expect(result).toMatchSnapshot()
-  })
-})
+    it('Returns true for object with only undefined fields', () => {
+      const params = { a: undefined }
+      const result = isEmptyObject(params)
+      expect(result).toBe(true)
+    })
 
-describe('pickWithoutUndefined', () => {
-  it('Picks specified fields', () => {
-    const result = pickWithoutUndefined(
-      {
-        a: 'a',
-        b: '',
-        c: ' ',
-        d: null,
-        e: {},
-      },
-      ['a', 'c', 'e'],
-    )
+    it('Returns false for object with null', () => {
+      const params = { a: null }
+      const result = isEmptyObject(params)
+      expect(result).toBe(false)
+    })
 
-    expect(result).toMatchSnapshot()
+    it('Returns false for non-empty object', () => {
+      const params = { a: '' }
+      const result = isEmptyObject(params)
+      expect(result).toBe(false)
+    })
   })
 
-  it('Ignores missing fields', () => {
-    const result = pickWithoutUndefined(
-      {
-        a: 'a',
-        b: '',
-        c: ' ',
-        d: null,
-        e: {},
-      },
-      ['a', 'f', 'g'],
-    )
+  describe('groupBy', () => {
+    it('Empty array', () => {
+      const array: { id: string }[] = []
+      const result = groupBy(array, 'id')
+      expect(Object.keys(result)).length(0)
+    })
 
-    expect(result).toMatchSnapshot()
+    it('Correctly groups by string values', () => {
+      const input: { name: string }[] = [
+        {
+          id: 1,
+          name: 'a',
+        },
+        {
+          id: 2,
+          name: 'c',
+        },
+        {
+          id: 3,
+          name: 'b',
+        },
+        {
+          id: 4,
+          name: 'a',
+        },
+      ] as never[]
+
+      const result: Record<string, { name: string }[]> = groupBy(input, 'name')
+
+      expect(result).toStrictEqual({
+        a: [
+          { id: 1, name: 'a' },
+          { id: 4, name: 'a' },
+        ],
+        b: [{ id: 3, name: 'b' }],
+        c: [{ id: 2, name: 'c' }],
+      })
+    })
+
+    it('Correctly groups by number values', () => {
+      const input: { count: number }[] = [
+        {
+          id: 1,
+          count: 10,
+        },
+        {
+          id: 2,
+          count: 20,
+        },
+        {
+          id: 3,
+          count: 30,
+        },
+        {
+          id: 4,
+          count: 10,
+        },
+      ] as never[]
+
+      const result: Record<number, { count: number }[]> = groupBy(input, 'count')
+
+      expect(result).toStrictEqual({
+        10: [
+          { id: 1, count: 10 },
+          { id: 4, count: 10 },
+        ],
+        20: [{ id: 2, count: 20 }],
+        30: [{ id: 3, count: 30 }],
+      })
+    })
+
+    it('Correctly handles undefined', () => {
+      const input: { name?: string }[] = [
+        {
+          id: 1,
+          name: 'name',
+        },
+        {
+          id: 2,
+        },
+        {
+          id: 3,
+        },
+        {
+          id: 4,
+          name: 'name',
+        },
+      ] as never[]
+
+      const result = groupBy(input, 'name')
+
+      expect(result).toStrictEqual({
+        name: [
+          { id: 1, name: 'name' },
+          { id: 4, name: 'name' },
+        ],
+      })
+    })
   })
 
-  it('Skips undefined fields', () => {
-    const result = pickWithoutUndefined(
-      {
-        a: 'a',
-        b: undefined,
-        c: {},
-      },
-      ['a', 'b'],
-    )
+  describe('groupByUnique', () => {
+    it('Empty array', () => {
+      const array: { id: string }[] = []
+      const result = groupByUnique(array, 'id')
+      expect(Object.keys(result)).length(0)
+    })
 
-    expect(result).toMatchSnapshot()
-  })
-})
+    it('Correctly groups by string values', () => {
+      const input: { name: string }[] = [
+        {
+          id: 1,
+          name: 'a',
+        },
+        {
+          id: 2,
+          name: 'b',
+        },
+        {
+          id: 3,
+          name: 'c',
+        },
+      ] as never[]
 
-describe('isEmptyObject', () => {
-  it('Returns true for completely empty object', () => {
-    const params = {}
-    const result = isEmptyObject(params)
-    expect(result).toBe(true)
-  })
+      const result: Record<string, { name: string }> = groupByUnique(input, 'name')
 
-  it('Returns true for object with only undefined fields', () => {
-    const params = { a: undefined }
-    const result = isEmptyObject(params)
-    expect(result).toBe(true)
-  })
+      expect(result).toStrictEqual({
+        a: { id: 1, name: 'a' },
+        b: { id: 2, name: 'b' },
+        c: { id: 3, name: 'c' },
+      })
+    })
 
-  it('Returns false for object with null', () => {
-    const params = { a: null }
-    const result = isEmptyObject(params)
-    expect(result).toBe(false)
-  })
+    it('Correctly groups by number values', () => {
+      const input: { count: number }[] = [
+        {
+          id: 1,
+          count: 10,
+        },
+        {
+          id: 2,
+          count: 20,
+        },
+        {
+          id: 3,
+          count: 30,
+        },
+      ] as never[]
 
-  it('Returns false for non-empty object', () => {
-    const params = { a: '' }
-    const result = isEmptyObject(params)
-    expect(result).toBe(false)
-  })
-})
+      const result: Record<number, { count: number }> = groupByUnique(input, 'count')
 
-describe('groupBy', () => {
-  it('Correctly groups by string values', () => {
-    const input = [
-      {
-        id: 1,
-        name: 'a',
-      },
-      {
-        id: 2,
-        name: 'c',
-      },
-      {
-        id: 3,
-        name: 'b',
-      },
-      {
-        id: 4,
-        name: 'a',
-      },
-    ]
+      expect(result).toStrictEqual({
+        10: { id: 1, count: 10 },
+        20: { id: 2, count: 20 },
+        30: { id: 3, count: 30 },
+      })
+    })
 
-    const result = groupBy(input, 'name')
+    it('Correctly handles undefined', () => {
+      const input: { name?: string }[] = [
+        {
+          id: 1,
+          name: 'name',
+        },
+        {
+          id: 2,
+        },
+        {
+          id: 3,
+          name: 'name 2',
+        },
+      ] as never[]
 
-    expect(result).toMatchSnapshot()
-  })
+      const result = groupByUnique(input, 'name')
 
-  it('Correctly groups by number values', () => {
-    const input = [
-      {
-        id: 1,
-        count: 10,
-      },
-      {
-        id: 2,
-        count: 10,
-      },
-      {
-        id: 3,
-        count: 20,
-      },
-      {
-        id: 4,
-        count: 30,
-      },
-    ]
+      expect(result).toStrictEqual({
+        name: { id: 1, name: 'name' },
+        'name 2': { id: 3, name: 'name 2' },
+      })
+    })
 
-    const result = groupBy(input, 'count')
+    it('throws on duplicated value', () => {
+      const input: { name: string }[] = [
+        {
+          id: 1,
+          name: 'test',
+        },
+        {
+          id: 2,
+          name: 'work',
+        },
+        {
+          id: 3,
+          name: 'test',
+        },
+      ] as never[]
 
-    expect(result).toMatchSnapshot()
-  })
-
-  it('Correctly handles undefined', () => {
-    const input = [
-      {
-        id: 1,
-        name: '45',
-      },
-      {
-        id: 2,
-      },
-      {
-        id: 3,
-      },
-      {
-        id: 4,
-        name: '45',
-      },
-    ]
-
-    const result = groupBy(input, 'name')
-
-    expect(result).toMatchSnapshot()
+      expect(() => groupByUnique(input, 'name')).toThrowError(
+        'Duplicated item for selector name with value test',
+      )
+    })
   })
 })
