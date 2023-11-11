@@ -1,6 +1,7 @@
 import { expect } from 'vitest'
 
 import {
+  convertDatesToIsoString,
   copyWithoutUndefined,
   groupBy,
   groupByUnique,
@@ -369,6 +370,112 @@ describe('objectUtils', () => {
       expect(() => groupByUnique(input, 'name')).toThrowError(
         'Duplicated item for selector name with value test',
       )
+    })
+  })
+
+  describe('convertDatesToIsoString', () => {
+    it('Empty object', () => {
+      expect(convertDatesToIsoString({})).toStrictEqual({})
+    })
+
+    type TestInputType = {
+      id: number
+      value: string
+      date: Date
+      code: number
+      reason?: string | null
+      other?: TestInputType
+    }
+
+    type TestExpectedType = {
+      id: number
+      value: string
+      date: string
+      code: number
+      other?: TestExpectedType
+    }
+
+    it('simple objects', () => {
+      const date = new Date()
+      const input: TestInputType = {
+        id: 1,
+        date,
+        value: 'test',
+        reason: 'reason',
+        code: 100,
+      }
+
+      const output: TestExpectedType = convertDatesToIsoString(input)
+
+      expect(output).toStrictEqual({
+        id: 1,
+        date: date.toISOString(),
+        value: 'test',
+        code: 100,
+        reason: 'reason',
+      })
+    })
+
+    it('handles undefined and null', () => {
+      const date = new Date()
+      const input: TestInputType = {
+        id: 1,
+        date,
+        value: 'test',
+        code: 100,
+        reason: null,
+        other: undefined,
+      }
+
+      const output: TestExpectedType = convertDatesToIsoString(input)
+
+      expect(output).toStrictEqual({
+        id: 1,
+        date: date.toISOString(),
+        value: 'test',
+        code: 100,
+        reason: null,
+        other: undefined,
+      })
+    })
+
+    it('nested objects', () => {
+      const date1 = new Date()
+      const date2 = new Date()
+      date2.setFullYear(1990)
+      const input: TestInputType = {
+        id: 1,
+        date: date1,
+        value: 'test',
+        code: 100,
+        reason: 'reason',
+        other: {
+          id: 2,
+          value: 'test 2',
+          date: date2,
+          code: 200,
+          reason: null,
+          other: undefined,
+        },
+      }
+
+      const output: TestExpectedType = convertDatesToIsoString(input)
+
+      expect(output).toMatchObject({
+        id: 1,
+        date: date1.toISOString(),
+        value: 'test',
+        code: 100,
+        reason: 'reason',
+        other: {
+          id: 2,
+          value: 'test 2',
+          date: date2.toISOString(),
+          code: 200,
+          reason: null,
+          other: undefined,
+        },
+      })
     })
   })
 })
