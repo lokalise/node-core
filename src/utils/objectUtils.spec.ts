@@ -1,3 +1,5 @@
+import { expect } from 'vitest'
+
 import {
   copyWithoutUndefined,
   groupBy,
@@ -343,6 +345,27 @@ describe('objectUtils', () => {
       expect(result).toMatchObject({
         name: { id: 3, name: 'name' },
       })
+    })
+
+    it('throws on duplicated value', () => {
+      const input: { name: string }[] = [
+        {
+          id: 1,
+          name: 'test',
+        },
+        {
+          id: 2,
+          name: 'work',
+        },
+        {
+          id: 3,
+          name: 'test',
+        },
+      ] as never[]
+
+      expect(() => groupByUnique(input, 'name')).toThrowError(
+        'Duplicated item for selector name with value test',
+      )
     })
   })
 })

@@ -1,3 +1,5 @@
+import { InternalError } from '../errors/InternalError'
+
 export function copyWithoutUndefined<
   T extends Record<string | number | symbol, unknown>,
   TargetRecordType = Pick<
@@ -93,6 +95,13 @@ export function groupByUnique<
       const key = item[selector]
       if (key === undefined || key === null) {
         return acc
+      }
+      if (acc[key] !== undefined || acc[key] !== null) {
+        throw new InternalError({
+          message: `Duplicated item for selector ${selector.toString()} with value ${key.toString()}`,
+          errorCode: 'DUPLICATED_ITEM',
+          details: { selector, value: key },
+        })
       }
       acc[key] = item
       return acc
