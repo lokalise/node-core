@@ -199,7 +199,7 @@ describe('objectUtils', () => {
 
       const result: Record<string, { name: string }[]> = groupBy(input, 'name')
 
-      expect(result).toMatchObject({
+      expect(result).toStrictEqual({
         a: [
           { id: 1, name: 'a' },
           { id: 4, name: 'a' },
@@ -231,7 +231,7 @@ describe('objectUtils', () => {
 
       const result: Record<number, { count: number }[]> = groupBy(input, 'count')
 
-      expect(result).toMatchObject({
+      expect(result).toStrictEqual({
         10: [
           { id: 1, count: 10 },
           { id: 4, count: 10 },
@@ -261,7 +261,7 @@ describe('objectUtils', () => {
 
       const result = groupBy(input, 'name')
 
-      expect(result).toMatchObject({
+      expect(result).toStrictEqual({
         name: [
           { id: 1, name: 'name' },
           { id: 4, name: 'name' },
@@ -285,19 +285,20 @@ describe('objectUtils', () => {
         },
         {
           id: 2,
-          name: 'c',
+          name: 'b',
         },
         {
           id: 3,
-          name: 'a',
+          name: 'c',
         },
       ] as never[]
 
       const result: Record<string, { name: string }> = groupByUnique(input, 'name')
 
-      expect(result).toMatchObject({
-        a: { id: 3, name: 'a' },
-        c: { id: 2, name: 'c' },
+      expect(result).toStrictEqual({
+        a: { id: 1, name: 'a' },
+        b: { id: 2, name: 'b' },
+        c: { id: 3, name: 'c' },
       })
     })
 
@@ -313,15 +314,16 @@ describe('objectUtils', () => {
         },
         {
           id: 3,
-          count: 10,
+          count: 30,
         },
       ] as never[]
 
       const result: Record<number, { count: number }> = groupByUnique(input, 'count')
 
-      expect(result).toMatchObject({
-        10: { id: 3, count: 10 },
+      expect(result).toStrictEqual({
+        10: { id: 1, count: 10 },
         20: { id: 2, count: 20 },
+        30: { id: 3, count: 30 },
       })
     })
 
@@ -336,14 +338,15 @@ describe('objectUtils', () => {
         },
         {
           id: 3,
-          name: 'name',
+          name: 'name 2',
         },
       ] as never[]
 
       const result = groupByUnique(input, 'name')
 
-      expect(result).toMatchObject({
-        name: { id: 3, name: 'name' },
+      expect(result).toStrictEqual({
+        name: { id: 1, name: 'name' },
+        'name 2': { id: 3, name: 'name 2' },
       })
     })
 

@@ -110,7 +110,7 @@ export function groupByUnique<
       if (key === undefined || key === null) {
         return acc
       }
-      if (acc[key] !== undefined || acc[key] !== null) {
+      if (acc[key] !== undefined) {
         throw new InternalError({
           message: `Duplicated item for selector ${selector.toString()} with value ${key.toString()}`,
           errorCode: 'DUPLICATED_ITEM',
