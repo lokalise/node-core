@@ -30,4 +30,4 @@ The `groupBy` function takes an array of objects and a `selector`, groups the ob
 
 `export function groupByUnique<T extends { [K in keyof T]: string | number | symbol | null | undefined }, K extends keyof T>(array: T[], selector: K): Record<string | number | symbol, T>`
 
-Similar to `groupBy`, but the value is a single element which corresponds to the last found element in the array
+Similar to `groupBy`, but the value is a single element, in case of duplicated values for the same selector the method will throw a `InternalError`

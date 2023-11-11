@@ -1,7 +1,9 @@
 import { InternalError } from '../errors/InternalError'
 
+type RecordKeyType = string | number | symbol
+
 export function copyWithoutUndefined<
-  T extends Record<string | number | symbol, unknown>,
+  T extends Record<RecordKeyType, unknown>,
   TargetRecordType = Pick<
     T,
     {
@@ -65,7 +67,12 @@ export function isEmptyObject(params: Record<string, unknown>): boolean {
   return true
 }
 
-type RecordKeyType = string | number | symbol
+/**
+ * @param array The array of objects to be grouped.
+ * @param selector The key used for grouping the objects.
+ * @returns An object where the keys are unique values from the given selector and the values are the corresponding
+ *  objects from the array.
+ */
 export function groupBy<
   T extends { [K in keyof T]: RecordKeyType | null | undefined },
   K extends keyof T,
@@ -86,6 +93,13 @@ export function groupBy<
   )
 }
 
+/**
+ * @param array The array of objects to be grouped.
+ * @param selector The key used for grouping the objects.
+ * @returns An object where the keys are unique values from the given selector and the value is the
+ *  corresponding object from the array.
+ * @throws InternalError If a duplicated value is found for the given selector.
+ */
 export function groupByUnique<
   T extends { [K in keyof T]: RecordKeyType | null | undefined },
   K extends keyof T,
