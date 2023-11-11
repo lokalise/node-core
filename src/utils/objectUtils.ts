@@ -123,3 +123,29 @@ export function groupByUnique<
     {} as Record<RecordKeyType, T>,
   )
 }
+
+type DatesAsString<T> = T extends Date
+  ? string
+  : T extends object
+  ? ExactlyLikeWithDateAsString<T>
+  : T
+export type ExactlyLikeWithDateAsString<T> = {
+  [K in keyof T]: DatesAsString<T[K]>
+}
+export function convertDatesToIsoString<Input extends object>(
+  object: Input,
+): ExactlyLikeWithDateAsString<Input> {
+  return Object.entries(object).reduce((result, [key, value]) => {
+    if (value instanceof Date) {
+      // @ts-ignore
+      result[key] = value.toISOString()
+    } else if (value && typeof value === 'object') {
+      // @ts-ignore
+      result[key] = convertDatesToIsoString(value)
+    } else {
+      // @ts-ignore
+      result[key] = value instanceof Date ? value.toISOString() : value
+    }
+    return result
+  }, {} as ExactlyLikeWithDateAsString<Input>)
+}
