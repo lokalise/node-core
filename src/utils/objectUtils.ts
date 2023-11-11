@@ -129,7 +129,7 @@ type DatesAsString<T> = T extends Date
   : T extends object
   ? ExactlyLikeWithDateAsString<T>
   : T
-export type ExactlyLikeWithDateAsString<T> = {
+type ExactlyLikeWithDateAsString<T> = {
   [K in keyof T]: DatesAsString<T[K]>
 }
 export function convertDatesToIsoString<Input extends object>(
