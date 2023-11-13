@@ -124,15 +124,10 @@ export function groupByUnique<
   )
 }
 
-type DatesAsString<T> = T extends Date
-  ? string
-  : T extends object
-  ? ExactlyLikeWithDateAsString<T>
-  : T
+type DatesAsString<T> = T extends Date ? string : ExactlyLikeWithDateAsString<T>
 
-type ExactlyLikeWithDateAsString<T> = {
-  [K in keyof T]: DatesAsString<T[K]>
-}
+type ExactlyLikeWithDateAsString<T> = T extends object ? { [K in keyof T]: DatesAsString<T[K]> } : T
+
 export function convertDatesToIsoString<Input extends object>(
   object: Input,
 ): ExactlyLikeWithDateAsString<Input> {
