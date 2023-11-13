@@ -43,7 +43,7 @@ export {
   pickWithoutUndefined,
   copyWithoutUndefined,
   isEmptyObject,
-  convertDatesToIsoString,
+  convertDateFieldsToIsoString,
 } from './src/utils/objectUtils'
 
 export {

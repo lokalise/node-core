@@ -1,7 +1,7 @@
 import { expect } from 'vitest'
 
 import {
-  convertDatesToIsoString,
+  convertDateFieldsToIsoString,
   copyWithoutUndefined,
   groupBy,
   groupByUnique,
@@ -373,9 +373,9 @@ describe('objectUtils', () => {
     })
   })
 
-  describe('convertDatesToIsoString', () => {
+  describe('convertDateFieldsToIsoString', () => {
     it('Empty object', () => {
-      expect(convertDatesToIsoString({})).toStrictEqual({})
+      expect(convertDateFieldsToIsoString({})).toStrictEqual({})
     })
 
     type TestInputType = {
@@ -413,7 +413,7 @@ describe('objectUtils', () => {
         code: 100,
       }
 
-      const output: TestExpectedType = convertDatesToIsoString(input)
+      const output: TestExpectedType = convertDateFieldsToIsoString(input)
 
       expect(output).toStrictEqual({
         id: 1,
@@ -444,7 +444,7 @@ describe('objectUtils', () => {
         },
       ]
 
-      const output: TestExpectedType[] = convertDatesToIsoString(input)
+      const output: TestExpectedType[] = convertDateFieldsToIsoString(input)
 
       expect(output).toStrictEqual([
         {
@@ -475,7 +475,7 @@ describe('objectUtils', () => {
         other: undefined,
       }
 
-      const output: TestExpectedType = convertDatesToIsoString(input)
+      const output: TestExpectedType = convertDateFieldsToIsoString(input)
 
       expect(output).toStrictEqual({
         id: 1,
@@ -517,7 +517,7 @@ describe('objectUtils', () => {
         ],
       }
 
-      const output: TestExpectedType = convertDatesToIsoString(input)
+      const output: TestExpectedType = convertDateFieldsToIsoString(input)
 
       expect(output).toMatchObject({
         id: 1,
