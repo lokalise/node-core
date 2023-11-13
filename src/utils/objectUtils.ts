@@ -129,6 +129,7 @@ type DatesAsString<T> = T extends Date
   : T extends object
   ? ExactlyLikeWithDateAsString<T>
   : T
+
 type ExactlyLikeWithDateAsString<T> = {
   [K in keyof T]: DatesAsString<T[K]>
 }
