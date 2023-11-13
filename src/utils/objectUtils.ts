@@ -140,7 +140,7 @@ export function convertDatesToIsoString<Input extends object>(
       result[key] = convertDatesToIsoString(value)
     } else {
       // @ts-ignore
-      result[key] = value instanceof Date ? value.toISOString() : value
+      result[key] = value
     }
     return result
   }, {} as ExactlyLikeWithDateAsString<Input>)
