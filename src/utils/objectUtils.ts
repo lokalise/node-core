@@ -130,7 +130,17 @@ type ExactlyLikeWithDateAsString<T> = T extends object ? { [K in keyof T]: Dates
 
 export function convertDatesToIsoString<Input extends object>(
   object: Input,
-): ExactlyLikeWithDateAsString<Input> {
+): ExactlyLikeWithDateAsString<Input>
+export function convertDatesToIsoString<Input extends object>(
+  object: Input[],
+): ExactlyLikeWithDateAsString<Input>[]
+export function convertDatesToIsoString<Input extends object>(
+  object: Input | Input[],
+): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[] {
+  if (Array.isArray(object)) {
+    return object.map((item) => convertDatesToIsoString(item))
+  }
+
   return Object.entries(object).reduce((result, [key, value]) => {
     if (value instanceof Date) {
       // @ts-ignore
