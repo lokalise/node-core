@@ -212,7 +212,6 @@ describe('objectUtils', () => {
           name: 'a',
           bool: true,
           nested: { code: 400 },
-          bug,
         },
       ]
 
