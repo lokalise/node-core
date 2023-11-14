@@ -1,6 +1,7 @@
 import { expect } from 'vitest'
 
 import {
+  convertDateFieldsToIsoString,
   copyWithoutUndefined,
   groupBy,
   groupByUnique,
@@ -369,6 +370,180 @@ describe('objectUtils', () => {
       expect(() => groupByUnique(input, 'name')).toThrowError(
         'Duplicated item for selector name with value test',
       )
+    })
+  })
+
+  describe('convertDateFieldsToIsoString', () => {
+    it('Empty object', () => {
+      expect(convertDateFieldsToIsoString({})).toStrictEqual({})
+    })
+
+    type TestInputType = {
+      id: number
+      value: string
+      date: Date
+      code: number
+      reason?: string | null
+      other?: TestInputType
+      array?: {
+        id: number
+        createdAt: Date
+      }[]
+    }
+
+    type TestExpectedType = {
+      id: number
+      value: string
+      date: string
+      code: number
+      other?: TestExpectedType
+      array?: {
+        id: number
+        createdAt: string
+      }[]
+    }
+
+    it('simple object', () => {
+      const date = new Date()
+      const input: TestInputType = {
+        id: 1,
+        date,
+        value: 'test',
+        reason: 'reason',
+        code: 100,
+      }
+
+      const output: TestExpectedType = convertDateFieldsToIsoString(input)
+
+      expect(output).toStrictEqual({
+        id: 1,
+        date: date.toISOString(),
+        value: 'test',
+        code: 100,
+        reason: 'reason',
+      })
+    })
+
+    it('simple array', () => {
+      const date1 = new Date()
+      const date2 = new Date()
+      const input: TestInputType[] = [
+        {
+          id: 1,
+          date: date1,
+          value: 'test',
+          reason: 'reason',
+          code: 100,
+        },
+        {
+          id: 2,
+          date: date2,
+          value: 'test 2',
+          reason: 'reason 2',
+          code: 200,
+        },
+      ]
+
+      const output: TestExpectedType[] = convertDateFieldsToIsoString(input)
+
+      expect(output).toStrictEqual([
+        {
+          id: 1,
+          date: date1.toISOString(),
+          value: 'test',
+          code: 100,
+          reason: 'reason',
+        },
+        {
+          id: 2,
+          date: date2.toISOString(),
+          value: 'test 2',
+          code: 200,
+          reason: 'reason 2',
+        },
+      ])
+    })
+
+    it('handles undefined and null', () => {
+      const date = new Date()
+      const input: TestInputType = {
+        id: 1,
+        date,
+        value: 'test',
+        code: 100,
+        reason: null,
+        other: undefined,
+      }
+
+      const output: TestExpectedType = convertDateFieldsToIsoString(input)
+
+      expect(output).toStrictEqual({
+        id: 1,
+        date: date.toISOString(),
+        value: 'test',
+        code: 100,
+        reason: null,
+        other: undefined,
+      })
+    })
+
+    it('nested objects and array', () => {
+      const date1 = new Date()
+      const date2 = new Date()
+      date2.setFullYear(1990)
+      const input: TestInputType = {
+        id: 1,
+        date: date1,
+        value: 'test',
+        code: 100,
+        reason: 'reason',
+        other: {
+          id: 2,
+          value: 'test 2',
+          date: date2,
+          code: 200,
+          reason: null,
+          other: undefined,
+        },
+        array: [
+          {
+            id: 1,
+            createdAt: date1,
+          },
+          {
+            id: 2,
+            createdAt: date2,
+          },
+        ],
+      }
+
+      const output: TestExpectedType = convertDateFieldsToIsoString(input)
+
+      expect(output).toMatchObject({
+        id: 1,
+        date: date1.toISOString(),
+        value: 'test',
+        code: 100,
+        reason: 'reason',
+        other: {
+          id: 2,
+          value: 'test 2',
+          date: date2.toISOString(),
+          code: 200,
+          reason: null,
+          other: undefined,
+        },
+        array: [
+          {
+            id: 1,
+            createdAt: date1.toISOString(),
+          },
+          {
+            id: 2,
+            createdAt: date2.toISOString(),
+          },
+        ],
+      })
     })
   })
 })
