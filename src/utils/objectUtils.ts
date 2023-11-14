@@ -67,19 +67,20 @@ export function isEmptyObject(params: Record<string, unknown>): boolean {
   return true
 }
 
+type KeysMatching<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T]
+
 /**
  * @param array The array of objects to be grouped.
  * @param selector The key used for grouping the objects.
- * @returns An object where the keys are unique values from the given selector and the values are the corresponding
- *  objects from the array.
+ * @returns An object where the keys are unique values from the given selector and the values are the corresponding objects from the array.
  */
 export function groupBy<
-  T extends { [K in keyof T]: RecordKeyType | null | undefined },
-  K extends keyof T,
+  T extends object,
+  K extends KeysMatching<T, RecordKeyType | null | undefined>,
 >(array: T[], selector: K): Record<RecordKeyType, T[]> {
   return array.reduce(
     (acc, item) => {
-      const key = item[selector]
+      const key = item[selector] as RecordKeyType | null | undefined
       if (key === undefined || key === null) {
         return acc
       }
@@ -101,12 +102,12 @@ export function groupBy<
  * @throws InternalError If a duplicated value is found for the given selector.
  */
 export function groupByUnique<
-  T extends { [K in keyof T]: RecordKeyType | null | undefined },
-  K extends keyof T,
+  T extends object,
+  K extends KeysMatching<T, RecordKeyType | null | undefined>,
 >(array: T[], selector: K): Record<RecordKeyType, T> {
   return array.reduce(
     (acc, item) => {
-      const key = item[selector]
+      const key = item[selector] as RecordKeyType | null | undefined
       if (key === undefined || key === null) {
         return acc
       }
