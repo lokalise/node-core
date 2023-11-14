@@ -1,4 +1,4 @@
-import { expect } from 'vitest'
+import { expect, expectTypeOf } from 'vitest'
 
 import {
   convertDateFieldsToIsoString,
@@ -178,94 +178,171 @@ describe('objectUtils', () => {
       expect(Object.keys(result)).length(0)
     })
 
+    type TestType = {
+      id?: number | null
+      name: string
+      bool: boolean
+      nested?: {
+        code: number
+      }
+    }
+
     it('Correctly groups by string values', () => {
-      const input: { name: string }[] = [
+      const input: TestType[] = [
         {
           id: 1,
           name: 'a',
+          bool: true,
+          nested: { code: 100 },
         },
         {
           id: 2,
           name: 'c',
+          bool: true,
+          nested: { code: 200 },
         },
         {
           id: 3,
           name: 'b',
+          bool: true,
+          nested: { code: 300 },
         },
         {
           id: 4,
           name: 'a',
+          bool: true,
+          nested: { code: 400 },
         },
-      ] as never[]
+      ]
 
-      const result: Record<string, { name: string }[]> = groupBy(input, 'name')
-
+      const result: Record<string, TestType[]> = groupBy(input, 'name')
       expect(result).toStrictEqual({
         a: [
-          { id: 1, name: 'a' },
-          { id: 4, name: 'a' },
+          {
+            id: 1,
+            name: 'a',
+            bool: true,
+            nested: { code: 100 },
+          },
+          {
+            id: 4,
+            name: 'a',
+            bool: true,
+            nested: { code: 400 },
+          },
         ],
-        b: [{ id: 3, name: 'b' }],
-        c: [{ id: 2, name: 'c' }],
+        b: [
+          {
+            id: 3,
+            name: 'b',
+            bool: true,
+            nested: { code: 300 },
+          },
+        ],
+        c: [
+          {
+            id: 2,
+            name: 'c',
+            bool: true,
+            nested: { code: 200 },
+          },
+        ],
       })
     })
 
     it('Correctly groups by number values', () => {
-      const input: { count: number }[] = [
+      const input: TestType[] = [
         {
           id: 1,
-          count: 10,
+          name: 'a',
+          bool: true,
+        },
+        {
+          id: 1,
+          name: 'b',
+          bool: false,
         },
         {
           id: 2,
-          count: 20,
+          name: 'c',
+          bool: false,
         },
         {
           id: 3,
-          count: 30,
+          name: 'd',
+          bool: false,
         },
-        {
-          id: 4,
-          count: 10,
-        },
-      ] as never[]
+      ]
 
-      const result: Record<number, { count: number }[]> = groupBy(input, 'count')
+      const result: Record<number, TestType[]> = groupBy(input, 'id')
 
       expect(result).toStrictEqual({
-        10: [
-          { id: 1, count: 10 },
-          { id: 4, count: 10 },
+        1: [
+          {
+            id: 1,
+            name: 'a',
+            bool: true,
+          },
+          {
+            id: 1,
+            name: 'b',
+            bool: false,
+          },
         ],
-        20: [{ id: 2, count: 20 }],
-        30: [{ id: 3, count: 30 }],
+        2: [
+          {
+            id: 2,
+            name: 'c',
+            bool: false,
+          },
+        ],
+        3: [
+          {
+            id: 3,
+            name: 'd',
+            bool: false,
+          },
+        ],
       })
     })
 
-    it('Correctly handles undefined', () => {
-      const input: { name?: string }[] = [
+    it('Correctly handles undefined and null', () => {
+      const input: TestType[] = [
         {
           id: 1,
-          name: 'name',
+          name: 'a',
+          bool: true,
         },
         {
-          id: 2,
+          name: 'c',
+          bool: true,
         },
         {
-          id: 3,
+          id: null,
+          name: 'd',
+          bool: true,
         },
         {
-          id: 4,
-          name: 'name',
+          id: 1,
+          name: 'b',
+          bool: true,
         },
-      ] as never[]
+      ]
 
-      const result = groupBy(input, 'name')
+      const result = groupBy(input, 'id')
 
       expect(result).toStrictEqual({
-        name: [
-          { id: 1, name: 'name' },
-          { id: 4, name: 'name' },
+        1: [
+          {
+            id: 1,
+            name: 'a',
+            bool: true,
+          },
+          {
+            id: 1,
+            name: 'b',
+            bool: true,
+          },
         ],
       })
     })
@@ -278,76 +355,119 @@ describe('objectUtils', () => {
       expect(Object.keys(result)).length(0)
     })
 
+    type TestType = {
+      id?: number | null
+      name: string
+      bool: boolean
+      nested: {
+        code: number
+      }
+    }
+
     it('Correctly groups by string values', () => {
-      const input: { name: string }[] = [
+      const input: TestType[] = [
         {
           id: 1,
           name: 'a',
+          bool: true,
+          nested: { code: 100 },
         },
         {
           id: 2,
           name: 'b',
+          bool: true,
+          nested: { code: 200 },
         },
-        {
-          id: 3,
-          name: 'c',
-        },
-      ] as never[]
+      ]
 
-      const result: Record<string, { name: string }> = groupByUnique(input, 'name')
-
+      const result: Record<string, TestType> = groupByUnique(input, 'name')
       expect(result).toStrictEqual({
-        a: { id: 1, name: 'a' },
-        b: { id: 2, name: 'b' },
-        c: { id: 3, name: 'c' },
+        a: {
+          id: 1,
+          name: 'a',
+          bool: true,
+          nested: { code: 100 },
+        },
+
+        b: {
+          id: 2,
+          name: 'b',
+          bool: true,
+          nested: { code: 200 },
+        },
       })
     })
 
     it('Correctly groups by number values', () => {
-      const input: { count: number }[] = [
+      const input: TestType[] = [
         {
           id: 1,
-          count: 10,
+          name: 'a',
+          bool: true,
+          nested: { code: 100 },
         },
         {
           id: 2,
-          count: 20,
+          name: 'b',
+          bool: true,
+          nested: { code: 200 },
         },
-        {
-          id: 3,
-          count: 30,
-        },
-      ] as never[]
+      ]
 
-      const result: Record<number, { count: number }> = groupByUnique(input, 'count')
+      const result: Record<number, TestType> = groupByUnique(input, 'id')
 
       expect(result).toStrictEqual({
-        10: { id: 1, count: 10 },
-        20: { id: 2, count: 20 },
-        30: { id: 3, count: 30 },
+        1: {
+          id: 1,
+          name: 'a',
+          bool: true,
+          nested: { code: 100 },
+        },
+        2: {
+          id: 2,
+          name: 'b',
+          bool: true,
+          nested: { code: 200 },
+        },
       })
     })
 
     it('Correctly handles undefined', () => {
-      const input: { name?: string }[] = [
+      const input: TestType[] = [
         {
           id: 1,
           name: 'name',
+          bool: true,
+          nested: { code: 100 },
         },
         {
-          id: 2,
+          name: 'invalid',
+          bool: true,
+          nested: { code: 100 },
         },
         {
           id: 3,
           name: 'name 2',
+          bool: true,
+          nested: { code: 100 },
         },
-      ] as never[]
+      ]
 
-      const result = groupByUnique(input, 'name')
+      const result = groupByUnique(input, 'id')
 
       expect(result).toStrictEqual({
-        name: { id: 1, name: 'name' },
-        'name 2': { id: 3, name: 'name 2' },
+        1: {
+          id: 1,
+          name: 'name',
+          bool: true,
+          nested: { code: 100 },
+        },
+        3: {
+          id: 3,
+          name: 'name 2',
+          bool: true,
+          nested: { code: 100 },
+        },
       })
     })
 
@@ -422,6 +542,7 @@ describe('objectUtils', () => {
         code: 100,
         reason: 'reason',
       })
+      expectTypeOf(output).toMatchTypeOf<TestExpectedType>()
     })
 
     it('simple array', () => {
