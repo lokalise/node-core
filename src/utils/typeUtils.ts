@@ -1,4 +1,5 @@
 import type { InternalError } from '../errors/InternalError'
+import type { PublicNonRecoverableError } from '../errors/PublicNonRecoverableError'
 
 // Error structure commonly used in libraries, e. g. fastify
 export type StandardizedError = {
@@ -22,6 +23,6 @@ export function isInternalError(error: unknown): error is InternalError {
   return isObject(error) && error.name === 'InternalError'
 }
 
-export function isPublicNonRecoverableError(error: unknown): error is InternalError {
+export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
   return isObject(error) && error.name === 'PublicNonRecoverableError'
 }
