@@ -139,7 +139,16 @@ export function convertDateFieldsToIsoString<Input extends object>(
   object: Input | Input[],
 ): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[] {
   if (Array.isArray(object)) {
-    return object.map((item) => convertDateFieldsToIsoString(item))
+    // @ts-ignore
+    return object.map((item) => {
+      if (item instanceof Date) {
+        return item.toISOString()
+      } else if (item && typeof item === 'object') {
+        return convertDateFieldsToIsoString(item)
+      } else {
+        return item
+      }
+    })
   }
 
   return Object.entries(object).reduce((result, [key, value]) => {
