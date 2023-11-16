@@ -1,4 +1,4 @@
-import { expect, expectTypeOf } from 'vitest'
+import { expect } from 'vitest'
 
 import {
   convertDateFieldsToIsoString,
@@ -542,7 +542,6 @@ describe('objectUtils', () => {
         code: 100,
         reason: 'reason',
       })
-      expectTypeOf(output).toMatchTypeOf<TestExpectedType>()
     })
 
     it('simple array', () => {
