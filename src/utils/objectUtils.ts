@@ -139,20 +139,26 @@ export function convertDateFieldsToIsoString<Input extends object>(
   object: Input | Input[],
 ): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[] {
   if (Array.isArray(object)) {
-    return object.map((item) => convertDateFieldsToIsoString(item))
+    // @ts-ignore
+    return object.map(convertDateFieldsToIsoStringAux)
   }
 
   return Object.entries(object).reduce((result, [key, value]) => {
-    if (value instanceof Date) {
-      // @ts-ignore
-      result[key] = value.toISOString()
-    } else if (value && typeof value === 'object') {
-      // @ts-ignore
-      result[key] = convertDateFieldsToIsoString(value)
-    } else {
-      // @ts-ignore
-      result[key] = value
-    }
+    // @ts-ignore
+    result[key] = convertDateFieldsToIsoStringAux(value)
     return result
   }, {} as ExactlyLikeWithDateAsString<Input>)
+}
+
+function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
+  if (item instanceof Date) {
+    // @ts-ignore
+    return item.toISOString()
+  } else if (item && typeof item === 'object') {
+    // @ts-ignore
+    return convertDateFieldsToIsoString(item)
+  } else {
+    // @ts-ignore
+    return item
+  }
 }
