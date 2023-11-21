@@ -162,3 +162,16 @@ function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
     return item
   }
 }
+
+/**
+ * Return a deep clone copy of an object.
+ *
+ * Please Note: This is a fast method for deep cloning for simple cases, but has limitations:
+ *
+ * - Cannot clone functions, dates, regex, undefined, infinity, and -0
+ * - Does not preserve property descriptions or prototype chain.
+ * - Beware of circular references, which will cause an error.
+ */
+export function deepClone<T>(object: T): T {
+  return JSON.parse(JSON.stringify(object)) as T
+}

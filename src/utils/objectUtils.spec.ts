@@ -3,6 +3,7 @@ import { expect } from 'vitest'
 import {
   convertDateFieldsToIsoString,
   copyWithoutUndefined,
+  deepClone,
   groupBy,
   groupByUnique,
   isEmptyObject,
@@ -700,6 +701,40 @@ describe('objectUtils', () => {
           {
             id: 2,
             createdAt: date2.toISOString(),
+          },
+        ],
+      })
+    })
+  })
+
+  describe('deepClone', () => {
+    it('will deep clone an object', () => {
+      const object = {
+        names: [
+          {
+            name: 'Cameron',
+          },
+          {
+            name: 'Alexander',
+          },
+          {
+            name: 'Smith',
+          },
+        ],
+      }
+
+      const clonedObject = deepClone(object)
+      object.names = []
+      expect(clonedObject).toStrictEqual({
+        names: [
+          {
+            name: 'Cameron',
+          },
+          {
+            name: 'Alexander',
+          },
+          {
+            name: 'Smith',
           },
         ],
       })
