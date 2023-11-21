@@ -740,4 +740,9 @@ describe('objectUtils', () => {
       })
     })
   })
+
+  it('will return null or undefined if no object is provided', () => {
+    expect(deepClone(undefined)).toBeUndefined()
+    expect(deepClone(null)).toBeNull()
+  })
 })

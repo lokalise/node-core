@@ -38,7 +38,4 @@ Transform an input object with `Date` members into an object with the correspond
 
 `export function deepClone<T>(object: T): T`
 
-Return a deep clone copy of an object. This implementation cloning has these limitations:
-- Cannot clone functions, dates, regex, undefined, infinity, and -0
-- Does not preserve property descriptions or prototype chain.
-- Beware of circular references, which will cause an error.
+Return a deep clone copy of an object. Please Note: This uses structuredClone, which has the limitations of these restricted Types: functions, Error objects, WeakMap, WeakSet, DOM nodes, and certain other browser-specific objects like Window.
