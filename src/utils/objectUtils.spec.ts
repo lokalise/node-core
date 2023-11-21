@@ -721,23 +721,30 @@ describe('objectUtils', () => {
             name: 'Smith',
           },
         ],
+        date: new Date(),
+        isEnabled: true,
+        age: 12,
       }
 
       const clonedObject = deepClone(object)
       object.names = []
-      expect(clonedObject).toStrictEqual({
-        names: [
-          {
-            name: 'Cameron',
-          },
-          {
-            name: 'Alexander',
-          },
-          {
-            name: 'Smith',
-          },
-        ],
-      })
+      object.age = 22
+      object.isEnabled = false
+      expect(clonedObject.date).instanceof(Date)
+      expect(clonedObject.date).not.toBe(object.date)
+      expect(clonedObject.names).toStrictEqual([
+        {
+          name: 'Cameron',
+        },
+        {
+          name: 'Alexander',
+        },
+        {
+          name: 'Smith',
+        },
+      ])
+      expect(clonedObject.isEnabled).toBe(true)
+      expect(clonedObject.age).toBe(12)
     })
   })
 
