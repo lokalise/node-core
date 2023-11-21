@@ -172,6 +172,6 @@ function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
  * - Does not preserve property descriptions or prototype chain.
  * - Beware of circular references, which will cause an error.
  */
-export function deepClone<T>(object: T): T {
+export function deepClone<T extends object>(object: T): T {
   return JSON.parse(JSON.stringify(object)) as T
 }
