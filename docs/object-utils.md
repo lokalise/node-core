@@ -35,3 +35,7 @@ Similar to `groupBy`, but the value is a single element, in case of duplicated v
 `convertDateFieldsToIsoString<Input extends object>(object: Input | Input[],): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[]`
 
 Transform an input object with `Date` members into an object with the corresponding `Date` members replaced by their ISO string representation. This transformation is done recursively, covering nested objects as well.
+
+`export function deepClone<T extends object | undefined | null>(object: T): T`
+
+Return a deep clone copy of an object. Please Note: This uses structuredClone, which has the limitations of these restricted Types: functions, Error objects, WeakMap, WeakSet, DOM nodes, and certain other browser-specific objects like Window.
