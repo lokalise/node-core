@@ -22,6 +22,12 @@ export function isInternalError(error: unknown): error is InternalError {
   return isObject(error) && error.name === 'InternalError'
 }
 
+export function isError(maybeError: unknown): maybeError is Error {
+  return (
+    maybeError instanceof Error || Object.prototype.toString.call(maybeError) === '[object Error]'
+  )
+}
+
 export function isPublicNonRecoverableError(error: unknown): error is InternalError {
   return isObject(error) && error.name === 'PublicNonRecoverableError'
 }
