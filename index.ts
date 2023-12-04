@@ -43,6 +43,8 @@ export {
   pickWithoutUndefined,
   copyWithoutUndefined,
   isEmptyObject,
+  convertDateFieldsToIsoString,
+  deepClone,
 } from './src/utils/objectUtils'
 
 export {
