@@ -12,12 +12,6 @@ See [docs](/docs) for further instructions on how to use.
 
 ## Overview
 
-### Dependencies
-
-- `pino`;
-- `unidici`;
-- `unidici-retry`.
-
 ## HTTP Client
 
 The library provides methods to implement the client side of HTTP protocols. Public methods available are:
@@ -209,7 +203,7 @@ Additionally, `DefineEither` is also provided. It is a variation of the aforemen
 There is helper function available for writing event-driven assertions in automated tests, which rely on something eventually happening:
 
 ```ts
-import {waitAndRetry} from "@lokalise/node-core";
+import { waitAndRetry } from "@lokalise/node-core";
 
 const result = await waitAndRetry(
         () => {
