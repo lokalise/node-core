@@ -30,7 +30,7 @@ export type RequestOptions<T> = {
 
   safeParseJson?: boolean
   blobResponseBody?: boolean
-  requestLabel?: string
+  requestLabel: string
 
   disableKeepAlive?: boolean
   retryConfig?: RetryConfig
