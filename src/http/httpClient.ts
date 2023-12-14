@@ -6,6 +6,7 @@ import type { RequestResult, RequestParams, RetryConfig } from 'undici-retry'
 import { isRequestResult, NO_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
 import type { InternalRequestError } from 'undici-retry/dist/lib/InternalRequestError'
 
+import type { MayOmit } from '../common/may-omit'
 import { ResponseStatusError } from '../errors/ResponseStatusError'
 import type { DefiniteEither, Either } from '../errors/either'
 import { copyWithoutUndefined } from '../utils/objectUtils'
@@ -31,7 +32,7 @@ export type RequestOptions<T> = {
 
   safeParseJson?: boolean
   blobResponseBody?: boolean
-  requestLabel?: string
+  requestLabel: string
 
   disableKeepAlive?: boolean
   retryConfig?: RetryConfig
@@ -44,7 +45,7 @@ const DEFAULT_OPTIONS = {
   validateResponse: true,
   throwOnError: true,
   timeout: 30000,
-} satisfies RequestOptions<unknown>
+} satisfies MayOmit<RequestOptions<unknown>, 'requestLabel'>
 
 const defaultClientOptions: Partial<Client.Options> = {
   keepAliveMaxTimeout: 300_000,
