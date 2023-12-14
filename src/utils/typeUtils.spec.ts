@@ -3,6 +3,7 @@ import { PublicNonRecoverableError } from '../errors/PublicNonRecoverableError'
 
 import {
   hasMessage,
+  isError,
   isInternalError,
   isObject,
   isPublicNonRecoverableError,
@@ -10,6 +11,50 @@ import {
 } from './typeUtils'
 
 describe('typeUtils', () => {
+  describe('isError', () => {
+    it('true for InternalError', () => {
+      const error = new InternalError({
+        message: 'dummy',
+        errorCode: 'code',
+      })
+
+      expect(isError(error)).toBe(true)
+    })
+
+    it('true for PublicNonRecoverableError', () => {
+      const error = new PublicNonRecoverableError({
+        message: 'dummy',
+        errorCode: 'code',
+      })
+
+      expect(isError(error)).toBe(true)
+    })
+
+    it('true for Error', () => {
+      const error = new Error('bam')
+
+      expect(isError(error)).toBe(true)
+    })
+
+    it('false for string', () => {
+      const error = 'bam'
+
+      expect(isError(error)).toBe(false)
+    })
+
+    it('false for a number', () => {
+      const error = 43
+
+      expect(isError(error)).toBe(false)
+    })
+
+    it('false for a plain object', () => {
+      const error = {}
+
+      expect(isError(error)).toBe(false)
+    })
+  })
+
   describe('isInternalError', () => {
     it('true for InternalError', () => {
       const error = new InternalError({

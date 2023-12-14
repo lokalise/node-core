@@ -1,5 +1,6 @@
 import { types } from 'node:util'
 
+import type { SerializedError } from 'pino'
 import { pino, levels, stdSerializers } from 'pino'
 
 import { hasMessage } from '../utils/typeUtils'
@@ -25,7 +26,15 @@ export function resolveGlobalErrorLogObject(err: unknown, correlationID?: string
     return correlationID ? `${err.message} (${correlationID})` : err.message
   }
 
-  return 'Unknown global error'
+  return 'Unknown error'
+}
+
+function logGlobalErrorLogObject(logObject: string | SerializedError) {
+  if (typeof logObject === 'string') {
+    globalLogger.error(`Global error: ${logObject}`)
+  } else {
+    globalLogger.error(logObject, logObject.message)
+  }
 }
 
 export function executeAndHandleGlobalErrors<T>(operation: () => T) {
@@ -34,7 +43,7 @@ export function executeAndHandleGlobalErrors<T>(operation: () => T) {
     return result
   } catch (err) {
     const logObject = resolveGlobalErrorLogObject(err)
-    globalLogger.error(logObject)
+    logGlobalErrorLogObject(logObject)
     process.exit(1)
   }
 }
@@ -48,7 +57,7 @@ export async function executeAsyncAndHandleGlobalErrors<T>(
     return result
   } catch (err) {
     const logObject = resolveGlobalErrorLogObject(err)
-    globalLogger.error(logObject)
+    logGlobalErrorLogObject(logObject)
     if (stopOnError) {
       process.exit(1)
     }
@@ -65,7 +74,7 @@ export async function executeSettleAllAndHandleGlobalErrors(
   for (const entry of result) {
     if (entry.status === 'rejected') {
       const logObject = resolveGlobalErrorLogObject(entry.reason)
-      globalLogger.error(logObject)
+      logGlobalErrorLogObject(logObject)
       errorsHappened = true
     }
   }

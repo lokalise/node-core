@@ -24,6 +24,18 @@ Returns an object which contains fields specified in `propNames` with the same v
 
 Returns true if `params` has no own properties or only own properties with value `undefined`, false otherwise.
 
-`groupBy<T>(inputArray: T[], propName: string): Record<string, T[]>`
+`export function groupBy<T extends object, K extends KeysMatching<T, RecordKeyType | null | undefined>>(array: T[], selector: K): Record<RecordKeyType, T[]> {`
 
-Returns an object composed of keys generated from the values of `propName` field for the `inputArray` elements. The order of grouped values is determined by the order they occur in collection.
+The `groupBy` function takes an array of objects and a `selector`, groups the objects based on selected key and returns an object with unique keys from the selector and corresponding groups as arrays.
+
+`export function groupByUnique<T extends object, K extends KeysMatching<T, RecordKeyType | null | undefined>>(array: T[], selector: K): Record<RecordKeyType, T>`
+
+Similar to `groupBy`, but the value is a single element, in case of duplicated values for the same selector the method will throw a `InternalError`
+
+`convertDateFieldsToIsoString<Input extends object>(object: Input | Input[],): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[]`
+
+Transform an input object with `Date` members into an object with the corresponding `Date` members replaced by their ISO string representation. This transformation is done recursively, covering nested objects as well.
+
+`export function deepClone<T extends object | undefined | null>(object: T): T`
+
+Return a deep clone copy of an object. Please Note: This uses structuredClone, which has the limitations of these restricted Types: functions, Error objects, WeakMap, WeakSet, DOM nodes, and certain other browser-specific objects like Window.

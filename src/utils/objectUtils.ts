@@ -1,5 +1,9 @@
+import { InternalError } from '../errors/InternalError'
+
+type RecordKeyType = string | number | symbol
+
 export function copyWithoutUndefined<
-  T extends Record<string | number | symbol, unknown>,
+  T extends Record<RecordKeyType, unknown>,
   TargetRecordType = Pick<
     T,
     {
@@ -56,29 +60,118 @@ export function pickWithoutUndefined<T, K extends string | number | symbol>(
 
 export function isEmptyObject(params: Record<string, unknown>): boolean {
   for (const key in params) {
-    if (Object.prototype.hasOwnProperty.call(params, key) && params[key] !== undefined) {
+    if (Object.hasOwn(params, key) && params[key] !== undefined) {
       return false
     }
   }
   return true
 }
 
-export function groupBy<T>(inputArray: T[], propName: string): Record<string, T[]> {
-  return inputArray.reduce((result, entry) => {
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const key = entry[propName]
+type KeysMatching<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T]
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    if (Object.hasOwnProperty.call(result, key)) {
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-      result[key].push(entry)
-    } else {
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      result[key] = [entry]
-    }
+/**
+ * @param array The array of objects to be grouped.
+ * @param selector The key used for grouping the objects.
+ * @returns An object where the keys are unique values from the given selector and the values are the corresponding objects from the array.
+ */
+export function groupBy<
+  T extends object,
+  K extends KeysMatching<T, RecordKeyType | null | undefined>,
+>(array: T[], selector: K): Record<RecordKeyType, T[]> {
+  return array.reduce(
+    (acc, item) => {
+      const key = item[selector] as RecordKeyType | null | undefined
+      if (key === undefined || key === null) {
+        return acc
+      }
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(item)
+      return acc
+    },
+    {} as Record<RecordKeyType, T[]>,
+  )
+}
+
+/**
+ * @param array The array of objects to be grouped.
+ * @param selector The key used for grouping the objects.
+ * @returns An object where the keys are unique values from the given selector and the value is the
+ *  corresponding object from the array.
+ * @throws InternalError If a duplicated value is found for the given selector.
+ */
+export function groupByUnique<
+  T extends object,
+  K extends KeysMatching<T, RecordKeyType | null | undefined>,
+>(array: T[], selector: K): Record<RecordKeyType, T> {
+  return array.reduce(
+    (acc, item) => {
+      const key = item[selector] as RecordKeyType | null | undefined
+      if (key === undefined || key === null) {
+        return acc
+      }
+      if (acc[key] !== undefined) {
+        throw new InternalError({
+          message: `Duplicated item for selector ${selector.toString()} with value ${key.toString()}`,
+          errorCode: 'DUPLICATED_ITEM',
+          details: { selector, value: key },
+        })
+      }
+      acc[key] = item
+      return acc
+    },
+    {} as Record<RecordKeyType, T>,
+  )
+}
+
+type DatesAsString<T> = T extends Date ? string : ExactlyLikeWithDateAsString<T>
+
+type ExactlyLikeWithDateAsString<T> = T extends object ? { [K in keyof T]: DatesAsString<T[K]> } : T
+
+export function convertDateFieldsToIsoString<Input extends object>(
+  object: Input,
+): ExactlyLikeWithDateAsString<Input>
+export function convertDateFieldsToIsoString<Input extends object>(
+  object: Input[],
+): ExactlyLikeWithDateAsString<Input>[]
+export function convertDateFieldsToIsoString<Input extends object>(
+  object: Input | Input[],
+): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[] {
+  if (Array.isArray(object)) {
+    // @ts-ignore
+    return object.map(convertDateFieldsToIsoStringAux)
+  }
+
+  return Object.entries(object).reduce((result, [key, value]) => {
+    // @ts-ignore
+    result[key] = convertDateFieldsToIsoStringAux(value)
     return result
-  }, {})
+  }, {} as ExactlyLikeWithDateAsString<Input>)
+}
+
+function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
+  if (item instanceof Date) {
+    // @ts-ignore
+    return item.toISOString()
+  } else if (item && typeof item === 'object') {
+    // @ts-ignore
+    return convertDateFieldsToIsoString(item)
+  } else {
+    // @ts-ignore
+    return item
+  }
+}
+
+/**
+ * Return a deep clone copy of an object.
+ *
+ * Please Note: This uses structuredClone, which has the limitations of these restricted Types: functions,
+ * Error objects, WeakMap, WeakSet, DOM nodes, and certain other browser-specific objects like Window.
+ */
+export function deepClone<T extends object | undefined | null>(object: T): T {
+  if (object === undefined || object === null) {
+    return object
+  }
+  return structuredClone(object)
 }

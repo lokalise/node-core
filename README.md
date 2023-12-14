@@ -12,12 +12,6 @@ See [docs](/docs) for further instructions on how to use.
 
 ## Overview
 
-### Dependencies
-
-- `pino`;
-- `unidici`;
-- `unidici-retry`.
-
 ## HTTP Client
 
 The library provides methods to implement the client side of HTTP protocols. Public methods available are:
@@ -49,7 +43,7 @@ All _send_ methods accept a type parameter and the following arguments:
   - `reqContext`;
   - `safeParseJson`, used when the response content-type is `application/json`. If `true`, the response body will be parsed as JSON and a `ResponseError` will be thrown in case of syntax errors. If `false`, errors are not handled;
   - `blobResponseBody`, used when the response body should be returned as Blob;
-  - `requestLabel`, this string will be returned together with any thrown or returned Error to provide additional context about what request was being executed when the error has happened;
+  - `requestLabel`, if set, will be returned together with any thrown or returned Error to provide additional context about what request was being executed when the error has happened;
   - `disableKeepAlive`;`
   - `retryConfig`, defined by:
     - `maxAttempts`, the maximum number of times a request should be retried;
@@ -209,7 +203,7 @@ Additionally, `DefineEither` is also provided. It is a variation of the aforemen
 There is helper function available for writing event-driven assertions in automated tests, which rely on something eventually happening:
 
 ```ts
-import {waitAndRetry} from "@lokalise/node-core";
+import { waitAndRetry } from "@lokalise/node-core";
 
 const result = await waitAndRetry(
         () => {

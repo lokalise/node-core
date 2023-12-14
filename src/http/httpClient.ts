@@ -3,7 +3,7 @@ import type { Readable } from 'stream'
 import { Client } from 'undici'
 import type { FormData } from 'undici'
 import type { RequestResult, RequestParams, RetryConfig } from 'undici-retry'
-import { DEFAULT_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
+import { NO_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
 
 import { ResponseStatusError } from '../errors/ResponseStatusError'
 import type { DefiniteEither, Either } from '../errors/either'
@@ -301,7 +301,7 @@ function resolveRequestConfig(options: Partial<RequestOptions<unknown>>): Reques
 }
 
 function resolveRetryConfig(options: Partial<RequestOptions<unknown>>): RetryConfig {
-  return options.retryConfig ?? DEFAULT_RETRY_CONFIG
+  return options.retryConfig ?? NO_RETRY_CONFIG
 }
 
 export function buildClient(baseUrl: string, clientOptions?: Client.Options) {
