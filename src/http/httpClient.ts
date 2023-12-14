@@ -2,9 +2,8 @@ import type { Readable } from 'stream'
 
 import { Client } from 'undici'
 import type { FormData } from 'undici'
-import type { RequestResult, RequestParams, RetryConfig } from 'undici-retry'
 import { isRequestResult, NO_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
-import type { InternalRequestError } from 'undici-retry/dist/lib/InternalRequestError'
+import type { RequestResult, RequestParams, RetryConfig, InternalRequestError } from 'undici-retry'
 
 import type { MayOmit } from '../common/may-omit'
 import { ResponseStatusError } from '../errors/ResponseStatusError'
