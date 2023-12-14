@@ -30,7 +30,7 @@ describe('globalErrorHandler', () => {
 
       const resolvedError = resolveGlobalErrorLogObject(error)
 
-      expect(resolvedError).toBe('Unknown global error')
+      expect(resolvedError).toBe('Unknown error')
     })
   })
 })
