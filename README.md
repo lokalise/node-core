@@ -49,7 +49,7 @@ All _send_ methods accept a type parameter and the following arguments:
   - `reqContext`;
   - `safeParseJson`, used when the response content-type is `application/json`. If `true`, the response body will be parsed as JSON and a `ResponseError` will be thrown in case of syntax errors. If `false`, errors are not handled;
   - `blobResponseBody`, used when the response body should be returned as Blob;
-  - `requestLabel`, if set, will be returned together with any thrown or returned Error to provide additional context about what request was being executed when the error has happened;
+  - `requestLabel`, this string will be returned together with any thrown or returned Error to provide additional context about what request was being executed when the error has happened;
   - `disableKeepAlive`;`
   - `retryConfig`, defined by:
     - `maxAttempts`, the maximum number of times a request should be retried;

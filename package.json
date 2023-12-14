@@ -35,7 +35,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "pino": "^8.16.1",
+    "pino": "^8.17.1",
     "undici": "^5.27.0",
     "undici-retry": "^3.1.2"
   },
