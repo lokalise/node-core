@@ -37,7 +37,7 @@
   "dependencies": {
     "pino": "^8.17.0",
     "undici": "^6.0.1",
-    "undici-retry": "^4.0.0"
+    "undici-retry": "^5.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",

@@ -3,7 +3,8 @@ import type { Readable } from 'stream'
 import { Client } from 'undici'
 import type { FormData } from 'undici'
 import type { RequestResult, RequestParams, RetryConfig } from 'undici-retry'
-import { NO_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
+import { isRequestResult, NO_RETRY_CONFIG, sendWithRetry } from 'undici-retry'
+import type { InternalRequestError } from 'undici-retry/dist/lib/InternalRequestError'
 
 import { ResponseStatusError } from '../errors/ResponseStatusError'
 import type { DefiniteEither, Either } from '../errors/either'
@@ -295,7 +296,7 @@ function resolveRequestConfig(options: Partial<RequestOptions<unknown>>): Reques
   return {
     safeParseJson: options.safeParseJson ?? false,
     blobBody: options.blobResponseBody ?? false,
-    throwOnInternalError: true,
+    throwOnInternalError: false,
     requestLabel: options.requestLabel,
   }
 }
@@ -313,7 +314,7 @@ export function buildClient(baseUrl: string, clientOptions?: Client.Options) {
 }
 
 function resolveResult<T>(
-  requestResult: Either<RequestResult<unknown>, RequestResult<T>>,
+  requestResult: Either<RequestResult<unknown> | InternalRequestError, RequestResult<T>>,
   throwOnError: boolean,
   validateResponse: boolean,
   validationSchema?: ResponseSchema,
@@ -321,7 +322,10 @@ function resolveResult<T>(
 ): DefiniteEither<RequestResult<unknown>, RequestResult<T>> {
   // Throw response error
   if (requestResult.error && throwOnError) {
-    throw new ResponseStatusError(requestResult.error, requestLabel)
+    if (isRequestResult(requestResult.error)) {
+      throw new ResponseStatusError(requestResult.error, requestLabel)
+    }
+    throw requestResult.error
   }
   if (requestResult.result && validateResponse && validationSchema) {
     requestResult.result.body = validationSchema.parse(requestResult.result.body)
