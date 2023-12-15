@@ -133,7 +133,7 @@ describe('httpClient', () => {
       expect(result.result.body).toEqual(mockProduct1)
     })
 
-    it('returns original payload when breaking during parsing', async () => {
+    it('returns original payload when breaking during parsing and throw on error is true', async () => {
       expect.assertions(1)
       client
         .intercept({
@@ -143,7 +143,11 @@ describe('httpClient', () => {
         .reply(200, 'this is not a real json', { headers: JSON_HEADERS })
 
       try {
-        await sendGet(client, '/products/1', { safeParseJson: true, requestLabel: 'label' })
+        await sendGet(client, '/products/1', {
+          throwOnError: true,
+          safeParseJson: true,
+          requestLabel: 'label',
+        })
       } catch (err) {
         // This is needed, because built-in error assertions do not assert nested fields
         // eslint-disable-next-line vitest/no-conditional-expect
@@ -156,6 +160,31 @@ describe('httpClient', () => {
           },
         })
       }
+    })
+
+    it('does not throw if broken during parsing but throwOnError is false', async () => {
+      expect.assertions(1)
+      client
+        .intercept({
+          path: '/products/1',
+          method: 'GET',
+        })
+        .reply(200, 'this is not a real json', { headers: JSON_HEADERS })
+
+      const result = await sendGet(client, '/products/1', {
+        throwOnError: false,
+        safeParseJson: true,
+        requestLabel: 'label',
+      })
+
+      expect(result.error).toMatchObject({
+        message: 'Error while parsing HTTP JSON response',
+        errorCode: 'INVALID_HTTP_RESPONSE_JSON',
+        details: {
+          rawBody: 'this is not a real json',
+          requestLabel: 'label',
+        },
+      })
     })
 
     it('GET without queryParams', async () => {
@@ -251,6 +280,7 @@ describe('httpClient', () => {
       try {
         await sendGet(buildClient('http://127.0.0.1:999'), '/dummy', {
           requestLabel: 'label',
+          throwOnError: true,
           query,
         })
       } catch (err) {
@@ -258,7 +288,7 @@ describe('httpClient', () => {
           throw new Error('Invalid error type')
         }
         expect(err.message).toBe('connect ECONNREFUSED 127.0.0.1:999')
-        expect(err.details!.requestLabel).toBe('label')
+        expect(err.requestLabel).toBe('label')
       }
     })
 
