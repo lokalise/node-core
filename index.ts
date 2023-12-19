@@ -56,7 +56,10 @@ export {
 } from './src/utils/typeUtils'
 export type { StandardizedError } from './src/utils/typeUtils'
 
-export { resolveLoggerConfiguration } from './src/logging/loggerConfigResolver'
+export {
+  resolveLoggerConfiguration,
+  resolveMonorepoLoggerConfiguration,
+} from './src/logging/loggerConfigResolver'
 export type { AppLoggerConfig } from './src/logging/loggerConfigResolver'
 
 export type { ErrorReport, ErrorReporter, ErrorResolver } from './src/errors/errorReporterTypes'

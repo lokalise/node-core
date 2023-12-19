@@ -2,3 +2,4 @@ node_modules/
 coverage/
 dist/
 vitest.config.ts
+src/logging/example.script.js

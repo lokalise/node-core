@@ -89,6 +89,22 @@ The library provides methods to resolve the default logging configuration. Publi
   const logger = pino(loggerConfig)
   ```
 
+- `resolveMonorepoLoggerConfiguration()`, which accepts as parameter an `appConfig`, defined by the `logLevel` and the `nodeEnv`. It mostly behaves the same as `resolveLoggerConfiguration`, with the exception of execution in `development environments`. Since monorepo services are usually ran concurrently, logs from `stdout` aren't easily accessible. For this reason this logging configuration writes development logs into files.   
+
+  The method returns a logger configuration that should be used with `pino` library as in the following example:
+
+  ```ts
+  const loggerConfig = resolveMonorepoLoggerConfiguration({
+    logLevel: 'warn',
+    nodeEnv: 'production',
+    append: false,
+    // targetFile: './logs/service.log' -- optional parameter, you can specify exact path for writing logs
+  })
+
+  const logger = pino(loggerConfig)
+  ```
+
+
 ## ConfigScope
 
 `ConfigScope` is a class that provides a way to encapsulate a single config source (e. g. `process.env`) and produce a set of values out of it, defining constraints and transformations for them.
