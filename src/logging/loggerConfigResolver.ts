@@ -5,6 +5,38 @@ export type AppLoggerConfig = {
   nodeEnv: 'production' | 'development' | 'test'
 }
 
+export type MonorepoAppLoggerConfig = AppLoggerConfig & {
+  targetFile?: string
+  append?: boolean
+}
+
+// Note that transports do not work in vitest, likely because pino attempts to run them in a separate worker
+/* c8 ignore next 24 */
+export function resolveMonorepoLoggerConfiguration(
+  appConfig: MonorepoAppLoggerConfig,
+): LoggerOptions {
+  if (appConfig.nodeEnv !== 'development') {
+    return resolveLoggerConfiguration(appConfig)
+  }
+
+  return {
+    level: appConfig.logLevel,
+    formatters: {
+      level: (label) => {
+        return { level: label }
+      },
+    },
+    transport: {
+      target: 'pino/file',
+      options: {
+        destination: appConfig.targetFile ?? './service.log',
+        mkdir: true,
+        append: appConfig.append ?? false,
+      },
+    },
+  }
+}
+
 export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions {
   const config: LoggerOptions = {
     level: appConfig.logLevel,
