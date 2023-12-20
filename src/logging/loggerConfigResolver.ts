@@ -3,6 +3,7 @@ import type { LoggerOptions } from 'pino'
 export type AppLoggerConfig = {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
   nodeEnv: 'production' | 'development' | 'test'
+  base?: Record<string, unknown>
 }
 
 export type MonorepoAppLoggerConfig = AppLoggerConfig & {
@@ -45,6 +46,7 @@ export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOp
         return { level: label }
       },
     },
+    base: appConfig.base,
   }
   if (appConfig.nodeEnv !== 'production') {
     config.transport = {
