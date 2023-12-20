@@ -15,29 +15,26 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
 ): LoggerOptions {
-  if (appConfig.nodeEnv === 'test') {
+  if (appConfig.nodeEnv !== 'development') {
     return resolveLoggerConfiguration(appConfig)
   }
 
-  const config: LoggerOptions = {
+  return {
     level: appConfig.logLevel,
     formatters: {
       level: (label) => {
         return { level: label }
       },
     },
-  }
-  if (appConfig.nodeEnv === 'development') {
-    config.transport = {
+    transport: {
       target: 'pino/file',
       options: {
         destination: appConfig.targetFile ?? './service.log',
         mkdir: true,
         append: appConfig.append ?? false,
       },
-    }
+    },
   }
-  return config
 }
 
 export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions {
