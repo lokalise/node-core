@@ -17,3 +17,13 @@ exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves dev config
   },
 }
 `;
+
+exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves prod configuration 1`] = `
+{
+  "base": undefined,
+  "formatters": {
+    "level": [Function],
+  },
+  "level": "warn",
+}
+`;
