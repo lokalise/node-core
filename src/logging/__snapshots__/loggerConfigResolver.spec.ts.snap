@@ -2,6 +2,7 @@
 
 exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves dev configuration 1`] = `
 {
+  "base": undefined,
   "formatters": {
     "level": [Function],
   },
@@ -14,14 +15,5 @@ exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves dev config
     },
     "target": "pino-pretty",
   },
-}
-`;
-
-exports[`loggerConfigResolver > resolveLoggerConfiguration > resolves prod configuration 1`] = `
-{
-  "formatters": {
-    "level": [Function],
-  },
-  "level": "warn",
 }
 `;
