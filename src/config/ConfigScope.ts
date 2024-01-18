@@ -190,6 +190,7 @@ export class ConfigScope {
       throw new InternalError({
         message: `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
         errorCode: 'CONFIGURATION_ERROR',
+        details: parsedValue.error,
       })
     }
 
