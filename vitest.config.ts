@@ -17,14 +17,16 @@ export default defineConfig({
         'src/config/configTypes.ts',
         'src/errors/publicErrors.ts',
         'src/errors/globalErrorHandler.ts',
-        'src/config/configTransformers.ts'
+        'src/config/configTransformers.ts',
       ],
       reporter: ['text'],
       all: true,
-      lines: 100,
-      functions: 100,
-      branches: 100,
-      statements: 100,
+      thresholds: {
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
+      }
     },
   },
 })
