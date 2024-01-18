@@ -1,3 +1,5 @@
+import type { ZodSchema } from 'zod'
+
 import { InternalError } from '../errors/InternalError'
 
 import type { EnvValueValidator } from './configTypes'
@@ -180,6 +182,36 @@ export class ConfigScope {
     return rawValue === 'true'
   }
 
+  getMandatoryJsonObject<T extends object>(param: string, schema: ZodSchema<T>): T {
+    const rawValue = this.getMandatory(param)
+    return this.validateSchema(
+      JSON.parse(rawValue),
+      schema,
+      `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
+    )
+  }
+
+  getOptionalNullableJsonObject<T extends object, Z extends T | null | undefined>(
+    param: string,
+    schema: ZodSchema<T>,
+    defaultValue: Z,
+  ): Z {
+    const rawValue = this.getOptionalNullable(param, undefined)
+    if (!rawValue) {
+      return defaultValue
+    }
+
+    return this.validateSchema(
+      JSON.parse(rawValue),
+      schema,
+      `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
+    ) as Z
+  }
+
+  getOptionalJsonObject<T extends object>(param: string, schema: ZodSchema<T>, defaultValue: T): T {
+    return this.getOptionalNullableJsonObject(param, schema, defaultValue)
+  }
+
   isProduction(): boolean {
     return this.env.NODE_ENV === 'production'
   }
@@ -190,6 +222,23 @@ export class ConfigScope {
 
   isTest(): boolean {
     return this.env.NODE_ENV === 'test'
+  }
+
+  private validateSchema<T extends object>(
+    value: unknown,
+    schema: ZodSchema<T>,
+    errorMessage: string,
+  ): T {
+    const parsedValue = schema.safeParse(value)
+    if (!parsedValue.success) {
+      throw new InternalError({
+        message: errorMessage,
+        errorCode: 'CONFIGURATION_ERROR',
+        details: parsedValue.error,
+      })
+    }
+
+    return parsedValue.data
   }
 }
 
