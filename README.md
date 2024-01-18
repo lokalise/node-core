@@ -89,7 +89,7 @@ The library provides methods to resolve the default logging configuration. Publi
   const logger = pino(loggerConfig)
   ```
 
-- `resolveMonorepoLoggerConfiguration()`, which accepts as parameter an `appConfig`, defined by the `logLevel` and the `nodeEnv`. It mostly behaves the same as `resolveLoggerConfiguration`, with the exception of execution in `development environments`. Since monorepo services are usually ran concurrently, logs from `stdout` aren't easily accessible. For this reason this logging configuration writes development logs into files.   
+- `resolveMonorepoLoggerConfiguration()`, which accepts as parameter an `appConfig`, defined by the `logLevel` and the `nodeEnv`. It mostly behaves the same as `resolveLoggerConfiguration`, with the exception of execution in `development environments`. Since monorepo services are usually ran concurrently, logs from `stdout` aren't easily accessible. For this reason this logging configuration writes development logs into files.
 
   The method returns a logger configuration that should be used with `pino` library as in the following example:
 
@@ -103,7 +103,6 @@ The library provides methods to resolve the default logging configuration. Publi
 
   const logger = pino(loggerConfig)
   ```
-
 
 ## ConfigScope
 
@@ -219,14 +218,14 @@ Additionally, `DefiniteEither` is also provided. It is a variation of the aforem
 There is helper function available for writing event-driven assertions in automated tests, which rely on something eventually happening:
 
 ```ts
-import { waitAndRetry } from "@lokalise/node-core";
+import { waitAndRetry } from '@lokalise/node-core'
 
 const result = await waitAndRetry(
-        () => {
-          return someEventEmitter.emittedEvents.length > 0
-        },
-        20, // sleepTime between attempts
-        30, // maxRetryCount before timeout
+  () => {
+    return someEventEmitter.emittedEvents.length > 0
+  },
+  20, // sleepTime between attempts
+  30, // maxRetryCount before timeout
 )
 
 expect(result).toBe(false) // resolves to what the last attempt has returned
