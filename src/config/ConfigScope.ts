@@ -196,25 +196,19 @@ export class ConfigScope {
     return parsedValue.data
   }
 
-  getOptionalJsonObject<T extends object>(param: string, schema: ZodSchema<T>, defaultValue: T): T {
+  getOptionalNullableJsonObject<T extends object | null | undefined>(
+    param: string,
+    schema: ZodSchema<T>,
+    defaultValue: T,
+  ): T {
     const rawValue = this.getOptional(param, '{}')
     const parsedValue = schema.safeParse(JSON.parse(rawValue))
 
     return parsedValue.success ? parsedValue.data : defaultValue
   }
 
-  getOptionalNullableJsonObject<T extends object | null | undefined>(
-    param: string,
-    schema: ZodSchema<T>,
-    defaultValue: T,
-  ): T {
-    const rawValue = this.getOptionalNullable(param, undefined)
-    if (!rawValue) {
-      return defaultValue
-    }
-    const parsedValue = schema.safeParse(JSON.parse(rawValue))
-
-    return parsedValue.success ? parsedValue.data : defaultValue
+  getOptionalJsonObject<T extends object>(param: string, schema: ZodSchema<T>, defaultValue: T): T {
+    return this.getOptionalNullableJsonObject(param, schema, defaultValue)
   }
 
   isProduction(): boolean {
