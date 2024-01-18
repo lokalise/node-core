@@ -24,10 +24,21 @@ export class RequestValidationError extends PublicNonRecoverableError {
     super({
       message: 'Invalid params',
       errorCode: 'VALIDATION_ERROR',
-      httpStatusCode: 400,
+      httpStatusCode: httpConstants.HTTP_STATUS_BAD_REQUEST,
       details: {
         error: errors,
       },
+    })
+  }
+}
+
+export class AccessDeniedError extends PublicNonRecoverableError {
+  constructor(params: CommonErrorParams) {
+    super({
+      message: params.message,
+      errorCode: 'ACCESS_DENIED',
+      httpStatusCode: httpConstants.HTTP_STATUS_FORBIDDEN,
+      details: params.details,
     })
   }
 }
@@ -37,7 +48,7 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
     super({
       message: params.message,
       errorCode: 'ENTITY_NOT_FOUND',
-      httpStatusCode: 404,
+      httpStatusCode: httpConstants.HTTP_STATUS_NOT_FOUND,
       details: params.details,
     })
   }
