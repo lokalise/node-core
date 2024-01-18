@@ -184,39 +184,28 @@ export class ConfigScope {
 
   getMandatoryJsonObject<T extends object>(param: string, schema: ZodSchema<T>): T {
     const rawValue = this.getMandatory(param)
-    const parsedValue = schema.safeParse(JSON.parse(rawValue))
-
-    if (!parsedValue.success) {
-      throw new InternalError({
-        message: `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
-        errorCode: 'CONFIGURATION_ERROR',
-        details: parsedValue.error,
-      })
-    }
-
-    return parsedValue.data
+    return this.validateSchema(
+      JSON.parse(rawValue),
+      schema,
+      `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
+    )
   }
 
-  getOptionalNullableJsonObject<T extends object | null | undefined>(
+  getOptionalNullableJsonObject<T extends object, Z extends T | null | undefined>(
     param: string,
     schema: ZodSchema<T>,
-    defaultValue: T,
-  ): T {
+    defaultValue: Z,
+  ): Z {
     const rawValue = this.getOptionalNullable(param, undefined)
     if (!rawValue) {
       return defaultValue
     }
 
-    const parsedValue = schema.safeParse(JSON.parse(rawValue))
-    if (!parsedValue.success) {
-      throw new InternalError({
-        message: `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
-        errorCode: 'CONFIGURATION_ERROR',
-        details: parsedValue.error,
-      })
-    }
-
-    return parsedValue.data
+    return this.validateSchema(
+      JSON.parse(rawValue),
+      schema,
+      `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
+    ) as Z
   }
 
   getOptionalJsonObject<T extends object>(param: string, schema: ZodSchema<T>, defaultValue: T): T {
@@ -233,6 +222,23 @@ export class ConfigScope {
 
   isTest(): boolean {
     return this.env.NODE_ENV === 'test'
+  }
+
+  private validateSchema<T extends object>(
+    value: unknown,
+    schema: ZodSchema<T>,
+    errorMessage: string,
+  ): T {
+    const parsedValue = schema.safeParse(value)
+    if (!parsedValue.success) {
+      throw new InternalError({
+        message: errorMessage,
+        errorCode: 'CONFIGURATION_ERROR',
+        details: parsedValue.error,
+      })
+    }
+
+    return parsedValue.data
   }
 }
 
