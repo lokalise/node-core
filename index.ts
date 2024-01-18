@@ -79,5 +79,15 @@ export {
 } from './src/errors/globalErrorHandler'
 
 export { type MayOmit } from './src/common/may-omit'
+export { type FreeformRecord } from './src/common/commonTypes'
+export {
+  RequestValidationError,
+  AccessDeniedError,
+  EntityNotFoundError,
+  type ValidationError,
+  type CommonErrorParams,
+  type OptionalMessageErrorParams,
+  AuthFailedError,
+} from './src/errors/publicErrors'
 
 export { waitAndRetry } from './src/utils/waitUtils'
