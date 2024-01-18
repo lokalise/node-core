@@ -1,3 +1,5 @@
+import type { ZodSchema } from 'zod'
+
 import { InternalError } from '../errors/InternalError'
 
 import type { EnvValueValidator } from './configTypes'
@@ -178,6 +180,41 @@ export class ConfigScope {
     validateOneOf(rawValue, ['true', 'false'])
 
     return rawValue === 'true'
+  }
+
+  getMandatoryJsonObject<T extends object>(param: string, schema: ZodSchema<T>): T {
+    const rawValue = this.getMandatory(param)
+    const parsedValue = schema.safeParse(JSON.parse(rawValue))
+
+    if (!parsedValue.success) {
+      throw new InternalError({
+        message: `Configuration parameter ${param} must be a valid JSON meeting the given schema, but was ${rawValue}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+
+    return parsedValue.data
+  }
+
+  getOptionalJsonObject<T extends object>(param: string, schema: ZodSchema<T>, defaultValue: T): T {
+    const rawValue = this.getOptional(param, '{}')
+    const parsedValue = schema.safeParse(JSON.parse(rawValue))
+
+    return parsedValue.success ? parsedValue.data : defaultValue
+  }
+
+  getOptionalNullableJsonObject<T extends object | null | undefined>(
+    param: string,
+    schema: ZodSchema<T>,
+    defaultValue: T,
+  ): T {
+    const rawValue = this.getOptionalNullable(param, undefined)
+    if (!rawValue) {
+      return defaultValue
+    }
+    const parsedValue = schema.safeParse(JSON.parse(rawValue))
+
+    return parsedValue.success ? parsedValue.data : defaultValue
   }
 
   isProduction(): boolean {

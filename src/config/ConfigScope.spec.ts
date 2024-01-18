@@ -1,3 +1,6 @@
+import { expect } from 'vitest'
+import { z } from 'zod'
+
 import { ConfigScope } from './ConfigScope'
 import { ensureClosingSlashTransformer } from './configTransformers'
 import type { EnvValueValidator } from './configTypes'
@@ -597,6 +600,187 @@ describe('ConfigScope', () => {
       expect(() => configScope.getOptionalBoolean('value', false)).toThrow(
         /Validated entity 1 is not one of: true,false/,
       )
+    })
+  })
+
+  describe('getMandatoryJsonObject', () => {
+    it('empty env value throws error', () => {
+      const configScope = new ConfigScope()
+      const schema = z.object({ a: z.string() })
+
+      expect(() => configScope.getMandatoryJsonObject('objectValue', schema)).toThrow(
+        /Missing mandatory configuration parameter/,
+      )
+    })
+
+    it('env value not meeting schema throws error', () => {
+      process.env.objectValue = JSON.stringify({ b: 1 })
+      const configScope = new ConfigScope()
+
+      const schema = z.object({ a: z.string() })
+      expect(() => configScope.getMandatoryJsonObject('objectValue', schema)).toThrow(
+        /Configuration parameter objectValue must be a valid JSON meeting the given schema, but was {"b":1}/,
+      )
+    })
+
+    it('transform simple objects', () => {
+      process.env.objectValue = JSON.stringify({ a: 'a', b: 1 })
+      const configScope = new ConfigScope()
+
+      const schema = z.object({
+        a: z.string(),
+        b: z.number(),
+      })
+      const result = configScope.getMandatoryJsonObject('objectValue', schema)
+
+      expect(result).toEqual({ a: 'a', b: 1 })
+    })
+
+    it('transform array', () => {
+      process.env.objectValue = JSON.stringify([
+        { a: 'a1', b: 1 },
+        { a: 'a2', b: 2 },
+      ])
+      const configScope = new ConfigScope()
+
+      const schema = z.array(
+        z.object({
+          a: z.string(),
+          b: z.number(),
+        }),
+      )
+      const result = configScope.getMandatoryJsonObject('objectValue', schema)
+
+      expect(result).toEqual([
+        { a: 'a1', b: 1 },
+        { a: 'a2', b: 2 },
+      ])
+    })
+  })
+
+  describe('getOptionalJsonObject', () => {
+    it('empty env value returns default', () => {
+      const configScope = new ConfigScope()
+      const schema = z.object({ a: z.string() })
+
+      const result = configScope.getOptionalJsonObject('objectValue', schema, { a: 'a' })
+      expect(result).toEqual({ a: 'a' })
+    })
+
+    it('env value not meeting schema returns default', () => {
+      process.env.objectValue = JSON.stringify({ b: 1 })
+      const configScope = new ConfigScope()
+
+      const schema = z.object({ a: z.string() })
+      const result = configScope.getOptionalJsonObject('objectValue', schema, { a: 'a' })
+
+      expect(result).toEqual({ a: 'a' })
+    })
+
+    it('transform simple objects', () => {
+      process.env.objectValue = JSON.stringify({ a: 'a', b: 1 })
+      const configScope = new ConfigScope()
+
+      const schema = z.object({
+        a: z.string(),
+        b: z.number(),
+      })
+      const result = configScope.getOptionalJsonObject('objectValue', schema, { a: 'fake', b: -1 })
+
+      expect(result).toMatchObject({ a: 'a', b: 1 })
+    })
+
+    it('transform array', () => {
+      process.env.objectValue = JSON.stringify([
+        { a: 'a1', b: 1 },
+        { a: 'a2', b: 2 },
+      ])
+      const configScope = new ConfigScope()
+
+      const schema = z.array(
+        z.object({
+          a: z.string(),
+          b: z.number(),
+        }),
+      )
+      const result = configScope.getOptionalJsonObject('objectValue', schema, [
+        { a: 'fake', b: -1 },
+      ])
+
+      expect(result).toMatchObject([
+        { a: 'a1', b: 1 },
+        { a: 'a2', b: 2 },
+      ])
+    })
+  })
+
+  describe('getOptionalNullableJsonObject', () => {
+    it('empty env value returns default', () => {
+      const configScope = new ConfigScope()
+      const schema = z.object({ a: z.string() })
+
+      const result = configScope.getOptionalNullableJsonObject('objectValue', schema, undefined)
+      expect(result).toEqual(undefined)
+
+      const result2 = configScope.getOptionalNullableJsonObject('objectValue', schema, null)
+      expect(result2).toEqual(null)
+
+      const result3 = configScope.getOptionalNullableJsonObject('objectValue', schema, { a: 'a' })
+      expect(result3).toEqual({ a: 'a' })
+    })
+
+    it('env value not meeting schema returns default', () => {
+      process.env.objectValue = JSON.stringify({ b: 1 })
+      const configScope = new ConfigScope()
+      const schema = z.object({ a: z.string() })
+
+      const resul1 = configScope.getOptionalNullableJsonObject('objectValue', schema, { a: 'a' })
+      expect(resul1).toEqual({ a: 'a' })
+
+      const resul2 = configScope.getOptionalNullableJsonObject('objectValue', schema, undefined)
+      expect(resul2).toEqual(undefined)
+
+      const resul3 = configScope.getOptionalNullableJsonObject('objectValue', schema, null)
+      expect(resul3).toEqual(null)
+    })
+
+    it('transform simple objects', () => {
+      process.env.objectValue = JSON.stringify({ a: 'a', b: 1 })
+      const configScope = new ConfigScope()
+
+      const schema = z.object({
+        a: z.string(),
+        b: z.number(),
+      })
+      const result = configScope.getOptionalNullableJsonObject('objectValue', schema, {
+        a: 'fake',
+        b: -1,
+      })
+
+      expect(result).toMatchObject({ a: 'a', b: 1 })
+    })
+
+    it('transform array', () => {
+      process.env.objectValue = JSON.stringify([
+        { a: 'a1', b: 1 },
+        { a: 'a2', b: 2 },
+      ])
+      const configScope = new ConfigScope()
+
+      const schema = z.array(
+        z.object({
+          a: z.string(),
+          b: z.number(),
+        }),
+      )
+      const result = configScope.getOptionalNullableJsonObject('objectValue', schema, [
+        { a: 'fake', b: -1 },
+      ])
+
+      expect(result).toMatchObject([
+        { a: 'a1', b: 1 },
+        { a: 'a2', b: 2 },
+      ])
     })
   })
 
