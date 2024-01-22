@@ -5,6 +5,7 @@ import { InternalError } from './InternalError'
 export class ResponseStatusError extends InternalError {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public readonly response: RequestResult<any>
+  public readonly isResponseStatusError = true
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(requestResult: RequestResult<any>, requestLabel = 'N/A') {

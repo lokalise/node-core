@@ -25,6 +25,7 @@ export {
   type InternalErrorParams,
 } from './src/errors/InternalError'
 export { ResponseStatusError } from './src/errors/ResponseStatusError'
+export { isResponseStatusError } from './src/errors/errorTypeGuards'
 
 export { ConfigScope } from './src/config/ConfigScope'
 export { ensureClosingSlashTransformer } from './src/config/configTransformers'
