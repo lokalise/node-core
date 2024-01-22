@@ -756,7 +756,7 @@ describe('objectUtils', () => {
 
   describe('transformToKebabCase', () => {
     describe('camelCase', () => {
-      it('camelCase works with simple objects', () => {
+      it('works with simple objects', () => {
         type MyType = {
           myProp: string
           mySecondProp: number
@@ -796,6 +796,59 @@ describe('objectUtils', () => {
         expect(result).toEqual({
           'my-prop': 'example',
           'my-second-prop': { 'third-prop': 1, extra: 1 },
+        })
+      })
+
+      it('handle simple null and undefined', () => {
+        const result1 = transformToKebabCase(null)
+        expect(result1).toBe(null)
+
+        const result2 = transformToKebabCase(undefined)
+        expect(result2).toBe(undefined)
+      })
+
+      it('handle null and undefined in object', () => {
+        type MyType = {
+          myFirstUndefined?: number
+          mySecondUndefined?: number
+          myFirstNull: number | null
+          mySecondNull: number | null
+          nested?: MyType
+        }
+
+        type MyExpectedType = {
+          'my-first-undefined'?: number
+          'my-second-undefined'?: number
+          'my-first-null': number | null
+          'my-second-null': number | null
+          nested?: MyExpectedType
+        }
+
+        const input: MyType = {
+          myFirstUndefined: undefined,
+          mySecondUndefined: 1,
+          myFirstNull: null,
+          mySecondNull: 2,
+          nested: {
+            myFirstUndefined: undefined,
+            mySecondUndefined: 3,
+            myFirstNull: null,
+            mySecondNull: 4,
+          },
+        }
+        const result: MyExpectedType = transformToKebabCase<MyType>(input)
+
+        expect(result).toEqual({
+          'my-first-undefined': undefined,
+          'my-second-undefined': 1,
+          'my-first-null': null,
+          'my-second-null': 2,
+          nested: {
+            'my-first-undefined': undefined,
+            'my-second-undefined': 3,
+            'my-first-null': null,
+            'my-second-null': 4,
+          },
         })
       })
     })
