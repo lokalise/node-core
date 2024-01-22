@@ -1,4 +1,4 @@
-import { expect } from 'vitest'
+import { describe, expect } from 'vitest'
 
 import {
   convertDateFieldsToIsoString,
@@ -9,6 +9,7 @@ import {
   isEmptyObject,
   pick,
   pickWithoutUndefined,
+  transformToKebabCase,
 } from './objectUtils'
 
 describe('objectUtils', () => {
@@ -746,10 +747,81 @@ describe('objectUtils', () => {
       expect(clonedObject.isEnabled).toBe(true)
       expect(clonedObject.age).toBe(12)
     })
+
+    it('will return null or undefined if no object is provided', () => {
+      expect(deepClone(undefined)).toBeUndefined()
+      expect(deepClone(null)).toBeNull()
+    })
   })
 
-  it('will return null or undefined if no object is provided', () => {
-    expect(deepClone(undefined)).toBeUndefined()
-    expect(deepClone(null)).toBeNull()
+  describe('transformToKebabCase', () => {
+    describe('camelCase', () => {
+      it('camelCase works with simple objects', () => {
+        type MyType = {
+          myProp: string
+          mySecondProp: number
+          extra: string
+        }
+        type MyExpectedType = {
+          'my-prop': string
+          'my-second-prop': number
+          extra: string
+        }
+
+        const input: MyType = { myProp: 'example', mySecondProp: 1, extra: 'extra' }
+        const result: MyExpectedType = transformToKebabCase(input)
+
+        expect(result).toEqual({ 'my-prop': 'example', 'my-second-prop': 1, extra: 'extra' })
+      })
+
+      it('works with sub objects', () => {
+        type MyType = {
+          myProp: string
+          mySecondProp: {
+            thirdProp: number
+            extra: number
+          }
+        }
+        type MyExpectedType = {
+          'my-prop': string
+          'my-second-prop': {
+            'third-prop': number
+            extra: number
+          }
+        }
+
+        const input: MyType = { myProp: 'example', mySecondProp: { thirdProp: 1, extra: 1 } }
+        const result: MyExpectedType = transformToKebabCase(input)
+
+        expect(result).toEqual({
+          'my-prop': 'example',
+          'my-second-prop': { 'third-prop': 1, extra: 1 },
+        })
+      })
+    })
+
+    // eslint-disable-next-line vitest/no-commented-out-tests
+    /*
+    // TODO
+    describe('snake_case', () => {
+      it('snake_case works with simple objects', () => {
+        type MyType = {
+          my_prop: string
+          my_second_prop: number
+          extra: string
+        }
+        type MyExpectedType = {
+          'my-prop': string
+          'my-second-prop': number
+          extra: string
+        }
+
+        const input: MyType = { my_prop: 'example', my_second_prop: 1, extra: 'extra' }
+        const result: MyExpectedType = transformToKebabCase(input)
+
+        expect(result).toEqual({ 'my-prop': 'example', 'my-second-prop': 1, extra: 'extra' })
+      })
+    })
+     */
   })
 })

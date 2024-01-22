@@ -175,3 +175,36 @@ export function deepClone<T extends object | undefined | null>(object: T): T {
   }
   return structuredClone(object)
 }
+
+type TransformObjectKeys<T> = {
+  [K in keyof T as K extends string ? TransformKey<K> : never]: T[K] extends object
+    ? TransformObjectKeys<T[K]>
+    : T[K]
+}
+
+type TransformKey<T extends string> = T extends `${infer F}${infer R}`
+  ? F extends Capitalize<F>
+    ? `-${Lowercase<F>}${TransformKey<R>}`
+    : `${F}${TransformKey<R>}`
+  : Lowercase<T>
+
+/**
+ * Transforms an object's keys from camelCase to kebab-case.
+ * @param object
+ * TODO: handle arrays
+ * TODO: handle null and undefined
+ * TODO: handle snake_case
+ * TODO: handle abbreviations myHTTPKey -> my-http-key
+ */
+export function transformToKebabCase<T extends object>(object?: T | null): TransformObjectKeys<T> {
+  const transformed: Record<string, unknown> = {}
+  for (const key in object) {
+    const value = object[key]
+    const transformedKey = key.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)
+
+    transformed[transformedKey] =
+      typeof value === 'object' ? transformToKebabCase(value as object) : value
+  }
+
+  return transformed as TransformObjectKeys<T>
+}
