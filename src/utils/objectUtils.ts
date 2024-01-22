@@ -186,11 +186,19 @@ type TransformToKebabCaseReturnType<T> = {
 }
 
 type TransformKeyToKebabCase<T extends string> = T extends `${infer F}${infer R}`
-  ? F extends Capitalize<F>
-    ? `-${Lowercase<F>}${TransformKeyToKebabCase<R>}`
-    : `${F}${TransformKeyToKebabCase<R>}`
+  ? F extends '_'
+    ? `-${TransformKeyToKebabCase<R>}`
+    : F extends Capitalize<F>
+      ? `-${Lowercase<F>}${TransformKeyToKebabCase<R>}`
+      : `${F}${TransformKeyToKebabCase<R>}`
   : Lowercase<T>
 
+/**
+ * Transforms an object's keys from camelCase or snake_case to kebab-case.
+ * @param object
+ * TODO: handle arrays
+ * TODO: handle abbreviations myHTTPKey -> my-http-key
+ */
 export function transformToKebabCase<T extends object | null | undefined>(
   object: T,
 ): TransformToKebabCaseReturnType<T> {
@@ -202,7 +210,9 @@ export function transformToKebabCase<T extends object | null | undefined>(
   for (const key in object) {
     // @ts-ignore
     const value = object[key]
-    const transformedKey = key.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)
+    const transformedKey = key
+      .replace(/[A-Z]/g, (char) => '-' + char.toLowerCase())
+      .replace(/_/g, '-')
 
     transformed[transformedKey] =
       typeof value === 'object' && value !== null ? transformToKebabCase(value as object) : value
