@@ -176,34 +176,17 @@ export function deepClone<T extends object | undefined | null>(object: T): T {
   return structuredClone(object)
 }
 
-type TransformToKebabCaseReturnType<T> = {
-  [K in keyof T as K extends string ? TransformKeyToKebabCase<K> : never]: T[K] extends
-    | object
-    | null
-    | undefined
-    ? TransformToKebabCaseReturnType<T[K]>
-    : T[K]
-}
-
-type TransformKeyToKebabCase<T extends string> = T extends `${infer F}${infer R}`
-  ? F extends '_'
-    ? `-${TransformKeyToKebabCase<R>}`
-    : F extends Capitalize<F>
-      ? `-${Lowercase<F>}${TransformKeyToKebabCase<R>}`
-      : `${F}${TransformKeyToKebabCase<R>}`
-  : Lowercase<T>
-
 /**
  * Transforms an object's keys from camelCase or snake_case to kebab-case.
  * @param object
  * TODO: handle arrays
- * TODO: handle abbreviations myHTTPKey -> my-http-key
  */
-export function transformToKebabCase<T extends object | null | undefined>(
-  object: T,
-): TransformToKebabCaseReturnType<T> {
+export function transformToKebabCase<
+  Output extends Record<string, unknown>,
+  Input extends object | null | undefined,
+>(object: Input): Input extends object ? Output : Input {
   if (object === undefined || object === null) {
-    return object as TransformToKebabCaseReturnType<T>
+    return object as Input extends object ? Output : Input
   }
 
   const transformed: Record<string, unknown> = {}
@@ -211,12 +194,13 @@ export function transformToKebabCase<T extends object | null | undefined>(
     // @ts-ignore
     const value = object[key]
     const transformedKey = key
-      .replace(/[A-Z]/g, (char) => '-' + char.toLowerCase())
-      .replace(/_/g, '-')
+      .replace(/([a-z])([A-Z])/g, '$1-$2') // transforms basic camelCase
+      .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2') // transforms abbreviations
+      .replace(/_/g, '-') // transforms snake_case
+      .toLowerCase() // finally lowercase all
 
-    transformed[transformedKey] =
-      typeof value === 'object' && value !== null ? transformToKebabCase(value as object) : value
+    transformed[transformedKey] = typeof value === 'object' ? transformToKebabCase(value) : value
   }
 
-  return transformed as TransformToKebabCaseReturnType<T>
+  return transformed as Input extends object ? Output : Input
 }

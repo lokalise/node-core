@@ -756,10 +756,10 @@ describe('objectUtils', () => {
 
   describe('transformToKebabCase', () => {
     it('handle simple null and undefined', () => {
-      const result1 = transformToKebabCase(null)
+      const result1: null = transformToKebabCase(null)
       expect(result1).toBe(null)
 
-      const result2 = transformToKebabCase(undefined)
+      const result2: undefined = transformToKebabCase(undefined)
       expect(result2).toBe(undefined)
     })
 
@@ -792,7 +792,7 @@ describe('objectUtils', () => {
           mySecondNull: 4,
         },
       }
-      const result: MyExpectedType = transformToKebabCase<MyType>(input)
+      const result: MyExpectedType = transformToKebabCase(input)
 
       expect(result).toEqual({
         'my-first-undefined': undefined,
@@ -805,7 +805,7 @@ describe('objectUtils', () => {
           'my-first-null': null,
           'my-second-null': 4,
         },
-      })
+      } satisfies MyExpectedType)
     })
 
     describe('camelCase', () => {
@@ -824,7 +824,11 @@ describe('objectUtils', () => {
         const input: MyType = { myProp: 'example', mySecondProp: 1, extra: 'extra' }
         const result: MyExpectedType = transformToKebabCase(input)
 
-        expect(result).toEqual({ 'my-prop': 'example', 'my-second-prop': 1, extra: 'extra' })
+        expect(result).toEqual({
+          'my-prop': 'example',
+          'my-second-prop': 1,
+          extra: 'extra',
+        } satisfies MyExpectedType)
       })
 
       it('works with sub objects', () => {
@@ -849,7 +853,23 @@ describe('objectUtils', () => {
         expect(result).toEqual({
           'my-prop': 'example',
           'my-second-prop': { 'third-prop': 1, extra: 1 },
-        })
+        } satisfies MyExpectedType)
+      })
+
+      it('abbreviations', () => {
+        type MyType = {
+          myHTTPKey: string
+        }
+        type MyExpectedType = {
+          'my-http-key': string
+        }
+
+        const input: MyType = { myHTTPKey: 'myValue' }
+        const result: MyExpectedType = transformToKebabCase(input)
+
+        expect(result).toEqual({
+          'my-http-key': 'myValue',
+        } satisfies MyExpectedType)
       })
     })
 
@@ -869,7 +889,11 @@ describe('objectUtils', () => {
         const input: MyType = { my_prop: 'example', my_second_prop: 1, extra: 'extra' }
         const result: MyExpectedType = transformToKebabCase(input)
 
-        expect(result).toEqual({ 'my-prop': 'example', 'my-second-prop': 1, extra: 'extra' })
+        expect(result).toEqual({
+          'my-prop': 'example',
+          'my-second-prop': 1,
+          extra: 'extra',
+        } satisfies MyExpectedType)
       })
 
       it('works with sub objects', () => {
@@ -894,7 +918,7 @@ describe('objectUtils', () => {
         expect(result).toEqual({
           'my-prop': 'example',
           'my-second-prop': { 'third-prop': 1, extra: 1 },
-        })
+        } satisfies MyExpectedType)
       })
     })
   })
