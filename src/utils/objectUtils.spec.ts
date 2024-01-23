@@ -882,6 +882,22 @@ describe('objectUtils', () => {
           'my-http-key': 'myValue',
         } satisfies MyExpectedType)
       })
+
+      it('handling non-alphanumeric symbols', () => {
+        type MyType = {
+          myProp: string
+          'my_second.prop:example': number
+        }
+        type MyExpectedType = {
+          'my-prop': string
+          'my-second.prop:example': number
+        }
+
+        const input: MyType = { myProp: 'example', 'my_second.prop:example': 1 }
+        const result: MyExpectedType = transformToKebabCase(input)
+
+        expect(result).toEqual({ 'my-prop': 'example', 'my-second.prop:example': 1 })
+      })
     })
 
     describe('snake_case', () => {
