@@ -176,17 +176,33 @@ export function deepClone<T extends object | undefined | null>(object: T): T {
   return structuredClone(object)
 }
 
+type TransformToKebabCaseInputType = Record<string, unknown> | null | undefined
+type TransformToKebabCaseReturnType<Input, Output> =
+  Input extends Record<string, unknown> ? Output : Input
 /**
  * Transforms an object's keys from camelCase or snake_case to kebab-case.
  * @param object
- * TODO: handle arrays
  */
 export function transformToKebabCase<
   Output extends Record<string, unknown>,
-  Input extends object | null | undefined,
->(object: Input): Input extends object ? Output : Input {
-  if (object === undefined || object === null) {
-    return object as Input extends object ? Output : Input
+  Input extends TransformToKebabCaseInputType,
+>(object: Input): TransformToKebabCaseReturnType<Input, Output>
+export function transformToKebabCase<
+  Output extends Record<string, unknown>,
+  Input extends TransformToKebabCaseInputType,
+>(object: Input[]): TransformToKebabCaseReturnType<Input, Output>[]
+export function transformToKebabCase<
+  Output extends Record<string, unknown>,
+  Input extends TransformToKebabCaseInputType,
+>(
+  object: Input | Input[],
+): TransformToKebabCaseReturnType<Input, Output> | TransformToKebabCaseReturnType<Input, Output>[] {
+  if (Array.isArray(object)) {
+    // @ts-ignore
+    return object.map(transformToKebabCase)
+  }
+  if (typeof object !== 'object') {
+    return object as TransformToKebabCaseReturnType<Input, Output>
   }
 
   const transformed: Record<string, unknown> = {}
@@ -199,8 +215,11 @@ export function transformToKebabCase<
       .replace(/_/g, '-') // transforms snake_case
       .toLowerCase() // finally lowercase all
 
-    transformed[transformedKey] = typeof value === 'object' ? transformToKebabCase(value) : value
+    transformed[transformedKey] =
+      value && typeof value === 'object'
+        ? transformToKebabCase(value as TransformToKebabCaseInputType)
+        : value
   }
 
-  return transformed as Input extends object ? Output : Input
+  return transformed as TransformToKebabCaseReturnType<Input, Output>
 }

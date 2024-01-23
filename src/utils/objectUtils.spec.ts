@@ -808,6 +808,19 @@ describe('objectUtils', () => {
       } satisfies MyExpectedType)
     })
 
+    it('handle arrays', () => {
+      const input = [
+        { helloWorld: 'world', my_normal_array: [1, 2] },
+        { goodBy: 'world', my_object_array: [{ myFriend: true }, { myLaptop: false }] },
+      ]
+      const result = transformToKebabCase(input)
+
+      expect(result).toEqual([
+        { 'hello-world': 'world', 'my-normal-array': [1, 2] },
+        { 'good-by': 'world', 'my-object-array': [{ 'my-friend': true }, { 'my-laptop': false }] },
+      ])
+    })
+
     describe('camelCase', () => {
       it('works with simple objects', () => {
         type MyType = {
