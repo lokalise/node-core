@@ -191,35 +191,32 @@ export function transformToKebabCase<
   Output extends Record<string, unknown>,
   Input extends TransformToKebabCaseInputType,
 >(object: Input[]): TransformToKebabCaseReturnType<Input, Output>[]
-export function transformToKebabCase<
-  Output extends Record<string, unknown>,
-  Input extends TransformToKebabCaseInputType,
->(
+export function transformToKebabCase<Output, Input>(
   object: Input | Input[],
 ): TransformToKebabCaseReturnType<Input, Output> | TransformToKebabCaseReturnType<Input, Output>[] {
   if (Array.isArray(object)) {
     // @ts-ignore
     return object.map(transformToKebabCase)
   }
-  if (typeof object !== 'object') {
+  if (typeof object !== 'object' || object === null || object === undefined) {
     return object as TransformToKebabCaseReturnType<Input, Output>
   }
 
-  const transformed: Record<string, unknown> = {}
-  for (const key in object) {
-    // @ts-ignore
-    const value = object[key]
-    const transformedKey = key
-      .replace(/([a-z])([A-Z])/g, '$1-$2') // transforms basic camelCase
-      .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2') // transforms abbreviations
-      .replace(/_/g, '-') // transforms snake_case
-      .toLowerCase() // finally lowercase all
+  const transformKey = (key: string) =>
+    key
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+      .replace(/_/g, '-')
+      .toLowerCase()
 
-    transformed[transformedKey] =
-      value && typeof value === 'object'
-        ? transformToKebabCase(value as TransformToKebabCaseInputType)
-        : value
-  }
-
-  return transformed as TransformToKebabCaseReturnType<Input, Output>
+  return Object.entries(object as Record<string, unknown>).reduce(
+    (result, [key, value]) => ({
+      ...result,
+      [transformKey(key)]:
+        value && typeof value === 'object'
+          ? transformToKebabCase(value as TransformToKebabCaseInputType)
+          : value,
+    }),
+    {} as Record<string, unknown>,
+  ) as TransformToKebabCaseReturnType<Input, Output>
 }
