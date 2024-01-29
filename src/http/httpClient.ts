@@ -341,3 +341,7 @@ export const httpClient = {
   patch: sendPatch,
   del: sendDelete,
 }
+
+export const JSON_HEADERS = {
+  'Content-Type': 'application/json',
+}
