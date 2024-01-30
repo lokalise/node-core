@@ -12,6 +12,7 @@ export {
   type Response,
   type HttpRequestContext,
   type ResponseSchema,
+  JSON_HEADERS,
 } from './src/http/httpClient'
 
 export {
