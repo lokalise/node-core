@@ -39,3 +39,7 @@ Transform an input object with `Date` members into an object with the correspond
 `export function deepClone<T extends object | undefined | null>(object: T): T`
 
 Return a deep clone copy of an object. Please Note: This uses structuredClone, which has the limitations of these restricted Types: functions, Error objects, WeakMap, WeakSet, DOM nodes, and certain other browser-specific objects like Window.
+
+`export function transformToKebabCase<Output, Input>(object: Input | Input[]): TransformToKebabCaseReturnType<Input, Output> | TransformToKebabCaseReturnType<Input, Output>[]`
+
+Transform an input object with camelCase or snake_case members into an object with the corresponding kebab-case members. This transformation is done recursively, covering nested objects and arrays as well.
