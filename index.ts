@@ -43,6 +43,7 @@ export { type Either, success, failure, isSuccess, isFailure } from './src/error
 export { chunk, callChunked, removeFalsy, removeNullish } from './src/utils/arrayUtils'
 export {
   groupBy,
+  groupByPath,
   groupByUnique,
   pick,
   pickWithoutUndefined,
