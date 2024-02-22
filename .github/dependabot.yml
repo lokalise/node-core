@@ -15,3 +15,5 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - 'skip-release'
+    ignore:
+      - dependency-name: 'dot-prop'

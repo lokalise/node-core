@@ -34,6 +34,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "dot-prop": "6.0.1",
     "pino": "^8.17.2",
     "undici": "^6.3.0",
     "undici-retry": "^5.0.2",

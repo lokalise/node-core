@@ -1,3 +1,5 @@
+import dotProp from 'dot-prop'
+
 import { InternalError } from '../errors/InternalError'
 
 type RecordKeyType = string | number | symbol
@@ -88,6 +90,30 @@ export function groupBy<
         acc[key] = []
       }
       acc[key].push(item)
+      return acc
+    },
+    {} as Record<RecordKeyType, T[]>,
+  )
+}
+
+/**
+ * @param array The array of objects to be grouped.
+ * @param selector The key used for grouping the objects. Support nested keys.
+ * @returns An object where the keys are unique values from the given selector and the values are the corresponding objects from the array.
+ */
+export function groupByPath<T extends object>(array: T[], selector: string): Record<string, T[]> {
+  return array.reduce(
+    (acc, item) => {
+      const key = dotProp.get(item, selector)
+      if (key === undefined || key === null) {
+        return acc
+      }
+      const strKeyPath = key as string
+
+      if (!acc[strKeyPath]) {
+        acc[strKeyPath] = []
+      }
+      acc[strKeyPath].push(item)
       return acc
     },
     {} as Record<RecordKeyType, T[]>,
