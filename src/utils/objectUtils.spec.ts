@@ -365,6 +365,15 @@ describe('objectUtils', () => {
       }
     }
 
+    type TestType1 = {
+      id?: number | null
+      name: string
+      bool: boolean
+      nested?: {
+        code: number
+      }[]
+    }
+
     it('Correctly groups by string values', () => {
       const input: TestType[] = [
         {
@@ -489,6 +498,20 @@ describe('objectUtils', () => {
           },
         ],
       })
+    })
+
+    it('return empty record for nested array key', () => {
+      const input: TestType1[] = [
+        {
+          id: 1,
+          name: 'a',
+          bool: true,
+          nested: [{ code: 100 }],
+        },
+      ]
+
+      const result: Record<string, TestType1[]> = groupByPath(input, 'nested.code')
+      expect(result).toStrictEqual({})
     })
 
     it('Correctly groups by number values', () => {
