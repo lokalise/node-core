@@ -1,4 +1,4 @@
-*.yml        @kibertoad @rupert-mckay @lokankr @drdaemos @andris-sevcenko @dariacm @CarlosGamero
-*.md         @kibertoad @rupert-mckay @lokankr @drdaemos @andris-sevcenko @dariacm @CarlosGamero
-*.ts         @kibertoad @rupert-mckay @lokankr @drdaemos @andris-sevcenko @dariacm @CarlosGamero
-package.json @kibertoad @rupert-mckay @lokankr @drdaemos @andris-sevcenko @dariacm @CarlosGamero
+*.yml        @kibertoad @drdaemos @CarlosGamero @lokalise/dx-guild
+*.md         @kibertoad @drdaemos @CarlosGamero @lokalise/dx-guild
+*.ts         @kibertoad @drdaemos @CarlosGamero @lokalise/dx-guild
+package.json @kibertoad @drdaemos @CarlosGamero @lokalise/dx-guild
