@@ -36,6 +36,7 @@
   "dependencies": {
     "dot-prop": "6.0.1",
     "pino": "^8.19.0",
+    "tslib": "^2.6.2",
     "undici": "^6.10.1",
     "undici-retry": "^5.0.2",
     "zod": "^3.22.4"
