@@ -43,7 +43,7 @@ export type RequestOptions<T> = {
 const DEFAULT_OPTIONS = {
   validateResponse: true,
   throwOnError: true,
-  timeout: 60000,
+  timeout: 30000,
 } satisfies MayOmit<RequestOptions<unknown>, 'requestLabel'>
 
 const defaultClientOptions: Partial<Client.Options> = {
