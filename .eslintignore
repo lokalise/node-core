@@ -1,5 +1,5 @@
 node_modules/
 coverage/
 dist/
-vitest.config.ts
+vitest.config.mts
 src/logging/example.script.js
