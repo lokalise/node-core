@@ -38,7 +38,7 @@ All _send_ methods accept a type parameter and the following arguments:
 
   - `headers`;
   - `query`, query string params to be embedded in the request URL;
-  - `timeout`, the timeout after which a request will time out, in milliseconds;
+  - `timeout`, the timeout after which a request will time out, in milliseconds. Default is 30 seconds. Pass `undefined` if you prefer to have no timeout;
   - `throwOnError`;`
   - `reqContext`;
   - `safeParseJson`, used when the response content-type is `application/json`. If `true`, the response body will be parsed as JSON and a `ResponseError` will be thrown in case of syntax errors. If `false`, errors are not handled;
