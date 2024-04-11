@@ -7,12 +7,10 @@ import { PublicNonRecoverableError } from './PublicNonRecoverableError'
 export type CommonErrorParams = {
   message: string
   details?: FreeformRecord
+  cause?: Error
 }
 
-export type OptionalMessageErrorParams = {
-  message?: string
-  details?: FreeformRecord
-}
+export type OptionalMessageErrorParams = Partial<CommonErrorParams>
 
 export type ValidationError = {
   message: string
@@ -39,6 +37,7 @@ export class AccessDeniedError extends PublicNonRecoverableError {
       errorCode: 'ACCESS_DENIED',
       httpStatusCode: httpConstants.HTTP_STATUS_FORBIDDEN,
       details: params.details,
+      cause: params.cause
     })
   }
 }
@@ -50,6 +49,7 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
       errorCode: 'ENTITY_NOT_FOUND',
       httpStatusCode: httpConstants.HTTP_STATUS_NOT_FOUND,
       details: params.details,
+      cause: params.cause
     })
   }
 }
@@ -61,6 +61,7 @@ export class AuthFailedError extends PublicNonRecoverableError {
       errorCode: 'AUTH_FAILED',
       httpStatusCode: httpConstants.HTTP_STATUS_UNAUTHORIZED,
       details: params.details,
+      cause: params.cause
     })
   }
 }
