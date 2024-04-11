@@ -37,7 +37,7 @@ export class AccessDeniedError extends PublicNonRecoverableError {
       errorCode: 'ACCESS_DENIED',
       httpStatusCode: httpConstants.HTTP_STATUS_FORBIDDEN,
       details: params.details,
-      cause: params.cause
+      cause: params.cause,
     })
   }
 }
@@ -49,7 +49,7 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
       errorCode: 'ENTITY_NOT_FOUND',
       httpStatusCode: httpConstants.HTTP_STATUS_NOT_FOUND,
       details: params.details,
-      cause: params.cause
+      cause: params.cause,
     })
   }
 }
@@ -61,7 +61,7 @@ export class AuthFailedError extends PublicNonRecoverableError {
       errorCode: 'AUTH_FAILED',
       httpStatusCode: httpConstants.HTTP_STATUS_UNAUTHORIZED,
       details: params.details,
-      cause: params.cause
+      cause: params.cause,
     })
   }
 }
