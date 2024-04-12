@@ -5,6 +5,7 @@ export type PublicNonRecoverableErrorParams = {
   errorCode: string
   details?: ErrorDetails
   httpStatusCode?: number
+  cause?: Error
 }
 
 /**
@@ -16,7 +17,9 @@ export class PublicNonRecoverableError extends Error {
   public readonly httpStatusCode: number
 
   constructor(params: PublicNonRecoverableErrorParams) {
-    super(params.message)
+    super(params.message, {
+      cause: params.cause,
+    })
     this.name = 'PublicNonRecoverableError'
     this.details = params.details
     this.errorCode = params.errorCode
