@@ -54,6 +54,7 @@ export {
 } from './src/utils/objectUtils'
 
 export {
+  isError,
   isInternalError,
   isStandardizedError,
   isObject,
