@@ -26,6 +26,33 @@ export function copyWithoutUndefined<
   ) as TargetRecordType
 }
 
+export function copyWithoutEmpty<
+  T extends Record<RecordKeyType, unknown>,
+  TargetRecordType = Pick<
+    T,
+    {
+      [Prop in keyof T]: T[Prop] extends null | undefined | '' ? never : Prop
+    }[keyof T]
+  >,
+>(originalValue: T): TargetRecordType {
+  return Object.keys(originalValue).reduce(
+    (acc, key) => {
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      if (
+        originalValue[key] !== undefined &&
+        originalValue[key] !== null &&
+        (typeof originalValue[key] !== 'string' || originalValue[key].trim().length > 0)
+      ) {
+        // @ts-ignore
+        acc[key] = originalValue[key]
+      }
+      return acc
+    },
+    {} as Record<string, unknown>,
+  ) as TargetRecordType
+}
+
 export function pick<T, K extends string | number | symbol>(
   source: T,
   propNames: readonly K[],
