@@ -48,6 +48,7 @@ export {
   pick,
   pickWithoutUndefined,
   copyWithoutUndefined,
+  copyWithoutEmpty,
   isEmptyObject,
   convertDateFieldsToIsoString,
   deepClone,
