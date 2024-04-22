@@ -101,7 +101,7 @@ describe('objectUtils', () => {
 
       const varWithNarrowedType = result satisfies Record<
         string,
-        string | Record<string, unknown> | null
+        string | Record<string, unknown> | null | number
       >
       const bValue: string = varWithNarrowedType.b
       const gValue: {

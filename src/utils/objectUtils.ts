@@ -37,11 +37,11 @@ export function copyWithoutEmpty<
 >(originalValue: T): TargetRecordType {
   return Object.keys(originalValue).reduce(
     (acc, key) => {
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       if (
         originalValue[key] !== undefined &&
         originalValue[key] !== null &&
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         (typeof originalValue[key] !== 'string' || originalValue[key].trim().length > 0)
       ) {
         // @ts-ignore
