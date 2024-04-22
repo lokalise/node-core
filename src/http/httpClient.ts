@@ -121,6 +121,7 @@ export async function sendDelete<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
@@ -156,6 +157,7 @@ export async function sendPost<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
@@ -191,6 +193,7 @@ export async function sendPostBinary<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
@@ -226,6 +229,7 @@ export async function sendPut<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
@@ -261,6 +265,7 @@ export async function sendPutBinary<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
@@ -296,6 +301,7 @@ export async function sendPatch<T>(
     options.throwOnError ?? DEFAULT_OPTIONS.throwOnError,
     options.validateResponse ?? DEFAULT_OPTIONS.validateResponse,
     options.responseSchema,
+    options.requestLabel,
   )
 }
 
