@@ -69,6 +69,7 @@ export {
   resolveMonorepoLoggerConfiguration,
 } from './src/logging/loggerConfigResolver'
 export type { AppLoggerConfig, MonorepoAppLoggerConfig } from './src/logging/loggerConfigResolver'
+export type { CommonLogger } from './src/logging/commonLogger'
 
 export {
   type ErrorReport,
