@@ -3,9 +3,10 @@ import { types } from 'node:util'
 import type { SerializedError } from 'pino'
 import { pino, levels, stdSerializers } from 'pino'
 
+import type { CommonLogger } from '../logging/commonLogger'
 import { hasMessage } from '../utils/typeUtils'
 
-export const globalLogger = pino({
+export const globalLogger: CommonLogger = pino({
   formatters: {
     level: (label, numericLevel): { level: string } => {
       const level = levels.labels[numericLevel] || 'unknown'
