@@ -28,8 +28,8 @@
     "test:coverage": "vitest --coverage",
     "test:ci": "npm run lint && npm run test:coverage",
     "test:update-snapshots": "vitest -u",
-    "lint": "eslint . --ext .ts && prettier --check --log-level warn \"**/*.{json,md,ts}\"",
-    "lint:fix": "eslint . --fix && prettier --write --log-level warn \"**/*.{json,md,ts}\"",
+    "lint": "eslint . --ext .ts && prettier --check --log-level warn \"**/*.{json,md,ts}\" !CHANGELOG.md",
+    "lint:fix": "eslint . --fix && prettier --write --log-level warn \"**/*.{json,md,ts}\" !CHANGELOG.md",
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "prepublishOnly": "npm run build"
   },
