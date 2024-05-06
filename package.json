@@ -37,21 +37,21 @@
     "dot-prop": "6.0.1",
     "pino": "^9.0.0",
     "tslib": "^2.6.2",
-    "undici": "^6.14.1",
+    "undici": "^6.15.0",
     "undici-retry": "^5.0.3",
-    "zod": "^3.22.4"
+    "zod": "^3.23.6"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "@typescript-eslint/eslint-plugin": "^7.3.1",
-    "@typescript-eslint/parser": "^7.3.1",
-    "@vitest/coverage-v8": "1.5.3",
+    "@types/node": "^20.12.8",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
+    "@vitest/coverage-v8": "1.6.0",
     "auto-changelog": "^2.4.0",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-vitest": "0.4.1",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.3",
-    "vitest": "1.5.3"
+    "typescript": "^5.4.5",
+    "vitest": "1.6.0"
   }
 }
