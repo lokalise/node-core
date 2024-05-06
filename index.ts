@@ -97,3 +97,5 @@ export {
 } from './src/errors/publicErrors'
 
 export { waitAndRetry } from './src/utils/waitUtils'
+
+export * from './src/observability/observabilityTypes'
