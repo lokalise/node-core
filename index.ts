@@ -38,7 +38,14 @@ export {
   type RedisConfig,
 } from './src/config/configTypes'
 
-export { type Either, success, failure, isSuccess, isFailure } from './src/errors/either'
+export {
+  type Either,
+  type DefiniteEither,
+  success,
+  failure,
+  isSuccess,
+  isFailure,
+} from './src/errors/either'
 
 export { chunk, callChunked, removeFalsy, removeNullish } from './src/utils/arrayUtils'
 export {
