@@ -40,7 +40,7 @@ export {
 
 export {
   type Either,
-  DefiniteEither,
+  type DefiniteEither,
   success,
   failure,
   isSuccess,
