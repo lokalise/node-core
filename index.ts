@@ -94,12 +94,13 @@ export {
 export { type MayOmit } from './src/common/may-omit'
 export { type FreeformRecord } from './src/common/commonTypes'
 export {
-  RequestValidationError,
-  AccessDeniedError,
-  EntityNotFoundError,
   type ValidationError,
   type CommonErrorParams,
   type OptionalMessageErrorParams,
+  RequestValidationError,
+  AccessDeniedError,
+  EntityNotFoundError,
+  EntityGoneError,
   AuthFailedError,
 } from './src/errors/publicErrors'
 

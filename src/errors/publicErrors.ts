@@ -54,6 +54,17 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
   }
 }
 
+export class fea extends PublicNonRecoverableError {
+  constructor(params: CommonErrorParams) {
+    super({
+      message: params.message,
+      errorCode: 'ENTITY_GONE',
+      httpStatusCode: 410,
+      details: params.details,
+    })
+  }
+}
+
 export class AuthFailedError extends PublicNonRecoverableError {
   constructor(params: OptionalMessageErrorParams = {}) {
     super({
