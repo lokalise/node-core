@@ -54,7 +54,7 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
   }
 }
 
-export class fea extends PublicNonRecoverableError {
+export class EntityGoneError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
