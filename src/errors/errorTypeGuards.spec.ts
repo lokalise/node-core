@@ -1,7 +1,6 @@
 import { describe } from 'vitest'
 
 import { InternalError } from './InternalError'
-import { PublicNonRecoverableError } from './PublicNonRecoverableError'
 import { ResponseStatusError } from './ResponseStatusError'
 import { isEntityGoneError, isResponseStatusError } from './errorTypeGuards'
 import { EntityGoneError, EntityNotFoundError } from './publicErrors'
