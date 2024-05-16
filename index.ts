@@ -26,7 +26,7 @@ export {
   type InternalErrorParams,
 } from './src/errors/InternalError'
 export { ResponseStatusError } from './src/errors/ResponseStatusError'
-export { isResponseStatusError } from './src/errors/errorTypeGuards'
+export { isResponseStatusError, isEntityGoneError } from './src/errors/errorTypeGuards'
 
 export { ConfigScope } from './src/config/ConfigScope'
 export { ensureClosingSlashTransformer } from './src/config/configTransformers'
@@ -94,12 +94,13 @@ export {
 export { type MayOmit } from './src/common/may-omit'
 export { type FreeformRecord } from './src/common/commonTypes'
 export {
-  RequestValidationError,
-  AccessDeniedError,
-  EntityNotFoundError,
   type ValidationError,
   type CommonErrorParams,
   type OptionalMessageErrorParams,
+  RequestValidationError,
+  AccessDeniedError,
+  EntityNotFoundError,
+  EntityGoneError,
   AuthFailedError,
 } from './src/errors/publicErrors'
 
