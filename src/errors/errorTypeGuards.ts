@@ -1,4 +1,4 @@
-import { isError } from '../utils/typeUtils'
+import { isError, isPublicNonRecoverableError } from '../utils/typeUtils'
 
 import type { ResponseStatusError } from './ResponseStatusError'
 import type { EntityGoneError } from './publicErrors'
@@ -8,5 +8,5 @@ export function isResponseStatusError(entity: unknown): entity is ResponseStatus
 }
 
 export function isEntityGoneError(entity: unknown): entity is EntityGoneError {
-  return isError(entity) && 'httpStatusCode' in entity && entity.httpStatusCode === 410
+  return isPublicNonRecoverableError(entity) && entity.httpStatusCode === 410
 }
