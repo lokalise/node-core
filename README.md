@@ -231,3 +231,7 @@ const result = await waitAndRetry(
 expect(result).toBe(false) // resolves to what the last attempt has returned
 expect(someEventEmitter.emittedEvents.length).toBe(1)
 ```
+
+## Encryption
+
+- `EncryptionUtility` - small class for encrypting/decrypting using aes-256-gcm. Adapted from: https://github.com/MauriceButler/cryptr
