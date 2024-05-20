@@ -47,6 +47,8 @@ export {
   isFailure,
 } from './src/errors/either'
 
+export { EncryptionUtility } from './src/utils/encryptionUtility'
+
 export { chunk, callChunked, removeFalsy, removeNullish } from './src/utils/arrayUtils'
 export {
   groupBy,
