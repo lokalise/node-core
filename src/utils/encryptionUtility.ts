@@ -40,10 +40,6 @@ export class EncryptionUtility {
   }
 
   public encrypt(value: string) {
-    if (value == null) {
-      throw new Error('value must not be null or undefined')
-    }
-
     const iv = crypto.randomBytes(ivLength)
     const salt = crypto.randomBytes(this.saltLength)
 
@@ -58,10 +54,6 @@ export class EncryptionUtility {
   }
 
   public decrypt(value: string) {
-    if (value == null) {
-      throw new Error('value must not be null or undefined')
-    }
-
     const stringValue = Buffer.from(String(value), this.encoding)
 
     const salt = stringValue.subarray(0, this.saltLength)
