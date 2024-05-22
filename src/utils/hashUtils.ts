@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 
-export enum HashDigest {
+export enum HashEncoding {
   HEX = 'hex',
   BASE64 = 'base64',
 }
@@ -10,6 +10,10 @@ export enum HashAlgorithm {
   SHA512 = 'sha512',
 }
 
-export function generateHash(data: string, algorythm: HashAlgorithm, digest: HashDigest) {
-  return createHash(algorythm).update(data).digest(digest)
+export function generateHash(
+  algorithm: HashAlgorithm,
+  data: string,
+  encoding: HashEncoding = HashEncoding.HEX,
+) {
+  return createHash(algorithm).update(data).digest(encoding)
 }
