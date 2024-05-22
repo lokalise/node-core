@@ -73,6 +73,8 @@ export {
 } from './src/utils/typeUtils'
 export { type StandardizedError } from './src/utils/typeUtils'
 
+export { generateHash, HashAlgorithm, HashEncoding } from './src/utils/hashUtils'
+
 export {
   resolveLoggerConfiguration,
   resolveMonorepoLoggerConfiguration,
