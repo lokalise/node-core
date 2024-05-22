@@ -235,3 +235,7 @@ expect(someEventEmitter.emittedEvents.length).toBe(1)
 ## Encryption
 
 - `EncryptionUtility` - small class for encrypting/decrypting using aes-256-gcm. Adapted from: https://github.com/MauriceButler/cryptr
+
+## Hashing
+
+- `HashUtils` - utils for hashing using sha256/sha512 algorithms
