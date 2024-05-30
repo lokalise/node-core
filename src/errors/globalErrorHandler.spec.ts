@@ -8,10 +8,13 @@ describe('globalErrorHandler', () => {
       const resolvedError = resolveGlobalErrorLogObject(error)
 
       expect(resolvedError).toMatchObject({
-        correlationID: undefined,
+        'x-request-id': undefined,
+        error: {
+          type: 'Error',
+          stack: expect.any(String),
+          message: 'text',
+        },
         message: 'text',
-        type: 'Error',
-        stack: expect.any(String),
       })
     })
 
@@ -22,7 +25,12 @@ describe('globalErrorHandler', () => {
 
       const resolvedError = resolveGlobalErrorLogObject(error)
 
-      expect(resolvedError).toBe('text')
+      expect(resolvedError).toMatchInlineSnapshot(`
+        {
+          "message": "text",
+          "x-request-id": undefined,
+        }
+      `)
     })
 
     it('converts something unexpected to fixed string', () => {
@@ -30,7 +38,12 @@ describe('globalErrorHandler', () => {
 
       const resolvedError = resolveGlobalErrorLogObject(error)
 
-      expect(resolvedError).toBe('Unknown error')
+      expect(resolvedError).toMatchInlineSnapshot(`
+        {
+          "message": "Unknown error",
+          "x-request-id": undefined,
+        }
+      `)
     })
   })
 })

@@ -6,6 +6,12 @@ import { pino, levels, stdSerializers } from 'pino'
 import type { CommonLogger } from '../logging/commonLogger'
 import { hasMessage } from '../utils/typeUtils'
 
+type LogObject = {
+  message: string
+  'x-request-id'?: string
+  error?: SerializedError
+}
+
 export const globalLogger: CommonLogger = pino({
   formatters: {
     level: (label, numericLevel): { level: string } => {
@@ -15,26 +21,25 @@ export const globalLogger: CommonLogger = pino({
   },
 })
 
-export function resolveGlobalErrorLogObject(err: unknown, correlationID?: string) {
+export function resolveGlobalErrorLogObject(err: unknown, correlationId?: string): LogObject {
   if (types.isNativeError(err)) {
     return {
-      ...stdSerializers.err(err),
-      correlationID: correlationID,
+      message: err.message,
+      error: stdSerializers.err(err),
+      'x-request-id': correlationId,
     }
   }
 
   if (hasMessage(err)) {
-    return correlationID ? `${err.message} (${correlationID})` : err.message
+    return {
+      message: err.message,
+      'x-request-id': correlationId,
+    }
   }
 
-  return 'Unknown error'
-}
-
-function logGlobalErrorLogObject(logObject: string | SerializedError) {
-  if (typeof logObject === 'string') {
-    globalLogger.error(`Global error: ${logObject}`)
-  } else {
-    globalLogger.error(logObject, logObject.message)
+  return {
+    message: 'Unknown error',
+    'x-request-id': correlationId,
   }
 }
 
@@ -44,7 +49,7 @@ export function executeAndHandleGlobalErrors<T>(operation: () => T) {
     return result
   } catch (err) {
     const logObject = resolveGlobalErrorLogObject(err)
-    logGlobalErrorLogObject(logObject)
+    globalLogger.error(logObject, logObject.message)
     process.exit(1)
   }
 }
@@ -58,7 +63,7 @@ export async function executeAsyncAndHandleGlobalErrors<T>(
     return result
   } catch (err) {
     const logObject = resolveGlobalErrorLogObject(err)
-    logGlobalErrorLogObject(logObject)
+    globalLogger.error(logObject, logObject.message)
     if (stopOnError) {
       process.exit(1)
     }
@@ -75,7 +80,7 @@ export async function executeSettleAllAndHandleGlobalErrors(
   for (const entry of result) {
     if (entry.status === 'rejected') {
       const logObject = resolveGlobalErrorLogObject(entry.reason)
-      logGlobalErrorLogObject(logObject)
+      globalLogger.error(logObject, logObject.message)
       errorsHappened = true
     }
   }
