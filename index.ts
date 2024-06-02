@@ -111,3 +111,6 @@ export {
 export { waitAndRetry } from './src/utils/waitUtils'
 
 export * from './src/observability/observabilityTypes'
+
+export * from './src/utils/checksumUtils'
+export * from './src/utils/streamUtils'
