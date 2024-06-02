@@ -17,8 +17,12 @@ export function generateChecksumForReadable(readable: Readable): Promise<string>
   return new Promise((resolve, reject) => {
     const hashCreator = createHash(HASH_ALGORITHM)
     readable.on('data', function (data) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      hashCreator.update(Buffer.from(data))
+      if (Buffer.isBuffer(data)) {
+        hashCreator.update(data)
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        hashCreator.update(Buffer.from(data))
+      }
     })
 
     readable.on('end', function () {

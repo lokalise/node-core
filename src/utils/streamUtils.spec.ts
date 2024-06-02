@@ -4,7 +4,7 @@ import tmp from 'tmp'
 import { expect } from 'vitest'
 
 import { generateChecksumForReadable } from './checksumUtils'
-import { FsReadableProvider } from './streamUtils'
+import { FsReadableProvider, getReadableContentLength } from './streamUtils'
 
 const testObject = {
   someField: 123,
@@ -43,7 +43,7 @@ describe('streamUtils', () => {
 
   describe('destroy', () => {
     it('deletes the file', async () => {
-      expect.assertions(3)
+      expect.assertions(4)
       const sourceReadable = Readable.from(JSON.stringify(testObject))
       const targetFile = tmp.tmpNameSync()
 
@@ -61,6 +61,31 @@ describe('streamUtils', () => {
       } catch (err) {
         expect((err as Error).message).toMatch(/was already deleted/)
       }
+
+      try {
+        await provider.getContentLength()
+      } catch (err) {
+        expect((err as Error).message).toMatch(/was already deleted/)
+      }
+    })
+  })
+
+  describe('getContentLength', () => {
+    it('returns length of the persisted data', async () => {
+      const sourceReadable = Readable.from(JSON.stringify(testObject))
+      const targetFile = tmp.tmpNameSync()
+
+      const provider = await FsReadableProvider.persistReadableToFs({
+        sourceReadable,
+        targetFile: targetFile,
+      })
+
+      const fileContentLength = await provider.getContentLength()
+      const newReadable = await provider.createStream()
+      const readableLength = await getReadableContentLength(newReadable)
+
+      expect(fileContentLength).toBe(115)
+      expect(readableLength).toBe(115)
     })
   })
 })
