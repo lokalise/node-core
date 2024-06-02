@@ -60,7 +60,12 @@ export class FsReadableProvider implements ReadableProvider {
     return createReadStream(this.storageFile)
   }
 
-  destroy(): Promise<void> {
+  async destroy(): Promise<void> {
+    if (!(await this.fileExists())) {
+      // nothing to do here
+      return
+    }
+
     return unlink(this.storageFile)
   }
 
