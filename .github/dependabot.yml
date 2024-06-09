@@ -17,3 +17,5 @@ updates:
       - 'skip-release'
     ignore:
       - dependency-name: 'dot-prop'
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-plugin-vitest'
