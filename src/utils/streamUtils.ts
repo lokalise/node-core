@@ -94,6 +94,10 @@ export class FsReadableProvider implements ReadableProvider {
   }
 }
 
+/**
+ * Consumes the readable in order to calculate its length in bytes
+ * @param readable
+ */
 export function getReadableContentLength(readable: Readable): Promise<number> {
   return new Promise((resolve, reject) => {
     let size = 0

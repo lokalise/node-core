@@ -1,21 +1,4 @@
 export {
-  sendPut,
-  sendPutBinary,
-  sendDelete,
-  sendPatch,
-  sendGet,
-  sendPost,
-  sendPostBinary,
-  httpClient,
-  buildClient,
-  type RequestOptions,
-  type Response,
-  type HttpRequestContext,
-  type ResponseSchema,
-  JSON_HEADERS,
-} from './src/http/httpClient'
-
-export {
   PublicNonRecoverableError,
   type PublicNonRecoverableErrorParams,
 } from './src/errors/PublicNonRecoverableError'
@@ -25,8 +8,7 @@ export {
   type ErrorDetails,
   type InternalErrorParams,
 } from './src/errors/InternalError'
-export { ResponseStatusError } from './src/errors/ResponseStatusError'
-export { isResponseStatusError, isEntityGoneError } from './src/errors/errorTypeGuards'
+export { isEntityGoneError } from './src/errors/errorTypeGuards'
 
 export { ConfigScope } from './src/config/ConfigScope'
 export { ensureClosingSlashTransformer } from './src/config/configTransformers'
@@ -110,7 +92,16 @@ export {
 
 export { waitAndRetry } from './src/utils/waitUtils'
 
-export * from './src/observability/observabilityTypes'
+export type { TransactionObservabilityManager } from './src/observability/observabilityTypes'
 
-export * from './src/utils/checksumUtils'
-export * from './src/utils/streamUtils'
+export {
+  generateChecksumForReadable,
+  generateChecksumForObject,
+  generateChecksumForBufferOrString,
+} from './src/utils/checksumUtils'
+export { FsReadableProvider } from './src/utils/streamUtils'
+export type {
+  PersistToFsOptions,
+  ReadableProvider,
+  FsReadableProviderOptions,
+} from './src/utils/streamUtils'
