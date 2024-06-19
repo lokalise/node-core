@@ -1,4 +1,6 @@
-import type { LoggerOptions } from 'pino'
+import type { Level, Logger, LoggerOptions } from 'pino'
+import { levels, pino } from 'pino'
+import pretty from 'pino-pretty'
 
 export type AppLoggerConfig = {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
@@ -15,7 +17,7 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
 /* c8 ignore next 24 */
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
-): LoggerOptions {
+): LoggerOptions | Logger | boolean {
   if (appConfig.nodeEnv !== 'development') {
     return resolveLoggerConfiguration(appConfig)
   }
@@ -38,25 +40,28 @@ export function resolveMonorepoLoggerConfiguration(
   }
 }
 
-export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions {
-  const config: LoggerOptions = {
-    level: appConfig.logLevel,
-    formatters: {
-      level: (label) => {
-        return { level: label }
-      },
-    },
-    base: appConfig.base,
-  }
+export function resolveLoggerConfiguration(
+  appConfig: AppLoggerConfig,
+): LoggerOptions | Logger | boolean {
   if (appConfig.nodeEnv !== 'production') {
-    config.transport = {
-      target: 'pino-pretty',
-      options: {
+    return pino(
+      pretty({
+        sync: true,
+        minimumLevel: appConfig.logLevel as Level,
         colorize: true,
         translateTime: 'SYS:standard',
         ignore: 'hostname,pid',
-      },
-    }
+      }),
+    )
   }
-  return config
+
+  return {
+    level: appConfig.logLevel,
+    formatters: {
+      level: (_label, numericLevel): { level: string } => {
+        const level = levels.labels[numericLevel] || 'unknown'
+        return { level }
+      },
+    },
+  } satisfies LoggerOptions
 }
