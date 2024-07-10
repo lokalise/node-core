@@ -6,7 +6,8 @@ export type RedisConfig = {
   /**
    * An integer from 0 to 15, inclusive
    */
-  db: number
+  db?: number
+  keyPrefix?: string
   port: number
   username?: string
   password?: string
