@@ -15,7 +15,7 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
 }
 
 // Note that transports do not work in vitest, likely because pino attempts to run them in a separate worker
-/* c8 ignore next 24 */
+/* c8 ignore next 25 */
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
 ): LoggerOptions | Logger | boolean {
