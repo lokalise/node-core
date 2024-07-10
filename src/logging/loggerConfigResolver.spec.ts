@@ -76,7 +76,6 @@ describe('loggerConfigResolver', () => {
 
         const stream = pinoTest.sink()
         stream.on('data', (obj) => {
-          console.log(obj)
           expect(obj.password).toBe('[Redacted]')
           done(true)
         })
