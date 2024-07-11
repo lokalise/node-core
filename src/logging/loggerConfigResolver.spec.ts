@@ -1,4 +1,5 @@
 import { pino } from 'pino'
+import pinoTest from 'pino-test'
 import { expect } from 'vitest'
 
 import { resolveLoggerConfiguration } from './loggerConfigResolver'
@@ -17,6 +18,7 @@ describe('loggerConfigResolver', () => {
             "level": [Function],
           },
           "level": "warn",
+          "redact": undefined,
         }
       `)
     })
@@ -61,5 +63,25 @@ describe('loggerConfigResolver', () => {
         logger.warn('test')
       }).not.toThrow()
     })
+
+    it('redacts logs via provided config', () =>
+      new Promise((done) => {
+        const loggerConfig = resolveLoggerConfiguration({
+          logLevel: 'info',
+          nodeEnv: 'production',
+          redact: {
+            paths: ['password'],
+          },
+        })
+
+        const stream = pinoTest.sink()
+        stream.on('data', (obj) => {
+          expect(obj.password).toBe('[Redacted]')
+          done(true)
+        })
+
+        const logger = pino(loggerConfig, stream)
+        logger.info({ password: 'super password' }, 'Auth attempt.')
+      }))
   })
 })

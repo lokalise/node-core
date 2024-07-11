@@ -1,4 +1,4 @@
-import type { Level, Logger, LoggerOptions } from 'pino'
+import type { Level, Logger, LoggerOptions, redactOptions } from 'pino'
 import { levels, pino } from 'pino'
 import pretty from 'pino-pretty'
 
@@ -6,6 +6,7 @@ export type AppLoggerConfig = {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
   nodeEnv: 'production' | 'development' | 'test'
   base?: Record<string, unknown>
+  redact?: redactOptions
 }
 
 export type MonorepoAppLoggerConfig = AppLoggerConfig & {
@@ -14,7 +15,7 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
 }
 
 // Note that transports do not work in vitest, likely because pino attempts to run them in a separate worker
-/* c8 ignore next 24 */
+/* c8 ignore next 25 */
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
 ): LoggerOptions | Logger | boolean {
@@ -29,6 +30,7 @@ export function resolveMonorepoLoggerConfiguration(
         return { level: label }
       },
     },
+    redact: appConfig.redact,
     transport: {
       target: 'pino/file',
       options: {
@@ -63,5 +65,6 @@ export function resolveLoggerConfiguration(
         return { level }
       },
     },
+    redact: appConfig.redact,
   } satisfies LoggerOptions
 }

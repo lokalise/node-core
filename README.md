@@ -24,6 +24,9 @@ The library provides methods to resolve the default logging configuration. Publi
   const loggerConfig = resolveLoggerConfiguration({
     logLevel: 'warn',
     nodeEnv: 'production',
+    redact: {
+      paths: ['path1', 'path2'],
+    },
   })
 
   const logger = pino(loggerConfig)
