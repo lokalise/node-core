@@ -1,6 +1,6 @@
 {
   "name": "@lokalise/node-core",
-  "version": "10.0.0",
+  "version": "11.1.0",
   "author": {
     "name": "Lokalise",
     "url": "https://lokalise.com/"
@@ -36,6 +36,7 @@
   "dependencies": {
     "dot-prop": "6.0.1",
     "pino": "^9.1.0",
+    "pino-pretty": "^11.2.1",
     "tslib": "^2.6.2",
     "zod": "^3.23.8"
   },
@@ -44,14 +45,15 @@
     "@types/tmp": "^0.2.6",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
-    "@vitest/coverage-v8": "1.6.0",
+    "@vitest/coverage-v8": "2.0.3",
     "auto-changelog": "^2.4.0",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-vitest": "0.4.1",
+    "pino-test": "^1.0.1",
     "prettier": "^3.3.1",
     "tmp": "^0.2.3",
     "typescript": "^5.4.5",
-    "vitest": "1.6.0"
+    "vitest": "2.0.3"
   }
 }
