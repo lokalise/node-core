@@ -16,15 +16,15 @@ describe('encryption utility', () => {
   })
 
   it('works with custom encoding', () => {
-    const encodings: BufferEncoding[] = ['hex', 'base64', 'latin1']
+    const encodings: NodeJS.BufferEncoding[] = ['hex', 'base64', 'latin1']
 
-    encodings.forEach((encoding) => {
+    for (const encoding of encodings) {
       const cryptr = new EncryptionUtility(testSecret, { encoding })
       const encryptedString = cryptr.encrypt(testData)
       const decryptedString = cryptr.decrypt(encryptedString)
 
       expect(decryptedString).toBe(testData)
-    })
+    }
   })
 
   it('custom encoding affects output length', () => {
