@@ -18,7 +18,7 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
 /* c8 ignore next 25 */
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
-): LoggerOptions | Logger | boolean {
+): LoggerOptions | Logger {
   if (appConfig.nodeEnv !== 'development') {
     return resolveLoggerConfiguration(appConfig)
   }
@@ -42,9 +42,7 @@ export function resolveMonorepoLoggerConfiguration(
   }
 }
 
-export function resolveLoggerConfiguration(
-  appConfig: AppLoggerConfig,
-): LoggerOptions | Logger | boolean {
+export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions | Logger {
   if (appConfig.nodeEnv !== 'production') {
     return pino(
       pretty({

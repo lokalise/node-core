@@ -196,24 +196,29 @@ export function convertDateFieldsToIsoString<Input extends object>(
     return object.map(convertDateFieldsToIsoStringAux)
   }
 
-  return Object.entries(object).reduce((result, [key, value]) => {
-    // @ts-ignore
-    result[key] = convertDateFieldsToIsoStringAux(value)
-    return result
-  }, {} as ExactlyLikeWithDateAsString<Input>)
+  return Object.entries(object).reduce(
+    (result, [key, value]) => {
+      // @ts-ignore
+      result[key] = convertDateFieldsToIsoStringAux(value)
+      return result
+    },
+    {} as ExactlyLikeWithDateAsString<Input>,
+  )
 }
 
 function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
   if (item instanceof Date) {
     // @ts-ignore
     return item.toISOString()
-  } else if (item && typeof item === 'object') {
+  }
+
+  if (item && typeof item === 'object') {
     // @ts-ignore
     return convertDateFieldsToIsoString(item)
-  } else {
-    // @ts-ignore
-    return item
   }
+
+  // @ts-ignore
+  return item
 }
 
 /**
@@ -229,9 +234,18 @@ export function deepClone<T extends object | undefined | null>(object: T): T {
   return structuredClone(object)
 }
 
+function transformKey(key: string): string {
+  return key
+    .replace(/([a-z])([A-Z])/g, '$1-$2') // transforms basic camelCase
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2') // transforms abbreviations
+    .replace(/_/g, '-') // transforms snake_case
+    .toLowerCase() // finally lowercase all
+}
+
 type TransformToKebabCaseInputType = Record<string, unknown> | null | undefined
-type TransformToKebabCaseReturnType<Input, Output> =
-  Input extends Record<string, unknown> ? Output : Input
+type TransformToKebabCaseReturnType<Input, Output> = Input extends Record<string, unknown>
+  ? Output
+  : Input
 /**
  * Transforms an object's keys from camelCase or snake_case to kebab-case.
  * @param object
@@ -240,10 +254,12 @@ export function transformToKebabCase<
   Output extends Record<string, unknown>,
   Input extends TransformToKebabCaseInputType,
 >(object: Input): TransformToKebabCaseReturnType<Input, Output>
+
 export function transformToKebabCase<
   Output extends Record<string, unknown>,
   Input extends TransformToKebabCaseInputType,
 >(object: Input[]): TransformToKebabCaseReturnType<Input, Output>[]
+
 export function transformToKebabCase<Output, Input>(
   object: Input | Input[],
 ): TransformToKebabCaseReturnType<Input, Output> | TransformToKebabCaseReturnType<Input, Output>[] {
@@ -255,21 +271,18 @@ export function transformToKebabCase<Output, Input>(
     return object as TransformToKebabCaseReturnType<Input, Output>
   }
 
-  const transformKey = (key: string) =>
-    key
-      .replace(/([a-z])([A-Z])/g, '$1-$2') // transforms basic camelCase
-      .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2') // transforms abbreviations
-      .replace(/_/g, '-') // transforms snake_case
-      .toLowerCase() // finally lowercase all
-
   return Object.entries(object as Record<string, unknown>).reduce(
-    (result, [key, value]) => ({
-      ...result,
-      [transformKey(key)]:
+    (result, [key, value]) => {
+      const transformedKey = transformKey(key)
+      const transformedValue =
         value && typeof value === 'object'
           ? transformToKebabCase(value as TransformToKebabCaseInputType)
-          : value,
-    }),
+          : value
+
+      // Avoiding destructuring by directly assigning the new key-value pair
+      result[transformedKey] = transformedValue
+      return result
+    },
     {} as Record<string, unknown>,
   ) as TransformToKebabCaseReturnType<Input, Output>
 }

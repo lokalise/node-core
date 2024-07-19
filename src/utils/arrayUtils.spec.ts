@@ -1,3 +1,4 @@
+import { describe, expect, it, vitest } from 'vitest'
 import { callChunked, chunk, removeFalsy, removeNullish } from './arrayUtils'
 
 describe('arrayUtils', () => {
