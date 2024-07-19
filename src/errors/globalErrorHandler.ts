@@ -1,7 +1,7 @@
 import { types } from 'node:util'
 
 import type { SerializedError } from 'pino'
-import { pino, levels, stdSerializers } from 'pino'
+import { levels, pino, stdSerializers } from 'pino'
 
 import type { CommonLogger } from '../logging/commonLogger'
 import { hasMessage } from '../utils/typeUtils'
@@ -14,7 +14,7 @@ type LogObject = {
 
 export const globalLogger: CommonLogger = pino({
   formatters: {
-    level: (label, numericLevel): { level: string } => {
+    level: (_label, numericLevel): { level: string } => {
       const level = levels.labels[numericLevel] || 'unknown'
       return { level }
     },
@@ -76,7 +76,7 @@ export async function executeSettleAllAndHandleGlobalErrors(
 ) {
   const result = await Promise.allSettled(promises)
 
-  let errorsHappened
+  let errorsHappened: boolean | undefined
   for (const entry of result) {
     if (entry.status === 'rejected') {
       const logObject = resolveGlobalErrorLogObject(entry.reason)

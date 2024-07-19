@@ -9,4 +9,4 @@ lib/
 jest.config.json
 package-lock.json
 tsconfig.json
-.eslintrc.json
+biome.json

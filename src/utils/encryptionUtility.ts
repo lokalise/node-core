@@ -1,4 +1,4 @@
-import * as crypto from 'crypto'
+import * as crypto from 'node:crypto'
 
 const algorithm = 'aes-256-gcm'
 const ivLength = 16
@@ -10,7 +10,7 @@ const defaultPbkdf2Iterations = 100000
 export type Options = {
   saltLength?: number
   pbkdf2Iterations?: number
-  encoding?: BufferEncoding
+  encoding?: NodeJS.BufferEncoding
 }
 
 /**
@@ -22,7 +22,7 @@ export class EncryptionUtility {
   private readonly encryptedPosition: number
   private readonly tagPosition: number
   private readonly pbkdf2Iterations: number
-  private readonly encoding: BufferEncoding
+  private readonly encoding: NodeJS.BufferEncoding
 
   constructor(secret: string, options?: Options) {
     this.secret = secret

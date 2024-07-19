@@ -16,7 +16,7 @@ export function generateChecksumForObject(object: object): string {
 export function generateChecksumForReadable(readable: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
     const hashCreator = createHash(HASH_ALGORITHM)
-    readable.on('data', function (data) {
+    readable.on('data', (data) => {
       if (Buffer.isBuffer(data)) {
         hashCreator.update(data)
       } else {
@@ -25,11 +25,11 @@ export function generateChecksumForReadable(readable: Readable): Promise<string>
       }
     })
 
-    readable.on('end', function () {
+    readable.on('end', () => {
       const hash = hashCreator.digest('hex')
       resolve(hash)
     })
-    readable.on('error', function (err) {
+    readable.on('error', (err) => {
       /* c8 ignore next 1 */
       reject(err)
     })
