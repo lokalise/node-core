@@ -1,4 +1,4 @@
-import type { ErrorDetails } from './types';
+import type { ErrorDetails } from './types'
 
 export type InternalErrorParams<T = ErrorDetails> = {
   message: string
