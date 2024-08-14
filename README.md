@@ -2,15 +2,11 @@
 
 Core libraries for Node.js backend services.
 
-- [Overview](#overview)
-- [HTTP Client](#http-client)
 - [Default Logging Configuration](#default-logging-configuration)
 - [ConfigScope](#configscope)
 - [Error Handling](#error-handling)
 
 See [docs](/docs) for further instructions on how to use.
-
-## Overview
 
 ## Default Logging Configuration
 
@@ -136,11 +132,13 @@ The library exposes classes for the following errors:
 - `InternalError`, which issues a `500` status code and is not exposed in the global error handler. It expects the following parameters:
   - `message`;
   - `errorCode`;
-  - `details` – (optional).
+  - `details` – (optional);
+  - `cause` – (optional).
 - `PublicNonRecoverableError`, which issues the HTTP status code provided and signals that the user did something wrong, hence the error is returned to the consumer of the API. It expects the following parameters:
   - `message`;
   - `errorCode`;
   - `details` – (optional);
+  - `cause` – (optional);
   - `httpStatusCode` – (optional). Defaults to `500`;
 
 ### Either

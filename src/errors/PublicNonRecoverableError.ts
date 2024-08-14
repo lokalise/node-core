@@ -1,22 +1,22 @@
-import type { ErrorDetails } from './InternalError'
+import type { ErrorDetails } from './types';
 
-export type PublicNonRecoverableErrorParams = {
+export type PublicNonRecoverableErrorParams<T = ErrorDetails> = {
   message: string
   errorCode: string
-  details?: ErrorDetails
+  details?: T
   httpStatusCode?: number
-  cause?: Error
+  cause?: unknown
 }
 
 /**
  * This error is returned to the consumer of API
  */
-export class PublicNonRecoverableError extends Error {
-  public readonly details?: ErrorDetails
+export class PublicNonRecoverableError<T = ErrorDetails> extends Error {
+  public readonly details?: T
   public readonly errorCode: string
   public readonly httpStatusCode: number
 
-  constructor(params: PublicNonRecoverableErrorParams) {
+  constructor(params: PublicNonRecoverableErrorParams<T>) {
     super(params.message, {
       cause: params.cause,
     })
