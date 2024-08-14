@@ -1,10 +1,10 @@
-export type ErrorDetails = Record<string, unknown>
+import type { ErrorDetails } from './types'
 
 export type InternalErrorParams<T = ErrorDetails> = {
   message: string
   errorCode: string
   details?: T
-  cause?: Error
+  cause?: unknown
 }
 
 export class InternalError<T = ErrorDetails> extends Error {
