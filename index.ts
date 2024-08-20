@@ -1,3 +1,5 @@
+export type { ErrorDetails } from './src/errors/types'
+
 export {
   PublicNonRecoverableError,
   type PublicNonRecoverableErrorParams,
@@ -5,7 +7,6 @@ export {
 
 export {
   InternalError,
-  type ErrorDetails,
   type InternalErrorParams,
 } from './src/errors/InternalError'
 export { isEntityGoneError } from './src/errors/errorTypeGuards'
