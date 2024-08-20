@@ -1,4 +1,4 @@
-import { isPublicNonRecoverableError } from '../utils/typeUtils'
+import { isPublicNonRecoverableError } from '../errors/PublicNonRecoverableError'
 
 import type { EntityGoneError } from './publicErrors'
 

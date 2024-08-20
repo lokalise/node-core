@@ -10,12 +10,13 @@ export type PublicNonRecoverableErrorParams<T = ErrorDetails> = {
 }
 
 const PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY = 'PUBLIC_NON_RECOVERABLE_ERROR_KEY'
+const publicNonRecoverableErrorSymbol = Symbol.for(PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY)
 
 /**
  * This error is returned to the consumer of API
  */
 export class PublicNonRecoverableError<T = ErrorDetails> extends Error {
-  readonly [Symbol.for(PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY)] = true
+  readonly [publicNonRecoverableErrorSymbol] = true
   public readonly details?: T
   public readonly errorCode: string
   public readonly httpStatusCode: number
@@ -32,5 +33,5 @@ export class PublicNonRecoverableError<T = ErrorDetails> extends Error {
 }
 
 export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
-  return isError(error) && error[Symbol.for(PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY)] === true
+  return isError(error) && (error as any)[Symbol.for(PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY)] === true
 }

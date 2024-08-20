@@ -9,9 +9,10 @@ export type InternalErrorParams<T = ErrorDetails> = {
 }
 
 const INTERNAL_ERROR_SYMBOL_KEY = 'INTERNAL_ERROR_KEY'
+const internalErrorSymbol = Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)
 
 export class InternalError<T = ErrorDetails> extends Error {
-  readonly [Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)] = true
+  readonly [internalErrorSymbol] = true
   public readonly details?: T
   public readonly errorCode: string
 
@@ -26,5 +27,5 @@ export class InternalError<T = ErrorDetails> extends Error {
 }
 
 export function isInternalError(error: unknown): error is InternalError {
-  return isError(error) && error[Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)] === true
+  return isError(error) && (error as any)[Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)] === true
 }
