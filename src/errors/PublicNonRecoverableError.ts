@@ -33,5 +33,8 @@ export class PublicNonRecoverableError<T = ErrorDetails> extends Error {
 }
 
 export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
-  return isError(error) && (error as any)[Symbol.for(PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY)] === true
+  return (
+    // biome-ignore lint/suspicious/noExplicitAny: checking for existence of prop outside or Error interface
+    isError(error) && (error as any)[Symbol.for(PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL_KEY)] === true
+  )
 }
