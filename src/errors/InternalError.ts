@@ -28,9 +28,9 @@ export class InternalError<T = ErrorDetails> extends Error {
 }
 
 export function isInternalError(error: unknown): error is InternalError {
-  // biome-ignore lint/suspicious/noExplicitAny: checking for existence of prop outside or Error interface
   return (
     isError(error) &&
+    // biome-ignore lint/suspicious/noExplicitAny: checking for existence of prop outside or Error interface
     ((error as any)[Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)] === true ||
       error.name === 'InternalError')
   )
