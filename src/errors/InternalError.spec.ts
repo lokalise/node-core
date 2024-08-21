@@ -24,7 +24,6 @@ describe('InternalError', () => {
             message: 'Unknown',
             errorCode: 'INTERNAL_ERROR',
           })
-          this.name = 'ExtendedInternalError'
         }
       }
       const err = new ExtendedInternalError()

@@ -25,7 +25,8 @@ export class PublicNonRecoverableError<T = ErrorDetails> extends Error {
     super(params.message, {
       cause: params.cause,
     })
-    this.name = 'PublicNonRecoverableError'
+    // set the name as the class name for every class that extends PublicNonRecoverableError
+    this.name = this.constructor.name
     this.details = params.details
     this.errorCode = params.errorCode
     this.httpStatusCode = params.httpStatusCode ?? 500

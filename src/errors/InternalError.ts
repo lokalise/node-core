@@ -20,7 +20,8 @@ export class InternalError<T = ErrorDetails> extends Error {
     super(params.message, {
       cause: params.cause,
     })
-    this.name = 'InternalError'
+    // set the name as the class name for every class that extends InternalError
+    this.name = this.constructor.name
     this.details = params.details
     this.errorCode = params.errorCode
   }

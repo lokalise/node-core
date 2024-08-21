@@ -33,7 +33,6 @@ describe('PublicNonRecoverableError', () => {
             message: 'Unknown',
             errorCode: 'PUBLIC_ERROR',
           })
-          this.name = 'ExtendedPublicNonRecoverableError'
         }
       }
       const err = new ExtendedPublicNonRecoverableError()
