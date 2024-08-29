@@ -23,6 +23,7 @@ export type TransactionObservabilityManager = {
   /**
    * Ends the transaction
    * @param uniqueTransactionKey - used for identifying specific ongoing transaction. Must be reasonably unique to reduce possibility of collisions
+   * @param wasSuccessful - indicates if the transaction was successful or not
    */
-  stop: (uniqueTransactionKey: string) => unknown
+  stop: (uniqueTransactionKey: string, wasSuccessful?: boolean) => unknown
 }
