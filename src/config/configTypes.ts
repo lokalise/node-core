@@ -13,6 +13,10 @@ export type RedisConfig = {
   password?: string
   commandTimeout?: number
   connectTimeout?: number
+  /**
+   * Set this option explicitly to null for infinite retries
+   * By default (for undefined) there are 20 retries, see: https://redis.github.io/ioredis/interfaces/CommonRedisOptions.html#maxRetriesPerRequest
+   */
   maxRetriesPerRequest?: number | null
   enableReadyCheck?: boolean
   lazyConnect?: boolean
