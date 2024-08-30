@@ -14,6 +14,8 @@ export type RedisConfig = {
   commandTimeout?: number
   connectTimeout?: number
   maxRetriesPerRequest?: number | null
+  enableReadyCheck?: boolean
+  lazyConnect?: boolean
   useTls: boolean
 }
 
