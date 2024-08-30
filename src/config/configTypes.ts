@@ -13,6 +13,7 @@ export type RedisConfig = {
   password?: string
   commandTimeout?: number
   connectTimeout?: number
+  maxRetriesPerRequest?: number | null
   useTls: boolean
 }
 
