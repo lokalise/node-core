@@ -1,14 +1,7 @@
 import { InternalError } from '../errors/InternalError'
 import { PublicNonRecoverableError } from '../errors/PublicNonRecoverableError'
 
-import {
-  hasMessage,
-  isError,
-  isInternalError,
-  isObject,
-  isPublicNonRecoverableError,
-  isStandardizedError,
-} from './typeUtils'
+import { hasMessage, isError, isObject, isStandardizedError } from './typeUtils'
 
 describe('typeUtils', () => {
   describe('isError', () => {
@@ -52,46 +45,6 @@ describe('typeUtils', () => {
       const error = {}
 
       expect(isError(error)).toBe(false)
-    })
-  })
-
-  describe('isInternalError', () => {
-    it('true for InternalError', () => {
-      const error = new InternalError({
-        message: 'dummy',
-        errorCode: 'code',
-      })
-
-      expect(isInternalError(error)).toBe(true)
-    })
-
-    it('false for PublicNonRecoverableError', () => {
-      const error = new PublicNonRecoverableError({
-        message: 'dummy',
-        errorCode: 'code',
-      })
-
-      expect(isInternalError(error)).toBe(false)
-    })
-  })
-
-  describe('isPublicNonRecoverableError', () => {
-    it('false for InternalError', () => {
-      const error = new InternalError({
-        message: 'dummy',
-        errorCode: 'code',
-      })
-
-      expect(isPublicNonRecoverableError(error)).toBe(false)
-    })
-
-    it('true for PublicNonRecoverableError', () => {
-      const error = new PublicNonRecoverableError({
-        message: 'dummy',
-        errorCode: 'code',
-      })
-
-      expect(isPublicNonRecoverableError(error)).toBe(true)
     })
   })
 
