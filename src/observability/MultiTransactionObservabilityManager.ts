@@ -4,7 +4,6 @@ export class MultiTransactionObservabilityManager implements TransactionObservab
   private readonly managers: TransactionObservabilityManager[]
 
   constructor(managers: TransactionObservabilityManager[]) {
-    if (managers.length === 0) throw new Error('At least one manager must be provided')
     this.managers = managers
   }
 

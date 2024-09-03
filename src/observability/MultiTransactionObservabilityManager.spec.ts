@@ -15,12 +15,6 @@ describe('MultiTransactionObservabilityManager', () => {
     ])
   })
 
-  it('throws error on constructor if list is empty', () => {
-    expect(() => new MultiTransactionObservabilityManager([])).toThrowError(
-      'At least one manager must be provided',
-    )
-  })
-
   it('start is being called on all managers', () => {
     const spy1 = vi.spyOn(fakeTransactionManager1, 'start')
     const spy2 = vi.spyOn(fakeTransactionManager2, 'start')
