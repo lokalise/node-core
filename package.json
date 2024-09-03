@@ -11,11 +11,7 @@
         "url": "git://github.com/lokalise/node-core.git"
     },
     "license": "Apache-2.0",
-    "files": [
-        "dist/**",
-        "LICENSE",
-        "README.md"
-    ],
+    "files": ["dist/**", "LICENSE", "README.md"],
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "commonjs",
@@ -30,9 +26,8 @@
         "test:update-snapshots": "vitest -u",
         "lint": "biome check . && tsc --project tsconfig.lint.json --noEmit",
         "lint:fix": "biome check --write",
-        "version": "auto-changelog -p && git add CHANGELOG.md",
-        "prepublishOnly": "npm run build",
-        "postversion": "biome check --write package.json"
+        "version": "auto-changelog -p && git add CHANGELOG.md && biome check --write package.json && git add package.json",
+        "prepublishOnly": "npm run build"
     },
     "dependencies": {
         "dot-prop": "6.0.1",
