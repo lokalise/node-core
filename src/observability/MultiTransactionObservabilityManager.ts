@@ -1,5 +1,9 @@
 import type { TransactionObservabilityManager } from './observabilityTypes'
 
+/**
+ * Groups different TransactionObservabilityManager instances into one
+ * to facilitate tracking transactions across multiple observability systems.
+ */
 export class MultiTransactionObservabilityManager implements TransactionObservabilityManager {
   private readonly managers: TransactionObservabilityManager[]
 
