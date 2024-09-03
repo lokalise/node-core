@@ -1,6 +1,6 @@
 {
     "name": "@lokalise/node-core",
-    "version": "12.2.1",
+    "version": "12.3.0",
     "author": {
         "name": "Lokalise",
         "url": "https://lokalise.com/"
@@ -11,7 +11,11 @@
         "url": "git://github.com/lokalise/node-core.git"
     },
     "license": "Apache-2.0",
-    "files": ["dist/**", "LICENSE", "README.md"],
+    "files": [
+        "dist/**",
+        "LICENSE",
+        "README.md"
+    ],
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "commonjs",
