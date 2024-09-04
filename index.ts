@@ -94,6 +94,7 @@ export {
 export { waitAndRetry } from './src/utils/waitUtils'
 
 export type { TransactionObservabilityManager } from './src/observability/observabilityTypes'
+export { MultiTransactionObservabilityManager } from './src/observability/MultiTransactionObservabilityManager'
 
 export {
   generateChecksumForReadable,
