@@ -2,11 +2,13 @@ export type { ErrorDetails } from './src/errors/types'
 
 export {
   PublicNonRecoverableError,
+  isPublicNonRecoverableError,
   type PublicNonRecoverableErrorParams,
 } from './src/errors/PublicNonRecoverableError'
 
 export {
   InternalError,
+  isInternalError,
   type InternalErrorParams,
 } from './src/errors/InternalError'
 export { isEntityGoneError } from './src/errors/errorTypeGuards'
@@ -48,10 +50,8 @@ export {
 
 export {
   isError,
-  isInternalError,
   isStandardizedError,
   isObject,
-  isPublicNonRecoverableError,
   hasMessage,
 } from './src/utils/typeUtils'
 export { type StandardizedError } from './src/utils/typeUtils'
@@ -94,6 +94,7 @@ export {
 export { waitAndRetry } from './src/utils/waitUtils'
 
 export type { TransactionObservabilityManager } from './src/observability/observabilityTypes'
+export { MultiTransactionObservabilityManager } from './src/observability/MultiTransactionObservabilityManager'
 
 export {
   generateChecksumForReadable,
