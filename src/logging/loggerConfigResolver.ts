@@ -14,6 +14,16 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
   append?: boolean
 }
 
+/* c8 ignore next 8 */
+export function resolveMonorepoLogger(appConfig: AppLoggerConfig): Logger {
+  if (appConfig.nodeEnv !== 'development') {
+    return resolveLogger(appConfig)
+  }
+
+  const configuration = resolveMonorepoLoggerConfiguration(appConfig) as LoggerOptions
+  return pino(configuration)
+}
+
 // Note that transports do not work in vitest, likely because pino attempts to run them in a separate worker
 /* c8 ignore next 25 */
 export function resolveMonorepoLoggerConfiguration(
@@ -40,6 +50,15 @@ export function resolveMonorepoLoggerConfiguration(
       },
     },
   }
+}
+
+export function resolveLogger(appConfig: AppLoggerConfig): Logger {
+  if (appConfig.nodeEnv !== 'production') {
+    return resolveLoggerConfiguration(appConfig) as Logger
+  }
+
+  const configuration = resolveLoggerConfiguration(appConfig) as LoggerOptions
+  return pino(configuration)
 }
 
 export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions | Logger {

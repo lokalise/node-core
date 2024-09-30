@@ -61,6 +61,8 @@ export { generateHash, HashAlgorithm, HashEncoding } from './src/utils/hashUtils
 export {
   resolveLoggerConfiguration,
   resolveMonorepoLoggerConfiguration,
+  resolveLogger,
+  resolveMonorepoLogger,
 } from './src/logging/loggerConfigResolver'
 export type { AppLoggerConfig, MonorepoAppLoggerConfig } from './src/logging/loggerConfigResolver'
 export type { CommonLogger } from './src/logging/commonLogger'
