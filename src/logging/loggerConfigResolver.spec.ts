@@ -2,7 +2,7 @@ import { pino } from 'pino'
 import pinoTest from 'pino-test'
 import { expect } from 'vitest'
 
-import { resolveLoggerConfiguration } from './loggerConfigResolver'
+import { resolveLogger, resolveLoggerConfiguration } from './loggerConfigResolver'
 
 describe('loggerConfigResolver', () => {
   describe('resolveLoggerConfiguration', () => {
@@ -83,5 +83,29 @@ describe('loggerConfigResolver', () => {
         const logger = pino(loggerConfig, stream)
         logger.info({ password: 'super password' }, 'Auth attempt.')
       }))
+  })
+
+  describe('resolveLogger', () => {
+    it('does not crash during label resolution (prod)', () => {
+      const logger = resolveLogger({
+        logLevel: 'warn',
+        nodeEnv: 'production',
+      })
+
+      expect(() => {
+        logger.warn('test')
+      }).not.toThrow()
+    })
+
+    it('does not crash during label resolution (dev)', () => {
+      const logger = resolveLogger({
+        logLevel: 'warn',
+        nodeEnv: 'development',
+      })
+
+      expect(() => {
+        logger.warn('test')
+      }).not.toThrow()
+    })
   })
 })
