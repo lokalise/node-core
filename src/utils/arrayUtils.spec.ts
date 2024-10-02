@@ -1,5 +1,5 @@
 import { describe, expect, it, vitest } from 'vitest'
-import { callChunked, chunk, removeFalsy, removeNullish } from './arrayUtils'
+import { callChunked, chunk, removeDuplicates, removeFalsy, removeNullish } from './arrayUtils'
 
 describe('arrayUtils', () => {
   describe('chunk', () => {
@@ -62,6 +62,22 @@ describe('arrayUtils', () => {
       const array = ['', false, null, 'valid', 1, undefined, 0]
       const result: (string | number | boolean)[] = removeFalsy(array)
       expect(result).toEqual(['valid', 1])
+    })
+  })
+
+  describe('removeDuplicates', () => {
+    it('should remove all duplicates', () => {
+      const array = [0, 0, 1, '', '', 'test', true, true, false]
+      const result = removeDuplicates(array)
+      expect(result).toEqual([0, 1, '', 'test', true, false])
+    })
+
+    it('should remove all duplicated object instances', () => {
+      const objA = {}
+      const objB = {}
+      const array = [objA, objA, objB]
+      const result = removeDuplicates(array)
+      expect(result).toEqual([objA, objB])
     })
   })
 })
