@@ -32,3 +32,13 @@ Return a copy of the given array without falsy values (eg: false, 0, '', null, u
 const array = ['', false, null, 'valid', 1, undefined, 0]
 console.log(removeFalsy(array)) // result: ['valid', 1]
 ```
+
+`removeDuplicates<const T>(array: readonly T[]): T[]`
+
+Return a copy of the given array without duplicates.
+
+```typescript
+const array = [0, 0, 1, 'a', 'a', 'b']
+console.log(removeDuplicates(array)) // result: [0, 1, 'a', 'b']
+```
+
