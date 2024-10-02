@@ -36,6 +36,7 @@ console.log(removeFalsy(array)) // result: ['valid', 1]
 `removeDuplicates<const T>(array: readonly T[]): T[]`
 
 Return a copy of the given array without duplicates.
+Objects are deduplicated by reference (not deep equality)
 
 ```typescript
 const array = [0, 0, 1, 'a', 'a', 'b']
