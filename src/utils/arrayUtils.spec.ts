@@ -1,5 +1,5 @@
 import { describe, expect, it, vitest } from 'vitest'
-import {callChunked, chunk, removeDuplicates, removeFalsy, removeNullish} from './arrayUtils'
+import { callChunked, chunk, removeDuplicates, removeFalsy, removeNullish } from './arrayUtils'
 
 describe('arrayUtils', () => {
   describe('chunk', () => {

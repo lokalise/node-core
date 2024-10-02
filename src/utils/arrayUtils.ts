@@ -46,8 +46,6 @@ export function removeFalsy<const T>(
 /**
  * Return a copy of the given array without duplicates.
  */
-export function removeDuplicates<const T>(
-    array: readonly T[]
-): T[] {
-  return [...new Set(array)];
+export function removeDuplicates<const T>(array: readonly T[]): T[] {
+  return [...new Set(array)]
 }
