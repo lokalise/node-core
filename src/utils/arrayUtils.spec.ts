@@ -71,5 +71,13 @@ describe('arrayUtils', () => {
       const result = removeDuplicates(array)
       expect(result).toEqual([0, 1, '', 'test', true, false])
     })
+
+    it('should remove all duplicated object instances', () => {
+      const objA = {}
+      const objB = {}
+      const array = [objA, objA, objB]
+      const result = removeDuplicates(array)
+      expect(result).toEqual([objA, objB])
+    })
   })
 })
