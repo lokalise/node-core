@@ -34,7 +34,7 @@ export {
 
 export { EncryptionUtility } from './src/utils/encryptionUtility'
 
-export { chunk, callChunked, removeFalsy, removeNullish } from './src/utils/arrayUtils'
+export { chunk, callChunked, removeFalsy, removeNullish, removeDuplicates } from './src/utils/arrayUtils'
 export {
   groupBy,
   groupByPath,
