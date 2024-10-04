@@ -1,26 +1,21 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
-        "module": "commonjs",
+        "module": "preserve",
         "target": "ES2022",
-        "lib": ["ES2022", "dom"],
-        "sourceMap": true,
-        "declaration": true,
-        "declarationMap": false,
+        "lib": ["ES2022"],
         "types": ["node", "vitest/globals"],
-        "strict": true,
+        "moduleDetection": "force",
+        "verbatimModuleSyntax": true,
         "skipLibCheck": true,
-        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "noEmit": true,
+        "strict": true,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "noFallthroughCasesInSwitch": true,
-        "strictNullChecks": true,
-        "importHelpers": true,
-        "baseUrl": ".",
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true
+        "noImplicitOverride": true,
+        "noFallthroughCasesInSwitch": true
     },
-    "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "vitest.config.mts"]
+    "include": ["src/**/*", "tsup.config.ts", "vitest.config.mts"],
+    "exclude": []
 }
