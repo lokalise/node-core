@@ -11,9 +11,7 @@
         "url": "git://github.com/lokalise/node-core.git"
     },
     "license": "Apache-2.0",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
