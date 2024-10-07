@@ -10,6 +10,7 @@ export default defineConfig({
     coverage: {
       include: ['src/**/*.ts'],
       exclude: [
+        'src/index.ts',
         'src/**/*.spec.ts',
         'src/errors/errorReporterTypes.ts',
         'src/errors/either.ts',
