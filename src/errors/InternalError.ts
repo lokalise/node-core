@@ -1,4 +1,4 @@
-import { isError } from '../utils/typeUtils'
+import { isNativeError } from 'node:util/types'
 import type { ErrorDetails } from './types'
 
 export type InternalErrorParams<T = ErrorDetails> = {
@@ -8,11 +8,9 @@ export type InternalErrorParams<T = ErrorDetails> = {
   cause?: unknown
 }
 
-const INTERNAL_ERROR_SYMBOL_KEY = 'INTERNAL_ERROR_KEY'
-const internalErrorSymbol = Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)
+const INTERNAL_ERROR_SYMBOL = Symbol.for('INTERNAL_ERROR_KEY')
 
 export class InternalError<T = ErrorDetails> extends Error {
-  readonly [internalErrorSymbol] = true
   public readonly details?: T
   public readonly errorCode: string
 
@@ -27,11 +25,14 @@ export class InternalError<T = ErrorDetails> extends Error {
   }
 }
 
+Object.defineProperty(InternalError.prototype, INTERNAL_ERROR_SYMBOL, {
+  value: true,
+})
+
 export function isInternalError(error: unknown): error is InternalError {
   return (
-    isError(error) &&
+    isNativeError(error) &&
     // biome-ignore lint/suspicious/noExplicitAny: checking for existence of prop outside or Error interface
-    ((error as any)[Symbol.for(INTERNAL_ERROR_SYMBOL_KEY)] === true ||
-      error.name === 'InternalError')
+    ((error as any)[INTERNAL_ERROR_SYMBOL] === true || error.name === 'InternalError')
   )
 }
