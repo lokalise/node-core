@@ -52,6 +52,7 @@ export {
   isEmptyObject,
   convertDateFieldsToIsoString,
   deepClone,
+  transformToKebabCase,
 } from './utils/objectUtils'
 
 export {
