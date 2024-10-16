@@ -39,6 +39,7 @@ export function isPublicNonRecoverableError(error: unknown): error is PublicNonR
   return (
     isNativeError(error) &&
     // biome-ignore lint/suspicious/noExplicitAny: checking for existence of prop outside or Error interface
-    ((error as any)[PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL] === true || error.name === 'PublicNonRecoverableError')
+    ((error as any)[PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL] === true ||
+      error.name === 'PublicNonRecoverableError')
   )
 }
