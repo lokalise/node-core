@@ -1,3 +1,4 @@
+import { stdSerializers } from 'pino'
 import { InternalError, isInternalError } from './InternalError'
 
 describe('InternalError', () => {
@@ -17,7 +18,16 @@ describe('InternalError', () => {
       expect(isInternalError(err)).toBe(true)
     })
 
-    it('detects if error is public for extended error', () => {
+    it('does not expose INTERNAL_ERROR_KEY symbol', () => {
+      const err = new InternalError({
+        message: 'Unknown',
+        errorCode: 'INTERNAL_ERROR',
+      })
+
+      expect(stdSerializers.err(err)).not.toHaveProperty('Symbol(INTERNAL_ERROR_KEY)')
+    })
+
+    it('detects if error is internal for extended error', () => {
       class ExtendedInternalError extends InternalError {
         constructor() {
           super({
