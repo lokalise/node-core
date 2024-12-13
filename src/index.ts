@@ -89,7 +89,7 @@ export {
 
 export type { MayOmit } from './common/may-omit'
 export type { FreeformRecord } from './common/commonTypes'
-export type { AtLeastOne } from './common/at-least-one'
+export type { AtLeastOne } from './common/atLeastOne'
 export {
   type ValidationError,
   type CommonErrorParams,
