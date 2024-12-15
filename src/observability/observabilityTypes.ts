@@ -30,5 +30,8 @@ export type TransactionObservabilityManager = {
   /**
    * Adds all custom attributes in an object to the current transaction.
    */
-  addCustomAttributes(uniqueTransactionKey: string, atts: { [key: string]: string | number | boolean }): void
+  addCustomAttributes(
+    uniqueTransactionKey: string,
+    atts: { [key: string]: string | number | boolean },
+  ): void
 }

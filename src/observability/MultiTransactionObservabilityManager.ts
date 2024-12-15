@@ -33,11 +33,12 @@ export class MultiTransactionObservabilityManager implements TransactionObservab
     }
   }
 
-  addCustomAttributes(uniqueTransactionKey: string, atts: { [p: string]: string | number | boolean }): void {
+  addCustomAttributes(
+    uniqueTransactionKey: string,
+    atts: { [p: string]: string | number | boolean },
+  ): void {
     for (const manager of this.managers) {
       manager.addCustomAttributes(uniqueTransactionKey, atts)
     }
   }
-
-
 }
