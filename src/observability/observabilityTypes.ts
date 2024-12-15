@@ -26,4 +26,12 @@ export type TransactionObservabilityManager = {
    * @param wasSuccessful - indicates if the transaction was successful or not
    */
   stop: (uniqueTransactionKey: string, wasSuccessful?: boolean) => unknown
+
+  /**
+   * Adds all custom attributes in an object to the current transaction.
+   */
+  addCustomAttributes(
+    uniqueTransactionKey: string,
+    atts: { [key: string]: string | number | boolean },
+  ): void
 }

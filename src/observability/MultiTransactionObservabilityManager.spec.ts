@@ -39,6 +39,16 @@ describe('MultiTransactionObservabilityManager', () => {
     expect(spy2).toHaveBeenCalledWith('transactionName', 'uniqueTransactionKey', 'group')
   })
 
+  it('addCustomAttrributes is being called on all managers', () => {
+    const spy1 = vi.spyOn(fakeTransactionManager1, 'addCustomAttributes')
+    const spy2 = vi.spyOn(fakeTransactionManager2, 'addCustomAttributes')
+
+    multiTransactionObservabilityManager.addCustomAttributes('transactionName', { projectId: 'id' })
+
+    expect(spy1).toHaveBeenCalledWith('transactionName', { projectId: 'id' })
+    expect(spy2).toHaveBeenCalledWith('transactionName', { projectId: 'id' })
+  })
+
   it.each([undefined, false, true])(
     'stop is being called on all managers, wasSuccessful: %s',
     (wasSuccessful) => {
@@ -57,4 +67,5 @@ class FakeTransactionManager implements TransactionObservabilityManager {
   start(): void {}
   startWithGroup(): void {}
   stop(): void {}
+  addCustomAttributes(): void {}
 }
