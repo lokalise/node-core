@@ -10,6 +10,7 @@ export default defineConfig({
     coverage: {
       include: ['src/**/*.ts'],
       exclude: [
+        'src/index.ts',
         'src/**/*.spec.ts',
         'src/errors/errorReporterTypes.ts',
         'src/errors/either.ts',
@@ -28,6 +29,18 @@ export default defineConfig({
         branches: 90,
         statements: 100,
       },
+    },
+    typecheck: {
+      enabled: true,
+      /**
+       * By default, vitest runs typecheck on tests matching the pattern "*.test-d.ts".
+       * Sadly some IDEs (like Webstorm) doesn't work well with custom patterns like that.
+       * They do not properly recognize globals like vitest ones (describe, it, expect, etc.).
+       * Because of that, we include typecheck in all test files.
+       * The performance impact is minimal, and it makes the IDE work properly.
+       * Docs: https://vitest.dev/guide/testing-types.html#testing-types
+       */
+      include: ['src/**/*.spec.ts'],
     },
   },
 })

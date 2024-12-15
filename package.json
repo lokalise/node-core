@@ -1,6 +1,6 @@
 {
     "name": "@lokalise/node-core",
-    "version": "12.4.0",
+    "version": "13.2.0",
     "author": {
         "name": "Lokalise",
         "url": "https://lokalise.com/"
@@ -11,20 +11,26 @@
         "url": "git://github.com/lokalise/node-core.git"
     },
     "license": "Apache-2.0",
-    "files": ["dist/**", "LICENSE", "README.md"],
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "type": "commonjs",
+    "files": ["dist"],
+    "type": "module",
+    "main": "./dist/index.js",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./dist/index.js",
+            "default": "./dist/index.cjs"
+        }
+    },
     "publishConfig": {
         "access": "public"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "tsup",
         "test": "vitest",
         "test:coverage": "vitest --coverage",
         "test:ci": "npm run lint && npm run test:coverage",
         "test:update-snapshots": "vitest -u",
-        "lint": "biome check . && tsc --project tsconfig.lint.json --noEmit",
+        "lint": "biome check . && tsc",
         "lint:fix": "biome check --write",
         "version": "auto-changelog -p && git add CHANGELOG.md && biome check --write package.json && git add package.json",
         "prepublishOnly": "npm run build"
@@ -45,6 +51,7 @@
         "auto-changelog": "^2.4.0",
         "pino-test": "^1.0.1",
         "tmp": "^0.2.3",
+        "tsup": "^8.3.0",
         "typescript": "^5.5.3",
         "vitest": "^2.0.5"
     }

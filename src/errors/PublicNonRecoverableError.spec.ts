@@ -1,3 +1,4 @@
+import { stdSerializers } from 'pino'
 import { PublicNonRecoverableError, isPublicNonRecoverableError } from './PublicNonRecoverableError'
 
 describe('PublicNonRecoverableError', () => {
@@ -24,6 +25,15 @@ describe('PublicNonRecoverableError', () => {
       })
 
       expect(isPublicNonRecoverableError(err)).toBe(true)
+    })
+
+    it('does not expose PUBLIC_NON_RECOVERABLE_ERROR_KEY symbol', () => {
+      const err = new PublicNonRecoverableError({
+        message: 'Unknown',
+        errorCode: 'PUBLIC_ERROR',
+      })
+
+      expect(stdSerializers.err(err)).not.toHaveProperty('Symbol(PUBLIC_NON_RECOVERABLE_ERROR_KEY)')
     })
 
     it('detects if error is public for extended error', () => {

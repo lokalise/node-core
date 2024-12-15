@@ -15,7 +15,7 @@ export type MonorepoAppLoggerConfig = AppLoggerConfig & {
 }
 
 /* c8 ignore next 8 */
-export function resolveMonorepoLogger(appConfig: AppLoggerConfig): Logger {
+export function resolveMonorepoLogger(appConfig: MonorepoAppLoggerConfig): Logger {
   if (appConfig.nodeEnv !== 'development') {
     return resolveLogger(appConfig)
   }
