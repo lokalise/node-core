@@ -32,7 +32,9 @@ describe('ConfigScope', () => {
       process.env.value = '0.1'
       const configScope = new ConfigScope()
 
-      expect(() => configScope.getBySchema('value', z.coerce.number().int())).toThrowError(/Expected integer, received float/)
+      expect(() => configScope.getBySchema('value', z.coerce.number().int())).toThrowError(
+        /Expected integer, received float/,
+      )
     })
 
     it('throws when param does not fulfill url schema', () => {
@@ -46,7 +48,9 @@ describe('ConfigScope', () => {
       process.env.value = 'example'
       const configScope = new ConfigScope()
 
-      expect(() => configScope.getBySchema('value', z.enum(['dev', 'prod']))).toThrowError(/Invalid enum value. Expected 'dev' | 'prod', received 'example'/)
+      expect(() => configScope.getBySchema('value', z.enum(['dev', 'prod']))).toThrowError(
+        /Invalid enum value. Expected 'dev' | 'prod', received 'example'/,
+      )
     })
 
     it('returns undefined if value is missing and schema is optional', () => {
