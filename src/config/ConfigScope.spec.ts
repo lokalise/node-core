@@ -33,7 +33,7 @@ describe('ConfigScope', () => {
       process.env.value = 'abc'
       const configScope = new ConfigScope()
 
-      expect(() => configScope.getMandatoryInteger('value')).toThrow(/must be a number/)
+      expect(() => configScope.getMandatoryInteger('value')).toThrow(/must be an integer number/)
     })
 
     it('throws an error on missing value', () => {
@@ -42,6 +42,34 @@ describe('ConfigScope', () => {
       const configScope = new ConfigScope()
 
       expect(() => configScope.getMandatoryInteger('value')).toThrow(
+        /Missing mandatory configuration parameter/,
+      )
+    })
+  })
+
+  describe('getMandatoryNumber', () => {
+    it('accepts a float value', () => {
+      process.env.value = '0.1'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getMandatoryNumber('value')
+
+      expect(resolvedValue).toBe(0.1)
+    })
+
+    it('throws an error on non-number', () => {
+      process.env.value = 'abc'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryNumber('value')).toThrow(/must be a number/)
+    })
+
+    it('throws an error on missing value', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryNumber('value')).toThrow(
         /Missing mandatory configuration parameter/,
       )
     })
@@ -63,7 +91,7 @@ describe('ConfigScope', () => {
       const configScope = new ConfigScope()
 
       expect(() => configScope.getMandatoryValidatedInteger('value', validator)).toThrow(
-        /must be a number/,
+        /must be an integer number/,
       )
     })
 
@@ -72,7 +100,7 @@ describe('ConfigScope', () => {
       delete process.env.value
       const configScope = new ConfigScope()
 
-      expect(() => configScope.getMandatoryInteger('value')).toThrow(
+      expect(() => configScope.getMandatoryValidatedInteger('value', validator)).toThrow(
         /Missing mandatory configuration parameter/,
       )
     })
@@ -82,6 +110,46 @@ describe('ConfigScope', () => {
       const configScope = new ConfigScope()
 
       expect(() => configScope.getMandatoryValidatedInteger('value', validator)).toThrow(
+        /is invalid for parameter value/,
+      )
+    })
+  })
+
+  describe('getMandatoryValidatedNumber', () => {
+    const validator = createRangeValidator(-1, 1)
+    it('accepts a valid integer', () => {
+      process.env.value = '-0.5'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getMandatoryValidatedNumber('value', validator)
+
+      expect(resolvedValue).toBe(-0.5)
+    })
+
+    it('throws an error on non-number', () => {
+      process.env.value = 'abc'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryValidatedNumber('value', validator)).toThrow(
+        /must be a number/,
+      )
+    })
+
+    it('throws an error on missing value', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryValidatedNumber('value', validator)).toThrow(
+        /Missing mandatory configuration parameter/,
+      )
+    })
+
+    it('throws an error on invalid number', () => {
+      process.env.value = '2'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getMandatoryValidatedNumber('value', validator)).toThrow(
         /is invalid for parameter value/,
       )
     })
@@ -326,6 +394,35 @@ describe('ConfigScope', () => {
     })
   })
 
+  describe('getOptionalNumber', () => {
+    it('accepts value', () => {
+      process.env.value = '2.5'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNumber('value', 1)
+
+      expect(resolvedValue).toBe(2.5)
+    })
+
+    it('uses default value if not set', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNumber('value', 1.5)
+
+      expect(resolvedValue).toBe(1.5)
+    })
+
+    it('uses default value on empty string', () => {
+      process.env.value = ''
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNumber('value', 0.1)
+      expect(resolvedValue).toBe(0.1)
+    })
+  })
+
   describe('getOptionalValidatedInteger', () => {
     const validator: EnvValueValidator<number> = (val) => {
       return val > 2
@@ -370,6 +467,50 @@ describe('ConfigScope', () => {
     })
   })
 
+  describe('getOptionalValidatedNumber', () => {
+    const validator: EnvValueValidator<number> = (val) => {
+      return val > 2
+    }
+
+    it('accepts value', () => {
+      process.env.value = '3.5'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalValidatedNumber('value', 4.5, validator)
+
+      expect(resolvedValue).toBe(3.5)
+    })
+
+    it('uses default value if not set', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalValidatedNumber('value', 4.5, validator)
+
+      expect(resolvedValue).toBe(4.5)
+    })
+
+    it('throws when real value fails validation', () => {
+      process.env.value = '2'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getOptionalValidatedNumber('value', 4.5, validator)).toThrow(
+        /Value 2 is invalid for parameter value/,
+      )
+    })
+
+    it('throws when default value fails validation', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getOptionalValidatedNumber('value', 1.5, validator)).toThrow(
+        /Value 1.5 is invalid for parameter value/,
+      )
+    })
+  })
+
   describe('getOptionalNullableInteger', () => {
     it('accepts value', () => {
       process.env.value = '3'
@@ -406,6 +547,48 @@ describe('ConfigScope', () => {
       const configScope = new ConfigScope()
 
       const resolvedValue = configScope.getOptionalNullableInteger('value', null)
+
+      expect(resolvedValue).toBeNull()
+    })
+  })
+
+
+  describe('getOptionalNullableNumber', () => {
+    it('accepts value', () => {
+      process.env.value = '3.5'
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableNumber('value', 1.5)
+
+      expect(resolvedValue).toBe(3.5)
+    })
+
+    it('uses default value if not set', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableNumber('value', 1.5)
+
+      expect(resolvedValue).toBe(1.5)
+    })
+
+    it('uses default undefined value if not set', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableNumber('value', undefined)
+
+      expect(resolvedValue).toBeUndefined()
+    })
+
+    it('uses default null value if not set', () => {
+      // biome-ignore lint/performance/noDelete: <explanation>
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const resolvedValue = configScope.getOptionalNullableNumber('value', null)
 
       expect(resolvedValue).toBeNull()
     })
