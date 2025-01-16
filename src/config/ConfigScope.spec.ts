@@ -552,7 +552,6 @@ describe('ConfigScope', () => {
     })
   })
 
-
   describe('getOptionalNullableNumber', () => {
     it('accepts value', () => {
       process.env.value = '3.5'
