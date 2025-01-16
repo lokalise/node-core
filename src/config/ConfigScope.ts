@@ -30,6 +30,20 @@ export class ConfigScope {
     }
     return validateNumber(
       Number.parseInt(rawValue),
+      `Configuration parameter ${param}\` must be an integer number, but was ${rawValue}`,
+    )
+  }
+
+  getMandatoryNumber(param: string): number {
+    const rawValue = this.env[param]
+    if (!rawValue) {
+      throw new InternalError({
+        message: `Missing mandatory configuration parameter: ${param}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+    return validateNumber(
+      Number.parseFloat(rawValue),
       `Configuration parameter ${param}\` must be a number, but was ${rawValue}`,
     )
   }
@@ -65,6 +79,17 @@ export class ConfigScope {
     return value
   }
 
+  getMandatoryValidatedNumber(param: string, validator: EnvValueValidator<number>): number {
+    const value = this.getMandatoryNumber(param)
+    if (!validator(value)) {
+      throw new InternalError({
+        message: `Value ${value} is invalid for parameter ${param}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+    return value
+  }
+
   getOptionalNullable<T extends string | null | undefined>(
     param: string,
     defaultValue: T,
@@ -88,6 +113,17 @@ export class ConfigScope {
     )
   }
 
+  getOptionalNumber(param: string, defaultValue: number): number {
+    const rawValue = this.env[param]
+    if (!rawValue) {
+      return defaultValue
+    }
+    return validateNumber(
+      Number.parseFloat(rawValue),
+      `Configuration parameter ${param}\` must be a number, but was ${rawValue}`,
+    )
+  }
+
   getOptionalNullableInteger<T extends number | null | undefined>(
     param: string,
     defaultValue: T,
@@ -98,6 +134,20 @@ export class ConfigScope {
     }
     return validateNumber(
       Number.parseInt(rawValue),
+      `Configuration parameter ${param}\` must be an integer number, but was ${rawValue}`,
+    )
+  }
+
+  getOptionalNullableNumber<T extends number | null | undefined>(
+    param: string,
+    defaultValue: T,
+  ): T | number {
+    const rawValue = this.env[param]
+    if (!rawValue) {
+      return defaultValue
+    }
+    return validateNumber(
+      Number.parseFloat(rawValue),
       `Configuration parameter ${param}\` must be a number, but was ${rawValue}`,
     )
   }
@@ -136,6 +186,23 @@ export class ConfigScope {
     validator: EnvValueValidator<number>,
   ): number {
     const value = this.getOptionalInteger(param, defaultValue)
+
+    if (!validator(value)) {
+      throw new InternalError({
+        message: `Value ${value} is invalid for parameter ${param}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+
+    return value
+  }
+
+  getOptionalValidatedNumber(
+    param: string,
+    defaultValue: number,
+    validator: EnvValueValidator<number>,
+  ): number {
+    const value = this.getOptionalNumber(param, defaultValue)
 
     if (!validator(value)) {
       throw new InternalError({
