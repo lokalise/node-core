@@ -20,6 +20,21 @@ export class ConfigScope {
     this.env = { ...process.env }
   }
 
+  getBySchema<T>(param: string, schema: ZodSchema<T>): T {
+    const rawValue = this.env[param]
+
+    const result = schema.safeParse(rawValue)
+
+    if (!result.success) {
+      throw new InternalError({
+        message: `Validation of configuration parameter "${param}" has failed: ${result.error.issues.at(0)?.message}`,
+        errorCode: 'CONFIGURATION_ERROR',
+      })
+    }
+
+    return result.data
+  }
+
   getMandatoryInteger(param: string): number {
     const rawValue = this.env[param]
     if (!rawValue) {

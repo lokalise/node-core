@@ -49,6 +49,12 @@ The library provides methods to resolve the default logging configuration. Publi
 
 Once the class is instantiated, you can leverage the following `ConfigScope` methods:
 
+### Configuration Parameters by zod schema
+
+- `getBySchema()`, uses zod schema to validate configuration parameter, the returned type is inferred from the schema
+  - `param`, the configuration parameter name;
+  - `schema`, zod schema to use for validation;
+
 ### Mandatory Configuration Parameters
 
 - `getMandatory()`, returns the value of a mandatory configuration parameter. If the value is missing, an `InternalError` is thrown. Parameters are:

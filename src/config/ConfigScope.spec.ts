@@ -19,6 +19,84 @@ const maybeEnsureClosingSlashTransformer = <T extends string | undefined | null>
 }
 
 describe('ConfigScope', () => {
+  describe('getBySchema', () => {
+    it('throws when param is missing and schema is not optional', () => {
+      // biome-ignore lint/performance/noDelete: envvar must be deleted
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getBySchema('value', z.string())).toThrowError(/Required/)
+    })
+
+    it('throws when param does not fulfill integer schema', () => {
+      process.env.value = '0.1'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getBySchema('value', z.coerce.number().int())).toThrowError(/Expected integer, received float/)
+    })
+
+    it('throws when param does not fulfill url schema', () => {
+      process.env.value = 'example'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getBySchema('value', z.string().url())).toThrowError(/Invalid url/)
+    })
+
+    it('throws when param does not fulfill enum schema', () => {
+      process.env.value = 'example'
+      const configScope = new ConfigScope()
+
+      expect(() => configScope.getBySchema('value', z.enum(['dev', 'prod']))).toThrowError(/Invalid enum value. Expected 'dev' | 'prod', received 'example'/)
+    })
+
+    it('returns undefined if value is missing and schema is optional', () => {
+      // biome-ignore lint/performance/noDelete: envvar must be deleted
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const val = configScope.getBySchema('value', z.string().optional())
+
+      expect(val).toBeUndefined()
+    })
+
+    it('returns default value if value is missing and schema has default value defined', () => {
+      // biome-ignore lint/performance/noDelete: envvar must be deleted
+      delete process.env.value
+      const configScope = new ConfigScope()
+
+      const val = configScope.getBySchema('value', z.string().default('some'))
+
+      expect(val).toBe('some')
+    })
+
+    it('returns defined value when it fulfills the schema', () => {
+      process.env.value = 'example'
+      const configScope = new ConfigScope()
+
+      const val = configScope.getBySchema('value', z.string())
+
+      expect(val).toBe('example')
+    })
+
+    it('returns defined value casted to number when it fulfills the schema', () => {
+      process.env.value = '123'
+      const configScope = new ConfigScope()
+
+      const val = configScope.getBySchema('value', z.coerce.number().int())
+
+      expect(val).toBe(123)
+    })
+
+    it('returns defined value when it fulfills the enum schema', () => {
+      process.env.value = 'dev'
+      const configScope = new ConfigScope()
+
+      const val = configScope.getBySchema('value', z.enum(['dev', 'prod']))
+
+      expect(val).toBe('dev')
+    })
+  })
+
   describe('getMandatoryInteger', () => {
     it('accepts an integer', () => {
       process.env.value = '123'
