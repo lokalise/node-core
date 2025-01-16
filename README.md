@@ -53,12 +53,17 @@ Once the class is instantiated, you can leverage the following `ConfigScope` met
 
 - `getMandatory()`, returns the value of a mandatory configuration parameter. If the value is missing, an `InternalError` is thrown. Parameters are:
   - `param`, the configuration parameter name;
-- `getMandatoryInteger()`, returns the value of a mandatory configuration parameter and validates that it is a number. If the value is missing or is not a number, an `InternalError` is thrown. Parameters are:
+- `getMandatoryInteger()`, returns the value of a mandatory configuration parameter and validates that it is an integer number. If the value is missing or is not an integer, an `InternalError` is thrown. Parameters are:
+  - `param`, the configuration parameter name;
+- `getMandatoryNumber()`, returns the value of a mandatory configuration parameter and validates that it is a number. If the value is missing or is not a number, an `InternalError` is thrown. Parameters are:
   - `param`, the configuration parameter name;
 - `getMandatoryOneOf()`, returns the value a mandatory configuration parameter and validates that it is one of the supported values. If the value is missing or is not supported, an `InternalError` is thrown. The method also serves as a type guard, narrowing the type of the passed value down to one of the supported options. Parameters are:
   - `param`, the configuration parameter name;
   - `supportedValues`;
 - `getMandatoryValidatedInteger()`, similar to `getMandatoryInteger()`, but also takes a `validator` in input and will throw an `InternalError` if the number is not valid. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
+  - `param`, the configuration parameter name;
+  - `validator`;
+- `getMandatoryValidatedNumber()`, similar to `getMandatoryNumber()`, but also takes a `validator` in input and will throw an `InternalError` if the number is not valid. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
   - `param`, the configuration parameter name;
   - `validator`;
 - `getMandatoryTransformed()`, calls `getMandatory()` and returns the result of the `transformer` function applied to the configuration parameter value. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
@@ -71,14 +76,21 @@ Once the class is instantiated, you can leverage the following `ConfigScope` met
   - `param`, the configuration parameter name;
   - `defaultValue`, which can be nullable;
 - `getOptional()`, similar to `getOptionalNullable()`, but `defaultValue` cannot be nullable. The return value is always a string;
-- `getOptionalIntegerNullable()`, returns the value of an optional configuration parameter and validates that it is a number. If the value is missing, it is set to the provided default value. If it is not a number, an `InternalError` is thrown. Parameters are:
+- `getOptionalNullableInteger()`, returns the value of an optional configuration parameter and validates that it is an integer number. If the value is missing, it is set to the provided default value. If it is not a number, an `InternalError` is thrown. Parameters are:
   - `param`, the configuration parameter name;
   - `defaultValue`, which can be nullable;
-- `getOptionalInteger`, similar to `getOptionalIntegerNullable()`, but `defaultValue` cannot be nullable. The return value is always a number;
+- `getOptionalNullableNumber()`, returns the value of an optional configuration parameter and validates that it is a number. If the value is missing, it is set to the provided default value. If it is not a number, an `InternalError` is thrown. Parameters are:
+  - `param`, the configuration parameter name;
+  - `defaultValue`, which can be nullable;
+- `getOptionalInteger`, similar to `getOptionalNullableInteger()`, but `defaultValue` cannot be nullable. The return value is always a number;
+- `getOptionalNumber`, similar to `getOptionalNullableNumber()`, but `defaultValue` cannot be nullable. The return value is always a number;
 - `getOptionalValidated()`, similar to `getOptional()`, but also takes a `validator` in input and will throw an `InternalError` if the value is not valid. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
   - `param`, the configuration parameter name;
   - `validator`;
-- `getOptionalValidatedInteger()`, similar to `getOptionalValidated()`, but expects and returns `number` instead. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
+- `getOptionalValidatedInteger()`, similar to `getOptionalValidated()`, but expects and returns an integer `number` instead. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
+  - `param`, the configuration parameter name;
+  - `validator`;
+- `getOptionalValidatedNumber()`, similar to `getOptionalValidated()`, but expects and returns `number` instead. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
   - `param`, the configuration parameter name;
   - `validator`;
 - `getOptionalTransformed()`, similar to `getOptional()`, but also takes a `transformer` in input and the result of the `transformer` function applied to the configuration parameter value. See [Validators and Transformers](#validators-and-transformers) for more information. Parameters are:
