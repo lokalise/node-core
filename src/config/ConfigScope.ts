@@ -29,6 +29,7 @@ export class ConfigScope {
       throw new InternalError({
         message: `Validation of configuration parameter "${param}" has failed: ${result.error.issues.at(0)?.message}`,
         errorCode: 'CONFIGURATION_ERROR',
+        cause: result.error,
       })
     }
 
