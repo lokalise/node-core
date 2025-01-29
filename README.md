@@ -53,7 +53,7 @@ Once the class is instantiated, you can leverage the following `ConfigScope` met
 
 - `getBySchema()`, uses zod schema to validate configuration parameter, the returned type is inferred from the schema
   - `param`, the configuration parameter name;
-  - `schema`, zod schema to use for validation;
+  - `schema`, zod schema to use for parsing and validation;
 
 ### Mandatory Configuration Parameters
 
