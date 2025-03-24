@@ -74,6 +74,8 @@ export {
 export type { AppLoggerConfig, MonorepoAppLoggerConfig } from './logging/loggerConfigResolver'
 export type { CommonLogger } from './logging/commonLogger'
 
+export { stringValueSerializer } from './logging/stringValueSerializer'
+
 export type {
   ErrorReport,
   ErrorReporter,
