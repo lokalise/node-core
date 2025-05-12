@@ -1,18 +1,23 @@
 import { isNativeError } from 'node:util/types'
 import type { ErrorDetails } from './types'
 
-export type InternalErrorParams<T = ErrorDetails> = {
+type BaseErrorParams = {
   message: string
   errorCode: string
-  details?: T
   cause?: unknown
 }
 
+export type InternalErrorParams<T> = T extends undefined
+  ? BaseErrorParams
+  : BaseErrorParams & {
+      details: T
+    }
+
 const INTERNAL_ERROR_SYMBOL = Symbol.for('INTERNAL_ERROR_KEY')
 
-export class InternalError<T = ErrorDetails> extends Error {
-  public readonly details?: T
+export class InternalError<T extends ErrorDetails | undefined = undefined> extends Error {
   public readonly errorCode: string
+  public readonly details: T
 
   constructor(params: InternalErrorParams<T>) {
     super(params.message, {
@@ -20,6 +25,7 @@ export class InternalError<T = ErrorDetails> extends Error {
     })
     // set the name as the class name for every class that extends InternalError
     this.name = this.constructor.name
+    // @ts-ignore
     this.details = params.details
     this.errorCode = params.errorCode
   }
@@ -32,7 +38,7 @@ Object.defineProperty(InternalError.prototype, INTERNAL_ERROR_SYMBOL, {
 export function isInternalError(error: unknown): error is InternalError {
   return (
     isNativeError(error) &&
-    // biome-ignore lint/suspicious/noExplicitAny: checking for existence of prop outside or Error interface
-    ((error as any)[INTERNAL_ERROR_SYMBOL] === true || error.name === 'InternalError')
+    ((INTERNAL_ERROR_SYMBOL in error && error[INTERNAL_ERROR_SYMBOL] === true) ||
+      error.name === 'InternalError')
   )
 }
