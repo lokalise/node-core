@@ -1,11 +1,12 @@
 import { isNativeError } from 'node:util/types'
 import type { BaseErrorParams, ErrorDetails } from './types'
 
-export type InternalErrorParams<T extends ErrorDetails | undefined = ErrorDetails | undefined> = T extends undefined
-  ? BaseErrorParams
-  : BaseErrorParams & {
-      details: T
-    }
+export type InternalErrorParams<T extends ErrorDetails | undefined = ErrorDetails | undefined> =
+  T extends undefined
+    ? BaseErrorParams
+    : BaseErrorParams & {
+        details: T
+      }
 
 const INTERNAL_ERROR_SYMBOL = Symbol.for('INTERNAL_ERROR_KEY')
 
