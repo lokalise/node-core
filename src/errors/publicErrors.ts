@@ -17,7 +17,9 @@ export type ValidationError = {
   path: string[]
 }
 
-export class RequestValidationError extends PublicNonRecoverableError {
+export class RequestValidationError extends PublicNonRecoverableError<{
+  error: ValidationError[]
+}> {
   constructor(errors: ValidationError[]) {
     super({
       message: 'Invalid params',
@@ -59,7 +61,7 @@ export class EntityGoneError extends PublicNonRecoverableError {
     super({
       message: params.message,
       errorCode: 'ENTITY_GONE',
-      httpStatusCode: 410,
+      httpStatusCode: httpConstants.HTTP_STATUS_GONE,
       details: params.details,
     })
   }

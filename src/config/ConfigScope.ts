@@ -317,7 +317,7 @@ export class ConfigScope {
       throw new InternalError({
         message: errorMessage,
         errorCode: 'CONFIGURATION_ERROR',
-        details: parsedValue.error,
+        details: parsedValue.error as unknown as Record<string, unknown>,
       })
     }
 
