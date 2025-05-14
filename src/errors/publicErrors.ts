@@ -3,6 +3,7 @@ import { constants as httpConstants } from 'node:http2'
 import type { FreeformRecord } from '../common/commonTypes'
 
 import { PublicNonRecoverableError } from './PublicNonRecoverableError'
+import type { ErrorDetails } from './types'
 
 export type CommonErrorParams = {
   message: string
@@ -17,7 +18,9 @@ export type ValidationError = {
   path: string[]
 }
 
-export class RequestValidationError extends PublicNonRecoverableError {
+export class RequestValidationError extends PublicNonRecoverableError<{
+  error: ValidationError[]
+}> {
   constructor(errors: ValidationError[]) {
     super({
       message: 'Invalid params',
@@ -30,7 +33,7 @@ export class RequestValidationError extends PublicNonRecoverableError {
   }
 }
 
-export class AccessDeniedError extends PublicNonRecoverableError {
+export class AccessDeniedError extends PublicNonRecoverableError<undefined | ErrorDetails> {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
@@ -42,7 +45,7 @@ export class AccessDeniedError extends PublicNonRecoverableError {
   }
 }
 
-export class EntityNotFoundError extends PublicNonRecoverableError {
+export class EntityNotFoundError extends PublicNonRecoverableError<undefined | ErrorDetails> {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
@@ -54,18 +57,18 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
   }
 }
 
-export class EntityGoneError extends PublicNonRecoverableError {
+export class EntityGoneError extends PublicNonRecoverableError<undefined | ErrorDetails> {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
       errorCode: 'ENTITY_GONE',
-      httpStatusCode: 410,
+      httpStatusCode: httpConstants.HTTP_STATUS_GONE,
       details: params.details,
     })
   }
 }
 
-export class AuthFailedError extends PublicNonRecoverableError {
+export class AuthFailedError extends PublicNonRecoverableError<undefined | ErrorDetails> {
   constructor(params: OptionalMessageErrorParams = {}) {
     super({
       message: params.message ?? 'Authentication failed',

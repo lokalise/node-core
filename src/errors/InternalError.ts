@@ -1,11 +1,5 @@
 import { isNativeError } from 'node:util/types'
-import type { ErrorDetails } from './types'
-
-type BaseErrorParams = {
-  message: string
-  errorCode: string
-  cause?: unknown
-}
+import type { BaseErrorParams, ErrorDetails } from './types'
 
 export type InternalErrorParams<T> = T extends undefined
   ? BaseErrorParams
