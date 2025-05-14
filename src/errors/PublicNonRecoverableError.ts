@@ -5,7 +5,7 @@ type BasePublicErrorParams = BaseErrorParams & {
   httpStatusCode?: number
 }
 
-export type PublicNonRecoverableErrorParams<T> = T extends undefined
+export type PublicNonRecoverableErrorParams<T extends ErrorDetails | undefined = ErrorDetails | undefined> = T extends undefined
   ? BasePublicErrorParams
   : BasePublicErrorParams & {
       details: T
