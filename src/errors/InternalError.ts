@@ -9,7 +9,9 @@ export type InternalErrorParams<T> = T extends undefined
 
 const INTERNAL_ERROR_SYMBOL = Symbol.for('INTERNAL_ERROR_KEY')
 
-export class InternalError<T extends ErrorDetails | undefined = ErrorDetails | undefined> extends Error {
+export class InternalError<
+  T extends ErrorDetails | undefined = ErrorDetails | undefined,
+> extends Error {
   public readonly errorCode: string
   public readonly details: T
 
