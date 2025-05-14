@@ -17,7 +17,7 @@ const PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL = Symbol.for('PUBLIC_NON_RECOVERABLE_E
  * This error is returned to the consumer of API
  */
 export class PublicNonRecoverableError<
-  T extends ErrorDetails | undefined = undefined,
+  T extends ErrorDetails | undefined = ErrorDetails | undefined,
 > extends Error {
   public readonly details: T
   public readonly errorCode: string

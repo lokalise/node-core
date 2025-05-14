@@ -3,7 +3,6 @@ import { constants as httpConstants } from 'node:http2'
 import type { FreeformRecord } from '../common/commonTypes'
 
 import { PublicNonRecoverableError } from './PublicNonRecoverableError'
-import type { ErrorDetails } from './types'
 
 export type CommonErrorParams = {
   message: string
@@ -33,7 +32,7 @@ export class RequestValidationError extends PublicNonRecoverableError<{
   }
 }
 
-export class AccessDeniedError extends PublicNonRecoverableError<undefined | ErrorDetails> {
+export class AccessDeniedError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
@@ -45,7 +44,7 @@ export class AccessDeniedError extends PublicNonRecoverableError<undefined | Err
   }
 }
 
-export class EntityNotFoundError extends PublicNonRecoverableError<undefined | ErrorDetails> {
+export class EntityNotFoundError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
@@ -57,7 +56,7 @@ export class EntityNotFoundError extends PublicNonRecoverableError<undefined | E
   }
 }
 
-export class EntityGoneError extends PublicNonRecoverableError<undefined | ErrorDetails> {
+export class EntityGoneError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
       message: params.message,
@@ -68,7 +67,7 @@ export class EntityGoneError extends PublicNonRecoverableError<undefined | Error
   }
 }
 
-export class AuthFailedError extends PublicNonRecoverableError<undefined | ErrorDetails> {
+export class AuthFailedError extends PublicNonRecoverableError {
   constructor(params: OptionalMessageErrorParams = {}) {
     super({
       message: params.message ?? 'Authentication failed',
