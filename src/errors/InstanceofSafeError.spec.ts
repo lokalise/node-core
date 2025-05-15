@@ -26,6 +26,12 @@ describe('InstanceofSafeError', () => {
       expect(b instanceof A).toBe(true)
       expect(b instanceof B).toBe(true)
     })
+
+    it('is falsy for non error', () => {
+      const val: unknown = 1;
+
+      expect(val instanceof A).toBe(false);
+    })
   })
 
   it('fails instanceof across vm contexts when using Error subclass', () => {
