@@ -28,9 +28,9 @@ describe('InstanceofSafeError', () => {
     })
 
     it('is falsy for non error', () => {
-      const val: unknown = 1;
+      const val: unknown = 1
 
-      expect(val instanceof A).toBe(false);
+      expect(val instanceof A).toBe(false)
     })
   })
 
