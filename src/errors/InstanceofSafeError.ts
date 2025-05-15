@@ -49,19 +49,16 @@ const generatePrototypePaths = (arr: string[]): string[] => {
 /**
  * Custom error class that enables reliable instanceof checks across realms
  * (e.g., iframes, workers, or Node.js VM).
- * Also ensures that subclasses like `NotFoundError` have a consistent error name
+ * Also ensures subclasses like `NotFoundError` have a consistent error name
  * (i.e., `error.name` is set to the subclass name instead of `InstanceofSafeError`).
  *
- * How it works:
- * - On instantiation, it collects the prototype chain names (e.g. ['InstanceofSafeError', 'Subclass1', 'Subclass2']),
- *   generates inheritance paths like:
- *   - 'InstanceofSafeError'
- *   - 'InstanceofSafeError.Subclass1'
- *   - 'InstanceofSafeError.Subclass1.Subclass2',
- *   then assigns a corresponding `Symbol.for` as a property with value `true` on the instance for each path.
- *
- * - The custom `instanceof` logic (overriding `Symbol.hasInstance`) checks if the corresponding
- *   symbol for the constructor’s prototype path exists on the tested object.
+ * It works by creating unique symbols for each inheritance path, such as:
+ * - 'InstanceofSafeError'
+ * - 'InstanceofSafeError.Subclass1'
+ * - 'InstanceofSafeError.Subclass1.Subclass2',
+ * assigning them to the instance using `Symbol.for` on instantiation.
+ * The custom `instanceof` logic (overriding `Symbol.hasInstance`) checks if the corresponding
+ * symbol for the constructor’s prototype path exists on the tested object.
  *
  * This technique allows `instanceof` to succeed across realms where normal prototype chain checks fail,
  * because symbols created via `Symbol.for` are shared globally and can be reliably compared.
