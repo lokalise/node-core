@@ -25,10 +25,6 @@ const getPrototypeNamesPostError = (input: unknown): string[] => {
 
   const errorIndex = reversedNames.indexOf(Error.name)
 
-  if (errorIndex === -1) {
-    return reversedNames
-  }
-
   return reversedNames.slice(errorIndex + 1)
 }
 
