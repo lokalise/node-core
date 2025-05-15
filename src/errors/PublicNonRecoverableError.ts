@@ -1,4 +1,5 @@
 import { isNativeError } from 'node:util/types'
+import { InstanceofSafeError } from './InstanceofSafeError'
 import type { BaseErrorParams, ErrorDetails } from './types'
 
 type BasePublicErrorParams = BaseErrorParams & {
@@ -20,7 +21,7 @@ const PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL = Symbol.for('PUBLIC_NON_RECOVERABLE_E
  */
 export class PublicNonRecoverableError<
   T extends ErrorDetails | undefined = ErrorDetails | undefined,
-> extends Error {
+> extends InstanceofSafeError {
   public readonly details: T
   public readonly errorCode: string
   public readonly httpStatusCode: number
