@@ -1,5 +1,3 @@
-import { isNativeError } from 'node:util/types'
-
 const PROTOTYPE_PATH_DELIMITER = '.'
 
 const getPrototypeNamesPostError = (input: unknown): string[] => {
@@ -24,6 +22,10 @@ const getPrototypeNamesPostError = (input: unknown): string[] => {
   const reversedNames = names.reverse()
 
   const errorIndex = reversedNames.indexOf(Error.name)
+
+  if (errorIndex === -1) {
+    return reversedNames
+  }
 
   return reversedNames.slice(errorIndex + 1)
 }
@@ -77,7 +79,7 @@ export class InstanceofSafeError extends Error {
   }
 
   static override [Symbol.hasInstance](val: unknown): boolean {
-    if (!isNativeError(val)) {
+    if (val === null || typeof val !== 'object') {
       return false
     }
 

@@ -27,10 +27,36 @@ describe('InstanceofSafeError', () => {
       expect(b instanceof B).toBe(true)
     })
 
-    it('is falsy for non error', () => {
-      const val: unknown = 1
+    it('is falsy for non error and unrelated values', () => {
+      const values = [
+        1,
+        'string',
+        true,
+        false,
+        null,
+        undefined,
+        Symbol('sym'),
+        BigInt(123),
+        [],
+        {},
+        () => {},
+        class {},
+        new Error('regular error'),
+        new TypeError('type error'),
+        new Date(),
+        /regex/,
+        new Map(),
+        new Set(),
+        new WeakMap(),
+        new WeakSet(),
+        new Promise(() => {}),
+      ]
 
-      expect(val instanceof A).toBe(false)
+      for (const val of values) {
+        expect(val instanceof InstanceofSafeError).toBe(false)
+        expect(val instanceof A).toBe(false)
+        expect(val instanceof B).toBe(false)
+      }
     })
   })
 
