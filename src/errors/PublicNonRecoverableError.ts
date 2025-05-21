@@ -43,6 +43,9 @@ Object.defineProperty(PublicNonRecoverableError.prototype, PUBLIC_NON_RECOVERABL
   value: true,
 })
 
+/**
+ * @deprecated Use `error instanceof PublicNonRecoverableError` instead.
+ */
 export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
   return (
     isNativeError(error) &&

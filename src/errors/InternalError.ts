@@ -33,6 +33,9 @@ Object.defineProperty(InternalError.prototype, INTERNAL_ERROR_SYMBOL, {
   value: true,
 })
 
+/**
+ * @deprecated Use `error instanceof InternalError` instead.
+ */
 export function isInternalError(error: unknown): error is InternalError {
   return (
     isNativeError(error) &&
