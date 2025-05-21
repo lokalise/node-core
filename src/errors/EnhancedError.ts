@@ -44,12 +44,12 @@ const generatePrototypePaths = (arr: string[]): string[] => {
  * Custom error class that enables reliable instanceof checks across realms
  * (e.g., iframes, workers, or Node.js VM).
  * Also ensures subclasses like `NotFoundError` have a consistent error name
- * (i.e., `error.name` is set to the subclass name instead of `InstanceofSafeError`).
+ * (i.e., `error.name` is set to the subclass name instead of `EnhancedError`).
  *
  * It works by creating unique symbols for each inheritance path, such as:
- * - 'InstanceofSafeError'
- * - 'InstanceofSafeError.Subclass1'
- * - 'InstanceofSafeError.Subclass1.Subclass2',
+ * - 'EnhancedError'
+ * - 'EnhancedError.Subclass1'
+ * - 'EnhancedError.Subclass1.Subclass2',
  * assigning them to the instance using `Symbol.for` on instantiation.
  * The custom `instanceof` logic (overriding `Symbol.hasInstance`) checks if the corresponding
  * symbol for the constructor’s prototype path exists on the tested object.
@@ -57,7 +57,7 @@ const generatePrototypePaths = (arr: string[]): string[] => {
  * This technique allows `instanceof` to succeed across realms where normal prototype chain checks fail,
  * because symbols created via `Symbol.for` are shared globally and can be reliably compared.
  */
-export class InstanceofSafeError extends Error {
+export class EnhancedError extends Error {
   constructor(message?: string, options?: ErrorOptions) {
     super(message, options)
 

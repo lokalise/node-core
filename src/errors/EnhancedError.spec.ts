@@ -1,19 +1,19 @@
 import vm from 'node:vm'
-import { InstanceofSafeError } from './InstanceofSafeError'
+import { EnhancedError } from './EnhancedError'
 
-class A extends InstanceofSafeError {}
+class A extends EnhancedError {}
 
 class B extends A {}
 
 class TestError extends Error {}
 
-describe('InstanceofSafeError', () => {
+describe('EnhancedError', () => {
   describe('instanceof behavior in the same realm', () => {
     it('recognizes direct subclass', () => {
       const a = new A('test')
 
       expect(a.constructor.name).toBe('A')
-      expect(a instanceof InstanceofSafeError).toBe(true)
+      expect(a instanceof EnhancedError).toBe(true)
       expect(a instanceof A).toBe(true)
       expect(a instanceof B).toBe(false)
     })
@@ -22,7 +22,7 @@ describe('InstanceofSafeError', () => {
       const b = new B('test')
 
       expect(b.constructor.name).toBe('B')
-      expect(b instanceof InstanceofSafeError).toBe(true)
+      expect(b instanceof EnhancedError).toBe(true)
       expect(b instanceof A).toBe(true)
       expect(b instanceof B).toBe(true)
     })
@@ -53,7 +53,7 @@ describe('InstanceofSafeError', () => {
       ]
 
       for (const val of values) {
-        expect(val instanceof InstanceofSafeError).toBe(false)
+        expect(val instanceof EnhancedError).toBe(false)
         expect(val instanceof A).toBe(false)
         expect(val instanceof B).toBe(false)
       }
@@ -77,12 +77,12 @@ describe('InstanceofSafeError', () => {
     expect(error instanceof TestError).toBe(false)
   })
 
-  it('supports instanceof across vm contexts when using InstanceofSafeError subclass', () => {
-    const context = vm.createContext({ InstanceofSafeError })
+  it('supports instanceof across vm contexts when using EnhancedError subclass', () => {
+    const context = vm.createContext({ EnhancedError: EnhancedError })
 
     vm.runInContext(
       `
-      class A extends InstanceofSafeError {}
+      class A extends EnhancedError {}
       class B extends A {}
       globalThis.error = new B('from vm');
     `,
@@ -91,7 +91,7 @@ describe('InstanceofSafeError', () => {
 
     const { error } = context
 
-    expect(error instanceof InstanceofSafeError).toBe(true)
+    expect(error instanceof EnhancedError).toBe(true)
     expect(error instanceof A).toBe(true)
     expect(error instanceof B).toBe(true)
   })
