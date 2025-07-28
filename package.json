@@ -43,7 +43,7 @@
         "zod": "^3.24.1"
     },
     "devDependencies": {
-        "@biomejs/biome": "^1.9.4",
+        "@biomejs/biome": "^2.1.2",
         "@lokalise/biome-config": "^2.0.0",
         "@types/node": "^24.0.3",
         "@types/tmp": "^0.2.6",
