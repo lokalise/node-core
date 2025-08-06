@@ -25,7 +25,9 @@ describe('ConfigScope', () => {
       delete process.env.value
       const configScope = new ConfigScope()
 
-      expect(() => configScope.getBySchema('value', z.string())).toThrowError(/Required/)
+      expect(() => configScope.getBySchema('value', z.string())).toThrowError(
+        /Invalid input: expected string, received undefined/,
+      )
     })
 
     it('throws when param does not fulfill integer schema', () => {
@@ -33,7 +35,7 @@ describe('ConfigScope', () => {
       const configScope = new ConfigScope()
 
       expect(() => configScope.getBySchema('value', z.coerce.number().int())).toThrowError(
-        /Expected integer, received float/,
+        /expected int, received number/,
       )
     })
 
@@ -41,7 +43,7 @@ describe('ConfigScope', () => {
       process.env.value = 'example'
       const configScope = new ConfigScope()
 
-      expect(() => configScope.getBySchema('value', z.string().url())).toThrowError(/Invalid url/)
+      expect(() => configScope.getBySchema('value', z.string().url())).toThrowError(/Invalid URL/)
     })
 
     it('throws when param does not fulfill enum schema', () => {
@@ -49,7 +51,7 @@ describe('ConfigScope', () => {
       const configScope = new ConfigScope()
 
       expect(() => configScope.getBySchema('value', z.enum(['dev', 'prod']))).toThrowError(
-        /Invalid enum value. Expected 'dev' | 'prod', received 'example'/,
+        /Invalid option: expected one of "dev"|"prod"/,
       )
     })
 
