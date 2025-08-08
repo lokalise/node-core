@@ -1,7 +1,5 @@
-import type { ZodSchema } from 'zod'
-
+import type { ZodSchema } from 'zod/v4'
 import { InternalError } from '../errors/InternalError'
-
 import type { EnvValueValidator } from './configTypes'
 
 export type EnvType = {
