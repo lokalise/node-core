@@ -1,7 +1,7 @@
 import { types } from 'node:util'
 
 import type { SerializedError } from 'pino'
-import { levels, pino, stdSerializers } from 'pino'
+import pino, { levels, stdSerializers } from 'pino'
 
 import type { CommonLogger } from '../logging/commonLogger'
 import { hasMessage } from '../utils/typeUtils'

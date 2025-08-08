@@ -1,12 +1,12 @@
-import type { Level, Logger, LoggerOptions, redactOptions } from 'pino'
-import { levels, pino } from 'pino'
+import type { Level, Logger, LoggerOptions } from 'pino'
+import pino, { levels } from 'pino'
 import pretty from 'pino-pretty'
 
 export type AppLoggerConfig = {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
   nodeEnv: 'production' | 'development' | 'test'
   base?: Record<string, unknown>
-  redact?: redactOptions
+  redact?: LoggerOptions['redact']
 }
 
 export type MonorepoAppLoggerConfig = AppLoggerConfig & {

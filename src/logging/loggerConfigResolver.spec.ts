@@ -1,4 +1,4 @@
-import { pino } from 'pino'
+import pino from 'pino'
 import pinoTest from 'pino-test'
 import { expect } from 'vitest'
 

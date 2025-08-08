@@ -55,6 +55,8 @@ Once the class is instantiated, you can leverage the following `ConfigScope` met
   - `param`, the configuration parameter name;
   - `schema`, zod schema to use for parsing and validation;
 
+> **Note:** Starting from version 14, the library requires Zod v4 API usage, to continue using Zod v3 API, please use version 13 of the library.
+
 ### Mandatory Configuration Parameters
 
 - `getMandatory()`, returns the value of a mandatory configuration parameter. If the value is missing, an `InternalError` is thrown. Parameters are:

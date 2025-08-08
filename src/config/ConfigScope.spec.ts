@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 import { ConfigScope } from './ConfigScope'
 import { ensureClosingSlashTransformer } from './configTransformers'
