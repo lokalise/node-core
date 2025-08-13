@@ -1,10 +1,10 @@
 import { Readable } from 'node:stream'
 
 import tmp from 'tmp'
-import { afterEach, expect } from 'vitest'
+import { afterEach, describe, expect } from 'vitest'
 
 import { generateChecksumForReadable } from './checksumUtils'
-import { FsReadableProvider, getReadableContentLength } from './streamUtils'
+import { FsReadableProvider, getReadableContentLength, streamToBuffer } from './streamUtils'
 
 const testObject = {
   someField: 123,
@@ -79,6 +79,14 @@ describe('streamUtils', () => {
         expect(fileContentLength).toBe(115)
         expect(readableLength).toBe(115)
       })
+    })
+  })
+  describe('streamToBuffer', () => {
+    it('should convert stream to buffer', async () => {
+      const sourceReadable = Readable.from(Buffer.from(JSON.stringify(testObject)))
+      const buffer = await streamToBuffer(sourceReadable)
+      expect(buffer.length).gt(0)
+      expect(buffer.toString()).toBe(JSON.stringify(testObject))
     })
   })
 })
