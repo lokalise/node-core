@@ -115,3 +115,16 @@ export function getReadableContentLength(readable: Readable): Promise<number> {
     })
   })
 }
+
+/**
+ * Consumes the readable stream and returns its content as a Buffer.
+ * @param stream - The readable stream to consume.
+ * @returns A promise that resolves to a Buffer containing the stream's content.
+ */
+export async function streamToBuffer(stream: Readable): Promise<Buffer> {
+  const chunks: Buffer[] = []
+  for await (const chunk of stream) {
+    chunks.push(chunk as Buffer)
+  }
+  return Buffer.concat(chunks)
+}

@@ -208,3 +208,4 @@ expect(someEventEmitter.emittedEvents.length).toBe(1)
 ## Streams
 
 - `StreamUtils` - utils for temporary persisting of streams for length calculation and reuse
+- `streamToBuffer` - utility for converting a stream to a buffer
