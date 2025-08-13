@@ -118,4 +118,5 @@ export type {
   PersistToFsOptions,
   ReadableProvider,
   FsReadableProviderOptions,
+  streamToBuffer,
 } from './utils/streamUtils'
