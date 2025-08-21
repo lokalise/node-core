@@ -23,4 +23,33 @@ describe('stringValueSerializer', () => {
     expect(truncatedString.length).toBeLessThanOrEqual(100 + 4)
     expect(truncatedString).toMatch(/^""b{100}""$/)
   })
+
+  it('handles BigInt types', () => {
+    expect(stringValueSerializer(BigInt('12345678901234567890'))).toBe('"12345678901234567890"')
+  })
+
+  it('handles Symbol types', () => {
+    const sym = Symbol('test')
+    expect(stringValueSerializer(sym)).toBe('"Symbol(test)"')
+  })
+
+  it('handles undefined values', () => {
+    expect(stringValueSerializer(undefined)).toBe('"undefined"')
+  })
+
+  it('handles function types', () => {
+    const func = () => 'test'
+    expect(stringValueSerializer(func)).toBe('"() => "test""')
+  })
+
+  it('handles circular references gracefully', () => {
+    const circularObj: any = {}
+    circularObj.self = circularObj
+    expect(stringValueSerializer(circularObj)).toBe('"[object Object]"')
+  })
+
+  it('handles empty objects and arrays', () => {
+    expect(stringValueSerializer({})).toBe('"{}"')
+    expect(stringValueSerializer([])).toBe('"[]"')
+  })
 })

@@ -7,9 +7,37 @@
  * is 4 bytes (UTF-32), so we limit the string to 8100 characters to stay within the limit.
  */
 export const stringValueSerializer = (value: unknown, maxLength = 8100): string => {
-  const baseValue = typeof value === 'string' ? value : JSON.stringify(value)
+  const baseValue = valueToString(value)
 
   const truncated = baseValue.length > maxLength ? baseValue.slice(0, maxLength) : baseValue
 
   return typeof value === 'string' ? `""${truncated}""` : `"${truncated}"`
+}
+
+const valueToString = (value: unknown): string => {
+  if (typeof value === 'string') {
+    return value
+  }
+
+  if (typeof value === 'bigint') {
+    return value.toString()
+  }
+
+  if (typeof value === 'symbol') {
+    return value.toString()
+  }
+
+  if (value === undefined) {
+    return 'undefined'
+  }
+
+  if (typeof value === 'function') {
+    return value.toString()
+  }
+
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value) // fallback for circular references etc.
+  }
 }
