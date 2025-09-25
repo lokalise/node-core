@@ -1,5 +1,4 @@
 import { isNativeError } from 'node:util/types'
-import { EnhancedError } from './EnhancedError'
 import type { BaseErrorParams, ErrorDetails } from './types'
 
 type BasePublicErrorParams = BaseErrorParams & {
@@ -21,7 +20,7 @@ const PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL = Symbol.for('PUBLIC_NON_RECOVERABLE_E
  */
 export class PublicNonRecoverableError<
   T extends ErrorDetails | undefined = ErrorDetails | undefined,
-> extends EnhancedError {
+> extends Error {
   public readonly details: T
   public readonly errorCode: string
   public readonly httpStatusCode: number
@@ -43,9 +42,6 @@ Object.defineProperty(PublicNonRecoverableError.prototype, PUBLIC_NON_RECOVERABL
   value: true,
 })
 
-/**
- * @deprecated Use `error instanceof PublicNonRecoverableError` instead.
- */
 export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
   return (
     isNativeError(error) &&
