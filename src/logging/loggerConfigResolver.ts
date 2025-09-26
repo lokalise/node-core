@@ -60,7 +60,7 @@ export function resolveLogger(appConfig: AppLoggerConfig): Logger {
         colorize: true,
         translateTime: 'SYS:standard',
         ignore: 'hostname,pid',
-      })
+      }),
     )
   }
 
