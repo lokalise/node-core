@@ -20,7 +20,7 @@ export function resolveMonorepoLogger(appConfig: MonorepoAppLoggerConfig): Logge
     return resolveLogger(appConfig)
   }
 
-  const configuration = resolveMonorepoLoggerConfiguration(appConfig) as LoggerOptions
+  const configuration = resolveMonorepoLoggerConfiguration(appConfig)
   return pino(configuration)
 }
 
@@ -28,11 +28,7 @@ export function resolveMonorepoLogger(appConfig: MonorepoAppLoggerConfig): Logge
 /* c8 ignore next 25 */
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
-): LoggerOptions | Logger {
-  if (appConfig.nodeEnv !== 'development') {
-    return resolveLoggerConfiguration(appConfig)
-  }
-
+): LoggerOptions {
   return {
     level: appConfig.logLevel,
     formatters: {
@@ -49,21 +45,15 @@ export function resolveMonorepoLoggerConfiguration(
         append: appConfig.append ?? false,
       },
     },
-  }
+  } satisfies LoggerOptions
 }
 
 export function resolveLogger(appConfig: AppLoggerConfig): Logger {
-  if (appConfig.nodeEnv !== 'production') {
-    return resolveLoggerConfiguration(appConfig) as Logger
-  }
+  const configuration = resolveLoggerConfiguration(appConfig)
 
-  const configuration = resolveLoggerConfiguration(appConfig) as LoggerOptions
-  return pino(configuration)
-}
-
-export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions | Logger {
   if (appConfig.nodeEnv !== 'production') {
     return pino(
+      configuration,
       pretty({
         sync: true,
         minimumLevel: appConfig.logLevel as Level,
@@ -74,6 +64,10 @@ export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOp
     )
   }
 
+  return pino(configuration)
+}
+
+export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions {
   return {
     level: appConfig.logLevel,
     formatters: {
