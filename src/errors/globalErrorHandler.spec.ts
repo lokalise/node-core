@@ -14,7 +14,7 @@ describe('globalErrorHandler', () => {
           stack: expect.any(String),
           message: 'text',
         },
-        message: 'text',
+        msg: 'text',
       })
     })
 
@@ -27,7 +27,7 @@ describe('globalErrorHandler', () => {
 
       expect(resolvedError).toMatchInlineSnapshot(`
         {
-          "message": "text",
+          "msg": "text",
           "x-request-id": undefined,
         }
       `)
@@ -40,7 +40,7 @@ describe('globalErrorHandler', () => {
 
       expect(resolvedError).toMatchInlineSnapshot(`
         {
-          "message": "Unknown error",
+          "msg": "Unknown error",
           "x-request-id": undefined,
         }
       `)

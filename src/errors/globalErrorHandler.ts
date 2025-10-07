@@ -1,13 +1,11 @@
-import { types } from 'node:util'
-
 import type { SerializedError } from 'pino'
 import pino, { levels, stdSerializers } from 'pino'
 
 import type { CommonLogger } from '../logging/commonLogger'
-import { hasMessage } from '../utils/typeUtils'
+import { hasMessage, isError } from '../utils/typeUtils'
 
 type LogObject = {
-  message: string
+  msg: string // this is the default pino message key
   'x-request-id'?: string
   error?: SerializedError
 }
@@ -22,9 +20,9 @@ export const globalLogger: CommonLogger = pino({
 })
 
 export function resolveGlobalErrorLogObject(err: unknown, correlationId?: string): LogObject {
-  if (types.isNativeError(err)) {
+  if (isError(err)) {
     return {
-      message: err.message,
+      msg: err.message,
       error: stdSerializers.err(err),
       'x-request-id': correlationId,
     }
@@ -32,13 +30,13 @@ export function resolveGlobalErrorLogObject(err: unknown, correlationId?: string
 
   if (hasMessage(err)) {
     return {
-      message: err.message,
+      msg: err.message,
       'x-request-id': correlationId,
     }
   }
 
   return {
-    message: 'Unknown error',
+    msg: 'Unknown error',
     'x-request-id': correlationId,
   }
 }
@@ -49,44 +47,64 @@ export function executeAndHandleGlobalErrors<T>(operation: () => T) {
     return result
   } catch (err) {
     const logObject = resolveGlobalErrorLogObject(err)
-    globalLogger.error(logObject, logObject.message)
+    globalLogger.error(logObject)
     process.exit(1)
   }
 }
 
 export async function executeAsyncAndHandleGlobalErrors<T>(
   operation: () => Promise<T>,
+  stopOnError?: true,
+): Promise<T>
+export async function executeAsyncAndHandleGlobalErrors<T>(
+  operation: () => Promise<T>,
+  stopOnError: false,
+): Promise<T | undefined>
+export async function executeAsyncAndHandleGlobalErrors<T>(
+  operation: () => Promise<T>,
   stopOnError = true,
-) {
+): Promise<T | undefined> {
   try {
     const result = await operation()
     return result
   } catch (err) {
     const logObject = resolveGlobalErrorLogObject(err)
-    globalLogger.error(logObject, logObject.message)
+    globalLogger.error(logObject)
     if (stopOnError) {
       process.exit(1)
     }
   }
 }
 
-export async function executeSettleAllAndHandleGlobalErrors(
-  promises: Promise<unknown>[],
+export async function executeSettleAllAndHandleGlobalErrors<T>(
+  promises: Promise<T>[],
+  stopOnError?: true,
+): Promise<PromiseSettledResult<T>[]>
+export async function executeSettleAllAndHandleGlobalErrors<T>(
+  promises: Promise<T>[],
+  stopOnError: false,
+): Promise<PromiseSettledResult<T>[] | undefined>
+export async function executeSettleAllAndHandleGlobalErrors<T>(
+  promises: Promise<T>[],
   stopOnError = true,
-) {
+): Promise<PromiseSettledResult<T>[] | undefined> {
   const result = await Promise.allSettled(promises)
 
   let errorsHappened: boolean | undefined
   for (const entry of result) {
     if (entry.status === 'rejected') {
       const logObject = resolveGlobalErrorLogObject(entry.reason)
-      globalLogger.error(logObject, logObject.message)
+      globalLogger.error(logObject)
       errorsHappened = true
     }
   }
 
   if (stopOnError && errorsHappened) {
     process.exit(1)
+  }
+
+  if (!stopOnError && errorsHappened) {
+    return undefined
   }
 
   return result
