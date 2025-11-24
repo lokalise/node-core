@@ -1,5 +1,4 @@
 import { isNativeError } from 'node:util/types'
-import { EnhancedError } from './EnhancedError'
 import type { BaseErrorParams, ErrorDetails } from './types'
 
 export type InternalErrorParams<T extends ErrorDetails | undefined = ErrorDetails | undefined> =
@@ -13,7 +12,7 @@ const INTERNAL_ERROR_SYMBOL = Symbol.for('INTERNAL_ERROR_KEY')
 
 export class InternalError<
   T extends ErrorDetails | undefined = ErrorDetails | undefined,
-> extends EnhancedError {
+> extends Error {
   public readonly errorCode: string
   public readonly details: T
 
@@ -33,9 +32,6 @@ Object.defineProperty(InternalError.prototype, INTERNAL_ERROR_SYMBOL, {
   value: true,
 })
 
-/**
- * @deprecated Use `error instanceof InternalError` instead.
- */
 export function isInternalError(error: unknown): error is InternalError {
   return (
     isNativeError(error) &&
