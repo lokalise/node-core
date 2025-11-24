@@ -21,6 +21,10 @@ export type RedisConfig = {
   enableReadyCheck?: boolean
   lazyConnect?: boolean
   useTls: boolean
+
+  // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+  retryStrategy?(times: number): number | void | null
+  reconnectOnError?(error: Error): boolean | 1 | 2
 }
 
 export type AppConfig = {
