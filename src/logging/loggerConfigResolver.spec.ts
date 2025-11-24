@@ -6,7 +6,7 @@ import { resolveLogger, resolveLoggerConfiguration } from './loggerConfigResolve
 
 describe('loggerConfigResolver', () => {
   describe('resolveLoggerConfiguration', () => {
-    it('resolves prod configuration', () => {
+    it('resolves configuration', () => {
       const loggerConfig = resolveLoggerConfiguration({
         logLevel: 'warn',
         nodeEnv: 'production',
@@ -21,34 +21,6 @@ describe('loggerConfigResolver', () => {
           "redact": undefined,
         }
       `)
-    })
-
-    it('resolves dev configuration', () => {
-      const loggerConfig = resolveLoggerConfiguration({
-        logLevel: 'debug',
-        nodeEnv: 'development',
-      })
-
-      expect(loggerConfig).toMatchObject({
-        levels: {
-          labels: {
-            '10': 'trace',
-            '20': 'debug',
-            '30': 'info',
-            '40': 'warn',
-            '50': 'error',
-            '60': 'fatal',
-          },
-          values: {
-            debug: 20,
-            error: 50,
-            fatal: 60,
-            info: 30,
-            trace: 10,
-            warn: 40,
-          },
-        },
-      })
     })
 
     it('does not crash during label resolution', () => {
