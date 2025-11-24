@@ -4,7 +4,7 @@ export type EnvValueTransformer<InputType, OutputType> = (value: InputType) => O
 type DNSLookupFunction = (
   hostname: string,
   callback: (err: NodeJS.ErrnoException | null, address: string, family?: number) => void,
-) => void;
+) => void
 
 export type RedisConfig = {
   host: string
@@ -30,7 +30,7 @@ export type RedisConfig = {
   // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
   retryStrategy?(times: number): number | void | null
   reconnectOnError?(error: Error): boolean | 1 | 2
-  dnsLookup?: DNSLookupFunction | undefined;
+  dnsLookup?: DNSLookupFunction | undefined
 }
 
 export type AppConfig = {
