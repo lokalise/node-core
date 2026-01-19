@@ -20,6 +20,7 @@ export default defineConfig({
         'src/errors/publicErrors.ts',
         'src/errors/globalErrorHandler.ts',
         'src/config/configTransformers.ts',
+        'src/observability/NoopObservabilityManager.ts',
       ],
       reporter: ['text'],
       all: true,
