@@ -5,6 +5,7 @@ Core libraries for Node.js backend services.
 - [Default Logging Configuration](#default-logging-configuration)
 - [ConfigScope](#configscope)
 - [Error Handling](#error-handling)
+- [Observability](#observability)
 
 See [docs](/docs) for further instructions on how to use.
 
@@ -209,3 +210,43 @@ expect(someEventEmitter.emittedEvents.length).toBe(1)
 
 - `StreamUtils` - utils for temporary persisting of streams for length calculation and reuse
 - `streamToBuffer` - utility for converting a stream to a buffer
+
+## Observability
+
+The library provides utilities for transaction observability management through the `TransactionObservabilityManager` interface.
+
+### TransactionObservabilityManager
+
+An interface for tracking background transactions with the following methods:
+
+- `start(transactionName, uniqueTransactionKey)` - Creates and starts a background transaction
+- `startWithGroup(transactionName, uniqueTransactionKey, transactionGroup)` - Creates and starts a background transaction related to a specified group
+- `stop(uniqueTransactionKey, wasSuccessful?)` - Ends the transaction
+- `addCustomAttributes(uniqueTransactionKey, atts)` - Adds custom attributes to the current transaction
+
+### MultiTransactionObservabilityManager
+
+Groups multiple `TransactionObservabilityManager` instances into one to facilitate tracking transactions across multiple observability tools.
+
+```ts
+import { MultiTransactionObservabilityManager } from '@lokalise/node-core'
+
+const multiManager = new MultiTransactionObservabilityManager([
+  newRelicManager,
+  datadogManager,
+])
+
+multiManager.start('processOrder', 'order-123')
+```
+
+### NoopObservabilityManager
+
+A no-operation implementation of `TransactionObservabilityManager`. All methods are implemented but do nothing. Use this when you need to satisfy a `TransactionObservabilityManager` dependency but don't want any actual observability tracking to occur.
+
+```ts
+import { NoopObservabilityManager } from '@lokalise/node-core'
+
+const noopManager = new NoopObservabilityManager()
+// Pass to any component requiring a TransactionObservabilityManager
+const service = new MyService({ observabilityManager: noopManager })
+```
