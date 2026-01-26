@@ -1,6 +1,11 @@
 export type EnvValueValidator<InputType> = (value: InputType) => boolean
 export type EnvValueTransformer<InputType, OutputType> = (value: InputType) => OutputType
 
+type DNSLookupFunction = (
+  hostname: string,
+  callback: (err: NodeJS.ErrnoException | null, address: string, family?: number) => void,
+) => void
+
 export type RedisConfig = {
   host: string
   /**
@@ -21,6 +26,11 @@ export type RedisConfig = {
   enableReadyCheck?: boolean
   lazyConnect?: boolean
   useTls: boolean
+
+  // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+  retryStrategy?(times: number): number | void | null
+  reconnectOnError?(error: Error): boolean | 1 | 2
+  dnsLookup?: DNSLookupFunction | undefined
 }
 
 export type AppConfig = {
