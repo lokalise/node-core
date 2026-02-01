@@ -18,8 +18,8 @@ jobs:
     name: Ensure PR has proper labeling
     runs-on: ubuntu-latest
     steps:
-      - name: Check on of required labels are set
-        uses: docker://agilepathway/pull-request-label-checker:v1.1.2
+      - name: Check one of required labels are set
+        uses: docker://agilepathway/pull-request-label-checker:v1.6.65
         with:
-          one_of: major,minor,patch,skip-release # Must have exactly-one of these labels
+          one_of: major,minor,patch,skip-release
           repo_token: ${{ secrets.GITHUB_TOKEN }}
