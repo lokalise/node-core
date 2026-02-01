@@ -64,17 +64,41 @@ describe('either', () => {
   })
 
   describe('Either type', () => {
-    it('works with type guards', () => {
+    it('narrows type with isSuccess guard', () => {
       const either: Either<string, number> = success(42)
 
       if (isSuccess(either)) {
         expectTypeOf(either.result).toEqualTypeOf<number>()
+        expect(either.result).toBe(42)
+      } else {
+        // This branch should not be reached
+        expect.fail('Expected success')
+      }
+    })
+
+    it('narrows type with isFailure guard', () => {
+      const either: Either<string, number> = failure('error')
+
+      if (isFailure(either)) {
+        expectTypeOf(either.error).toEqualTypeOf<string>()
+        expect(either.error).toBe('error')
+      } else {
+        // This branch should not be reached
+        expect.fail('Expected failure')
+      }
+    })
+
+    it('preserves literal types when not explicitly annotated', () => {
+      const result = success('done')
+
+      if (isSuccess(result)) {
+        expectTypeOf(result.result).toEqualTypeOf<'done'>()
       }
 
-      const eitherFail: Either<string, number> = failure('error')
+      const error = failure('NOT_FOUND')
 
-      if (isFailure(eitherFail)) {
-        expectTypeOf(eitherFail.error).toEqualTypeOf<string>()
+      if (isFailure(error)) {
+        expectTypeOf(error.error).toEqualTypeOf<'NOT_FOUND'>()
       }
     })
   })
