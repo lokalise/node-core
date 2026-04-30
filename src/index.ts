@@ -32,7 +32,19 @@ export {
   isFailure,
 } from './errors/either'
 
+/** @deprecated Use {@link EnvelopeEncryptor} instead. */
 export { EncryptionUtility } from './utils/encryptionUtility'
+
+export {
+  EnvelopeEncryptor,
+  type EnvelopeEncryptorConfig,
+} from './utils/envelopeEncryptor/EnvelopeEncryptor'
+export { parseEnvelopeEncryptorConfig } from './utils/envelopeEncryptor/parseEnvelopeEncryptorConfig'
+export {
+  InvalidEncryptionConfigError,
+  EncryptionKeyNotConfiguredError,
+  InvalidCiphertextError,
+} from './utils/envelopeEncryptor/envelopeEncryptorErrors'
 
 export {
   chunk,
