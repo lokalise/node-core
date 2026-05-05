@@ -307,6 +307,29 @@ export class EnvelopeEncryptor {
    * Deterministic. Independent of {@link EnvelopeEncryptorConfig.activeKeyId}.
    * Used by callers to populate `*_hash` columns indexed for exact-match
    * lookups on encrypted fields.
+   *
+   * ### ⚠️ NOT for passwords
+   *
+   * This is a fast keyed hash. **Do not use it to store user passwords** —
+   * OWASP requires a slow, memory-hard password hash (Argon2id, scrypt,
+   * bcrypt, or PBKDF2 with high iteration counts). HMAC-SHA256 lets a GPU
+   * test billions of guesses per second; once the pepper leaks, low-entropy
+   * inputs are trivially recoverable.
+   *
+   * ### Pepper storage
+   *
+   * The pepper is the only thing standing between this hash and offline
+   * brute force on low-entropy fields (emails, phone numbers, national IDs).
+   * Store it in an HSM, KMS, or secrets manager — not alongside the data,
+   * and not in plain environment variables on shared infrastructure. See
+   * the OWASP Cryptographic Storage and Secrets Management cheat sheets.
+   *
+   * ### Rotation
+   *
+   * Rotating the pepper invalidates every previously stored hash. The
+   * current envelope format does not tag hashes with a pepper id, so if
+   * pepper rotation becomes a requirement, plan a one-off re-hash of all
+   * affected rows.
    */
   hash(plaintext: string): string {
     return createHmac(HASH_DIGEST, this.hashPepper).update(plaintext, 'utf8').digest('hex')
