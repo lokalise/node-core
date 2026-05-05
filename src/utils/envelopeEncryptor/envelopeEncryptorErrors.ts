@@ -30,3 +30,14 @@ export class InvalidCiphertextError extends InternalError {
     })
   }
 }
+
+export class NonSerializableValueError extends InternalError {
+  constructor() {
+    super({
+      message:
+        'Value is not JSON-serializable (top-level undefined, function, or symbol). ' +
+        'JSON.stringify returned undefined, which cannot be encrypted.',
+      errorCode: 'NON_SERIALIZABLE_VALUE',
+    })
+  }
+}

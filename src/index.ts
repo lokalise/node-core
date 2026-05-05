@@ -44,6 +44,7 @@ export {
   InvalidEncryptionConfigError,
   EncryptionKeyNotConfiguredError,
   InvalidCiphertextError,
+  NonSerializableValueError,
 } from './utils/envelopeEncryptor/envelopeEncryptorErrors'
 
 export {
