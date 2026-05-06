@@ -1,6 +1,6 @@
 import { expect } from 'vitest'
 
-import { HashAlgorithm, HashEncoding, generateHmac, generateHash } from './hashUtils'
+import { HashAlgorithm, HashEncoding, generateHash, generateHmac } from './hashUtils'
 
 describe('hashUtils', () => {
   describe('generateHash', () => {
