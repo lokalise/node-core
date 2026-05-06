@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto'
+import { createHash, createHmac } from 'node:crypto'
 
 export enum HashEncoding {
   HEX = 'hex',
@@ -16,4 +16,13 @@ export function generateHash(
   encoding: HashEncoding = HashEncoding.HEX,
 ) {
   return createHash(algorithm).update(data).digest(encoding)
+}
+
+export function generateEncryptedHash(
+  algorithm: HashAlgorithm,
+  data: string,
+  pepper: Buffer,
+  encoding: HashEncoding = HashEncoding.HEX,
+): string {
+  return createHmac(algorithm, pepper).update(data, 'utf8').digest(encoding)
 }
