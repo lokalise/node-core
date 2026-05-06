@@ -63,7 +63,7 @@ export {
 } from './utils/typeUtils'
 export type { StandardizedError } from './utils/typeUtils'
 
-export { generateHash, HashAlgorithm, HashEncoding } from './utils/hashUtils'
+export { generateHash, generateHmac, HashAlgorithm, HashEncoding } from './utils/hashUtils'
 
 export {
   resolveLoggerConfiguration,
