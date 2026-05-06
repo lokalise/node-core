@@ -29,6 +29,11 @@ describe('hashUtils', () => {
   describe('generateHmac', () => {
     const pepper = Buffer.from('super-secret-pepper-key')
 
+    it('should produce the correct HMAC-SHA256 digest for a known test vector', () => {
+      const hash = generateHmac(HashAlgorithm.SHA256, 'hello world', pepper, HashEncoding.HEX)
+      expect(hash).toStrictEqual('48e8b85e595e3edd0caa1271548064eeb27be849cbbc2d3b57d9d02d2334106a')
+    })
+
     it('should generate a SHA-256 HMAC in hex format', () => {
       const data = 'test hmac sha256'
       const hash = generateHmac(HashAlgorithm.SHA256, data, pepper, HashEncoding.HEX)
