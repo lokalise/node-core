@@ -18,7 +18,7 @@ export function generateHash(
   return createHash(algorithm).update(data).digest(encoding)
 }
 
-export function generateEncryptedHash(
+export function generateHmac(
   algorithm: HashAlgorithm,
   data: string,
   pepper: Buffer,
