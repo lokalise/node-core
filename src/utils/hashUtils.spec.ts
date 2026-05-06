@@ -26,7 +26,7 @@ describe('hashUtils', () => {
     })
   })
 
-  describe('generateEncryptedHash', () => {
+  describe('generateHmac', () => {
     const pepper = Buffer.from('super-secret-pepper-key')
 
     it('should generate a SHA-256 HMAC in hex format', () => {
