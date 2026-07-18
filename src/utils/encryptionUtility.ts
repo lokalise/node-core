@@ -14,7 +14,14 @@ export type Options = {
 }
 
 /**
- * Type-scripted version of https://github.com/MauriceButler/cryptr
+ * Type-scripted version of https://github.com/MauriceButler/cryptr.
+ *
+ * @deprecated Use {@link EnvelopeEncryptor} instead. `EncryptionUtility`
+ * derives a per-call key via PBKDF2 (100k SHA-512 rounds), which is too slow
+ * for hot request paths and at-rest DB encryption. It also lacks key-id
+ * tagging (no zero-downtime rotation), lookup-hash support, and an
+ * is-encrypted marker for migration-time detection. New code should use
+ * `EnvelopeEncryptor` from `@lokalise/node-core`.
  */
 export class EncryptionUtility {
   private readonly secret: string
