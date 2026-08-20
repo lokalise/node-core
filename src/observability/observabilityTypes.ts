@@ -47,6 +47,17 @@ export type TransactionObservabilityManager = {
    *
    * The name refers to the span of the underlying tracer, which is what implementations activate.
    *
+   * Implementations must:
+   *
+   * - call `fn` exactly once, return its value, and let the errors it throws through unchanged.
+   *   Callers put their business logic in `fn` and cannot retry it: a caller that retried after an
+   *   error would run `fn` a second time whenever the error came from `fn` itself. Not calling `fn`
+   *   because the key is unknown silently drops the caller's work.
+   * - keep the context active for the lifetime of the promise when `fn` returns one, which needs
+   *   `AsyncLocalStorage` or an equivalent. Activating the span and restoring the previous one in a
+   *   synchronous `finally` satisfies this type, but the restore then happens at the first `await`,
+   *   and everything after it is recorded detached again.
+   *
    * @param uniqueTransactionKey - used for identifying the ongoing transaction to make active
    * @param fn - executed within the transaction context, its return value is passed through
    */

@@ -229,22 +229,31 @@ An interface for tracking background transactions with the following methods:
 in by providing `runInSpanContext`. Consumers should not call it directly - use `runInTransactionContext` below, which
 handles managers that do not support it.
 
+Implementations of `runInSpanContext` must call `fn` exactly once, return its value and let the errors it throws
+through unchanged, because callers put their business logic in `fn` and cannot retry it. When `fn` returns a promise,
+they must also keep the context active for the lifetime of that promise, which needs `AsyncLocalStorage` or an
+equivalent: activating the span and restoring the previous one in a synchronous `finally` restores it at the first
+`await`, leaving everything after it detached again.
+
 ### runInTransactionContext
 
 Runs a function within the observability context of an already started transaction, so that work performed inside it
-(spans, queries, outgoing calls) is recorded as part of that transaction instead of as detached top-level work. Falls
-back to plain execution when the manager is missing or cannot propagate context, so instrumented code never fails
-because of its observability tooling.
+(spans, queries, outgoing calls) is recorded as part of that transaction instead of as detached top-level work. Runs the
+function directly when the manager is missing or cannot propagate context, so a manager without context propagation
+costs the caller nothing. When the manager can propagate context, it is the one that invokes the function, and its
+errors reach the caller: a manager breaking the contract above can skip the work or fail the caller.
 
 ```ts
 import { runInTransactionContext } from '@lokalise/node-core'
 
 observabilityManager.start('processOrder', 'order-123')
+let wasSuccessful = false
 try {
   // spans created while processing become part of the `order-123` transaction
   await runInTransactionContext(observabilityManager, 'order-123', () => processOrder(order))
+  wasSuccessful = true
 } finally {
-  observabilityManager.stop('order-123')
+  observabilityManager.stop('order-123', wasSuccessful)
 }
 ```
 
@@ -267,7 +276,8 @@ multiManager.start('processOrder', 'order-123')
 ```
 
 `runInSpanContext` nests the contexts of every wrapped manager able to propagate one, so the function runs within all of
-them; managers without context propagation are skipped.
+them; managers without context propagation are skipped. It is only present when at least one wrapped manager can
+propagate context, so checking for it answers whether the wrapped managers will connect the traces.
 
 ### NoopObservabilityManager
 
