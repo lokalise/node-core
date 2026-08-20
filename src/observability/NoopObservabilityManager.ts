@@ -58,4 +58,13 @@ export class NoopObservabilityManager implements TransactionObservabilityManager
   ): void {
     // noop
   }
+
+  /**
+   * No-op implementation of runInSpanContext. Runs the given function as-is.
+   * @param _uniqueTransactionKey - Ignored
+   * @param fn - Executed without any context propagation
+   */
+  runInSpanContext<T>(_uniqueTransactionKey: string, fn: () => T): T {
+    return fn()
+  }
 }

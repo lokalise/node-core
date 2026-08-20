@@ -223,6 +223,33 @@ An interface for tracking background transactions with the following methods:
 - `startWithGroup(transactionName, uniqueTransactionKey, transactionGroup)` - Creates and starts a background transaction related to a specified group
 - `stop(uniqueTransactionKey, wasSuccessful?)` - Ends the transaction
 - `addCustomAttributes(uniqueTransactionKey, atts)` - Adds custom attributes to the current transaction
+- `runInSpanContext(uniqueTransactionKey, fn)` (optional) - Runs `fn` with the transaction set as the active one
+
+`start` and `stop` are two separate calls and cannot express a scope, so implementations able to propagate context opt
+in by providing `runInSpanContext`. Consumers should not call it directly - use `runInTransactionContext` below, which
+handles managers that do not support it.
+
+### runInTransactionContext
+
+Runs a function within the observability context of an already started transaction, so that work performed inside it
+(spans, queries, outgoing calls) is recorded as part of that transaction instead of as detached top-level work. Falls
+back to plain execution when the manager is missing or cannot propagate context, so instrumented code never fails
+because of its observability tooling.
+
+```ts
+import { runInTransactionContext } from '@lokalise/node-core'
+
+observabilityManager.start('processOrder', 'order-123')
+try {
+  // spans created while processing become part of the `order-123` transaction
+  await runInTransactionContext(observabilityManager, 'order-123', () => processOrder(order))
+} finally {
+  observabilityManager.stop('order-123')
+}
+```
+
+Prefer it over an inline `manager.runInSpanContext?.(key, fn) ?? fn()`, which executes `fn` twice whenever it
+legitimately returns `undefined` or `null`.
 
 ### MultiTransactionObservabilityManager
 
@@ -238,6 +265,9 @@ const multiManager = new MultiTransactionObservabilityManager([
 
 multiManager.start('processOrder', 'order-123')
 ```
+
+`runInSpanContext` nests the contexts of every wrapped manager able to propagate one, so the function runs within all of
+them; managers without context propagation are skipped.
 
 ### NoopObservabilityManager
 
