@@ -8,8 +8,27 @@ import { runInTransactionContext } from './runInTransactionContext'
 export class MultiTransactionObservabilityManager implements TransactionObservabilityManager {
   private readonly managers: TransactionObservabilityManager[]
 
+  /**
+   * Nests the contexts of every manager able to propagate one, so that the function runs within
+   * all of them. Managers without context propagation are skipped.
+   *
+   * Only assigned when at least one wrapped manager can propagate context, so that its presence
+   * keeps meaning what the interface says it means: a consumer checking for it to find out whether
+   * its traces will be connected gets an answer about the wrapped managers instead of about this
+   * wrapper. Call it through `runInTransactionContext`, which handles its absence.
+   */
+  readonly runInSpanContext?: <T>(uniqueTransactionKey: string, fn: () => T) => T
+
   constructor(managers: TransactionObservabilityManager[]) {
     this.managers = managers
+
+    if (managers.some((manager) => manager.runInSpanContext)) {
+      this.runInSpanContext = <T>(uniqueTransactionKey: string, fn: () => T): T =>
+        managers.reduceRight<() => T>(
+          (next, manager) => () => runInTransactionContext(manager, uniqueTransactionKey, next),
+          fn,
+        )()
+    }
   }
 
   start(transactionName: string, uniqueTransactionKey: string): void {
@@ -41,16 +60,5 @@ export class MultiTransactionObservabilityManager implements TransactionObservab
     for (const manager of this.managers) {
       manager.addCustomAttributes(uniqueTransactionKey, atts)
     }
-  }
-
-  /**
-   * Nests the contexts of every manager able to propagate one, so that the function runs within
-   * all of them. Managers without context propagation are skipped.
-   */
-  runInSpanContext<T>(uniqueTransactionKey: string, fn: () => T): T {
-    return this.managers.reduceRight<() => T>(
-      (next, manager) => () => runInTransactionContext(manager, uniqueTransactionKey, next),
-      fn,
-    )()
   }
 }

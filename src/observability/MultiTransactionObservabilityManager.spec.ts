@@ -1,5 +1,6 @@
 import { MultiTransactionObservabilityManager } from './MultiTransactionObservabilityManager'
 import type { TransactionObservabilityManager } from './observabilityTypes'
+import { runInTransactionContext } from './runInTransactionContext'
 
 describe('MultiTransactionObservabilityManager', () => {
   let multiTransactionObservabilityManager: MultiTransactionObservabilityManager
@@ -84,9 +85,11 @@ describe('MultiTransactionObservabilityManager', () => {
         buildContextAwareManager('second'),
       ])
 
-      const contextsDuringExecution = manager.runInSpanContext('uniqueTransactionKey', () => [
-        ...activeContexts,
-      ])
+      const contextsDuringExecution = runInTransactionContext(
+        manager,
+        'uniqueTransactionKey',
+        () => [...activeContexts],
+      )
 
       expect(contextsDuringExecution).toEqual(['first', 'second'])
       expect(activeContexts).toEqual([])
@@ -105,14 +108,34 @@ describe('MultiTransactionObservabilityManager', () => {
         },
       ])
 
-      expect(manager.runInSpanContext('uniqueTransactionKey', () => 'result')).toBe('result')
+      expect(runInTransactionContext(manager, 'uniqueTransactionKey', () => 'result')).toBe(
+        'result',
+      )
       expect(runInSpanContext).toHaveBeenCalledWith('uniqueTransactionKey', expect.any(Function))
     })
 
-    it('executes the function when no manager supports context propagation', () => {
+    it('is not exposed when no manager supports context propagation', () => {
       const manager = new MultiTransactionObservabilityManager([new FakeTransactionManager()])
 
-      expect(manager.runInSpanContext('uniqueTransactionKey', () => 'result')).toBe('result')
+      expect(manager.runInSpanContext).toBeUndefined()
+      expect(runInTransactionContext(manager, 'uniqueTransactionKey', () => 'result')).toBe(
+        'result',
+      )
+    })
+
+    it('is exposed when at least one manager supports context propagation', () => {
+      const manager = new MultiTransactionObservabilityManager([
+        new FakeTransactionManager(),
+        {
+          start: () => {},
+          startWithGroup: () => {},
+          stop: () => {},
+          addCustomAttributes: () => {},
+          runInSpanContext: <T>(_key: string, fn: () => T): T => fn(),
+        },
+      ])
+
+      expect(manager.runInSpanContext).toBeDefined()
     })
   })
 })
