@@ -9,6 +9,11 @@ describe('runInTransactionContext', () => {
     addCustomAttributes: () => {},
   })
 
+  const buildPropagatingManager = (): TransactionObservabilityManager => ({
+    ...buildManager(),
+    runInSpanContext: <T>(_uniqueTransactionKey: string, fn: () => T): T => fn(),
+  })
+
   it('executes the function when there is no manager', () => {
     expect(runInTransactionContext(undefined, 'key', () => 'result')).toBe('result')
   })
@@ -28,12 +33,25 @@ describe('runInTransactionContext', () => {
     expect(runInSpanContext).toHaveBeenCalledWith('key', expect.any(Function))
   })
 
-  it('executes the function exactly once when it returns undefined', () => {
-    const fn = vi.fn(() => undefined)
+  it.each([undefined, null])(
+    'executes the function exactly once when it returns %s and context cannot be propagated',
+    (returnValue) => {
+      const fn = vi.fn(() => returnValue)
 
-    expect(runInTransactionContext(buildManager(), 'key', fn)).toBeUndefined()
-    expect(fn).toHaveBeenCalledTimes(1)
-  })
+      expect(runInTransactionContext(buildManager(), 'key', fn)).toBe(returnValue)
+      expect(fn).toHaveBeenCalledTimes(1)
+    },
+  )
+
+  it.each([undefined, null])(
+    'executes the function exactly once when it returns %s and context is propagated',
+    (returnValue) => {
+      const fn = vi.fn(() => returnValue)
+
+      expect(runInTransactionContext(buildPropagatingManager(), 'key', fn)).toBe(returnValue)
+      expect(fn).toHaveBeenCalledTimes(1)
+    },
+  )
 
   it('passes through the value returned by the manager', () => {
     const manager: TransactionObservabilityManager = {

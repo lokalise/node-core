@@ -2,7 +2,8 @@ import type { TransactionObservabilityManager } from './observabilityTypes'
 
 /**
  * A no-operation implementation of TransactionObservabilityManager.
- * All methods are implemented but do nothing.
+ * All methods are implemented and do nothing, except `runInSpanContext`, which runs the given
+ * function and returns its result without propagating any context.
  *
  * Use this implementation when you need to satisfy a TransactionObservabilityManager
  * dependency but don't want any actual observability tracking to occur.

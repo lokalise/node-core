@@ -271,7 +271,7 @@ them; managers without context propagation are skipped.
 
 ### NoopObservabilityManager
 
-A no-operation implementation of `TransactionObservabilityManager`. All methods are implemented but do nothing. Use this when you need to satisfy a `TransactionObservabilityManager` dependency but don't want any actual observability tracking to occur.
+A no-operation implementation of `TransactionObservabilityManager`. All methods are implemented and do nothing, except `runInSpanContext`, which runs the given function and returns its result without propagating any context. Use this when you need to satisfy a `TransactionObservabilityManager` dependency but don't want any actual observability tracking to occur.
 
 ```ts
 import { NoopObservabilityManager } from '@lokalise/node-core'
