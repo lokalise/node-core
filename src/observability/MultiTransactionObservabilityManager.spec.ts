@@ -61,6 +61,60 @@ describe('MultiTransactionObservabilityManager', () => {
       expect(spy2).toHaveBeenCalledWith('uniqueTransactionKey', wasSuccessful)
     },
   )
+
+  describe('runInSpanContext', () => {
+    it('nests the contexts of all managers supporting it', () => {
+      const activeContexts: string[] = []
+      const buildContextAwareManager = (name: string): TransactionObservabilityManager => ({
+        start: () => {},
+        startWithGroup: () => {},
+        stop: () => {},
+        addCustomAttributes: () => {},
+        runInSpanContext: <T>(_key: string, fn: () => T): T => {
+          activeContexts.push(name)
+          try {
+            return fn()
+          } finally {
+            activeContexts.splice(activeContexts.indexOf(name), 1)
+          }
+        },
+      })
+      const manager = new MultiTransactionObservabilityManager([
+        buildContextAwareManager('first'),
+        buildContextAwareManager('second'),
+      ])
+
+      const contextsDuringExecution = manager.runInSpanContext('uniqueTransactionKey', () => [
+        ...activeContexts,
+      ])
+
+      expect(contextsDuringExecution).toEqual(['first', 'second'])
+      expect(activeContexts).toEqual([])
+    })
+
+    it('skips managers without context propagation', () => {
+      const runInSpanContext = vi.fn((_key: string, fn: () => unknown) => fn())
+      const manager = new MultiTransactionObservabilityManager([
+        new FakeTransactionManager(),
+        {
+          start: () => {},
+          startWithGroup: () => {},
+          stop: () => {},
+          addCustomAttributes: () => {},
+          runInSpanContext: runInSpanContext as TransactionObservabilityManager['runInSpanContext'],
+        },
+      ])
+
+      expect(manager.runInSpanContext('uniqueTransactionKey', () => 'result')).toBe('result')
+      expect(runInSpanContext).toHaveBeenCalledWith('uniqueTransactionKey', expect.any(Function))
+    })
+
+    it('executes the function when no manager supports context propagation', () => {
+      const manager = new MultiTransactionObservabilityManager([new FakeTransactionManager()])
+
+      expect(manager.runInSpanContext('uniqueTransactionKey', () => 'result')).toBe('result')
+    })
+  })
 })
 
 class FakeTransactionManager implements TransactionObservabilityManager {

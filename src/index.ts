@@ -108,6 +108,7 @@ export { waitAndRetry } from './utils/waitUtils'
 export type { TransactionObservabilityManager } from './observability/observabilityTypes'
 export { MultiTransactionObservabilityManager } from './observability/MultiTransactionObservabilityManager'
 export { NoopObservabilityManager } from './observability/NoopObservabilityManager'
+export { runInTransactionContext } from './observability/runInTransactionContext'
 
 export {
   generateChecksumForReadable,

@@ -34,4 +34,21 @@ export type TransactionObservabilityManager = {
     uniqueTransactionKey: string,
     atts: { [key: string]: string | number | boolean },
   ): void
+
+  /**
+   * Runs the given function with the identified transaction set as the active one, so that work
+   * performed inside it (spans, queries, outgoing calls) is recorded as part of the transaction
+   * instead of as detached top-level work.
+   *
+   * Optional, because `start` and `stop` are two separate calls and cannot express a scope:
+   * implementations able to propagate context opt in by providing this method. Callers must treat
+   * its absence as "no context propagation available" and just invoke the function - use
+   * `runInTransactionContext` instead of calling this directly.
+   *
+   * The name refers to the span of the underlying tracer, which is what implementations activate.
+   *
+   * @param uniqueTransactionKey - used for identifying the ongoing transaction to make active
+   * @param fn - executed within the transaction context, its return value is passed through
+   */
+  runInSpanContext?: <T>(uniqueTransactionKey: string, fn: () => T) => T
 }
