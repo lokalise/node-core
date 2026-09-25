@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use `@lokalise/errors` instead.
+ */
 export type ErrorDetails = Record<string, unknown>
 
 export type BaseErrorParams = {

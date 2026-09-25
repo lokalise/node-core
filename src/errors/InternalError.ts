@@ -2,6 +2,9 @@ import { isNativeError } from 'node:util/types'
 import { EnhancedError } from './EnhancedError'
 import type { BaseErrorParams, ErrorDetails } from './types'
 
+/**
+ * @deprecated Use `InternalError` from `@lokalise/errors` instead.
+ */
 export type InternalErrorParams<T extends ErrorDetails | undefined = ErrorDetails | undefined> =
   T extends undefined
     ? BaseErrorParams
@@ -11,6 +14,9 @@ export type InternalErrorParams<T extends ErrorDetails | undefined = ErrorDetail
 
 const INTERNAL_ERROR_SYMBOL = Symbol.for('INTERNAL_ERROR_KEY')
 
+/**
+ * @deprecated Use `InternalError.from()` from `@lokalise/errors` instead.
+ */
 export class InternalError<
   T extends ErrorDetails | undefined = ErrorDetails | undefined,
 > extends EnhancedError {
@@ -34,7 +40,7 @@ Object.defineProperty(InternalError.prototype, INTERNAL_ERROR_SYMBOL, {
 })
 
 /**
- * @deprecated Use `error instanceof InternalError` instead.
+ * @deprecated Use `error instanceof InternalError` instead. For errors created with `@lokalise/errors`, use its `InternalError.isInstance()`.
  */
 export function isInternalError(error: unknown): error is InternalError {
   return (
