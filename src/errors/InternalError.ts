@@ -40,7 +40,7 @@ Object.defineProperty(InternalError.prototype, INTERNAL_ERROR_SYMBOL, {
 })
 
 /**
- * @deprecated Use `InternalError.isInstance()` from `@lokalise/errors` instead.
+ * @deprecated Use `error instanceof InternalError` instead. For errors created with `@lokalise/errors`, use its `InternalError.isInstance()`.
  */
 export function isInternalError(error: unknown): error is InternalError {
   return (

@@ -49,7 +49,7 @@ Object.defineProperty(PublicNonRecoverableError.prototype, PUBLIC_NON_RECOVERABL
 })
 
 /**
- * @deprecated Use `PublicError.isInstance()` from `@lokalise/errors` instead.
+ * @deprecated Use `error instanceof PublicNonRecoverableError` instead. For errors created with `@lokalise/errors`, use its `PublicError.isInstance()`.
  */
 export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
   return (
