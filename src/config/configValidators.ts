@@ -1,5 +1,8 @@
 import type { EnvValueValidator } from './configTypes'
 
+/**
+ * @deprecated Use `envase` instead.
+ */
 export const createRangeValidator = (
   greaterOrEqualThan: number,
   lessOrEqualThan: number,

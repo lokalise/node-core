@@ -46,6 +46,9 @@ The library provides methods to resolve the default logging configuration. Publi
 
 ## ConfigScope
 
+> [!WARNING]
+> `ConfigScope` is deprecated in favour of [`envase`](https://www.npmjs.com/package/envase) and will be removed in a future major version.
+
 `ConfigScope` is a class that provides a way to encapsulate a single config source (e. g. `process.env`) and produce a set of values out of it, defining constraints and transformations for them.
 
 Once the class is instantiated, you can leverage the following `ConfigScope` methods:
@@ -147,6 +150,9 @@ Public methods to leverage a global error handler are provided to be used when t
 - `executeAsyncAndHandleGlobalErrors()`, which accepts `operation` and optionally `stopOnError` as parameters and will return the result of executing such operation **asynchronously**. If an error is thrown during the execution of the operation, `resolveGlobalErrorLogObject()` is called to log the error and the process is terminated only if `stopOnError` is `true`. `stopOnError` defaults to `true` if not provided.
 
 ### Errors
+
+> [!WARNING]
+> The error classes and type guards below are deprecated in favour of [`@lokalise/errors`](https://www.npmjs.com/package/@lokalise/errors) and will be removed in a future major version. Use `InternalError.from()` for internal errors, and `definePublicError()` with `PublicError.from()` for public errors.
 
 The library exposes classes for the following errors:
 
