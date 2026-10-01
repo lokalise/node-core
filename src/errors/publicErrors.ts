@@ -4,19 +4,31 @@ import type { FreeformRecord } from '../common/commonTypes'
 
 import { PublicNonRecoverableError } from './PublicNonRecoverableError'
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export type CommonErrorParams = {
   message: string
   details?: FreeformRecord
   cause?: Error
 }
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export type OptionalMessageErrorParams = Partial<CommonErrorParams>
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export type ValidationError = {
   message: string
   path: string[]
 }
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export class RequestValidationError extends PublicNonRecoverableError<{
   error: ValidationError[]
 }> {
@@ -32,6 +44,9 @@ export class RequestValidationError extends PublicNonRecoverableError<{
   }
 }
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export class AccessDeniedError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
@@ -44,6 +59,9 @@ export class AccessDeniedError extends PublicNonRecoverableError {
   }
 }
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export class EntityNotFoundError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
@@ -56,6 +74,9 @@ export class EntityNotFoundError extends PublicNonRecoverableError {
   }
 }
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export class EntityGoneError extends PublicNonRecoverableError {
   constructor(params: CommonErrorParams) {
     super({
@@ -67,6 +88,9 @@ export class EntityGoneError extends PublicNonRecoverableError {
   }
 }
 
+/**
+ * @deprecated Define the error with `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
+ */
 export class AuthFailedError extends PublicNonRecoverableError {
   constructor(params: OptionalMessageErrorParams = {}) {
     super({

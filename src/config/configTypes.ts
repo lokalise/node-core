@@ -1,4 +1,10 @@
+/**
+ * @deprecated Use `envase` instead.
+ */
 export type EnvValueValidator<InputType> = (value: InputType) => boolean
+/**
+ * @deprecated Use `envase` instead.
+ */
 export type EnvValueTransformer<InputType, OutputType> = (value: InputType) => OutputType
 
 type DNSLookupFunction = (

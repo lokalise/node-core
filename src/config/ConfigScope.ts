@@ -2,10 +2,16 @@ import type { ZodSchema } from 'zod/v4'
 import { InternalError } from '../errors/InternalError'
 import type { EnvValueValidator } from './configTypes'
 
+/**
+ * @deprecated Use `envase` instead.
+ */
 export type EnvType = {
   [key: string]: string | undefined
 }
 
+/**
+ * @deprecated Use `envase` instead.
+ */
 export class ConfigScope {
   private env: EnvType
 
@@ -323,6 +329,9 @@ export class ConfigScope {
   }
 }
 
+/**
+ * @deprecated Use `envase` instead.
+ */
 export function validateOneOf<const T>(
   validatedEntity: unknown,
   expectedOneOfEntities: T[],
@@ -342,6 +351,9 @@ export function validateOneOf<const T>(
   return validatedEntity as T
 }
 
+/**
+ * @deprecated Use `envase` instead.
+ */
 export function validateNumber(validatedObject: unknown, errorText: string): number {
   if (!Number.isFinite(validatedObject)) {
     throw new InternalError({

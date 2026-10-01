@@ -6,6 +6,9 @@ type BasePublicErrorParams = BaseErrorParams & {
   httpStatusCode?: number
 }
 
+/**
+ * @deprecated Use `PublicError` from `@lokalise/errors` instead.
+ */
 export type PublicNonRecoverableErrorParams<
   T extends ErrorDetails | undefined = ErrorDetails | undefined,
 > = T extends undefined
@@ -18,6 +21,8 @@ const PUBLIC_NON_RECOVERABLE_ERROR_SYMBOL = Symbol.for('PUBLIC_NON_RECOVERABLE_E
 
 /**
  * This error is returned to the consumer of API
+ *
+ * @deprecated Use `definePublicError()` and `PublicError.from()` from `@lokalise/errors` instead.
  */
 export class PublicNonRecoverableError<
   T extends ErrorDetails | undefined = ErrorDetails | undefined,
@@ -44,7 +49,7 @@ Object.defineProperty(PublicNonRecoverableError.prototype, PUBLIC_NON_RECOVERABL
 })
 
 /**
- * @deprecated Use `error instanceof PublicNonRecoverableError` instead.
+ * @deprecated Use `error instanceof PublicNonRecoverableError` instead. For errors created with `@lokalise/errors`, use its `PublicError.isInstance()`.
  */
 export function isPublicNonRecoverableError(error: unknown): error is PublicNonRecoverableError {
   return (

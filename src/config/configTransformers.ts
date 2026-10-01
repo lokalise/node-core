@@ -1,5 +1,8 @@
 import type { EnvValueTransformer } from './configTypes'
 
+/**
+ * @deprecated Use `envase` instead.
+ */
 export const ensureClosingSlashTransformer: EnvValueTransformer<
   string | undefined | null,
   string
