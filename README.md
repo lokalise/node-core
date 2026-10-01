@@ -153,6 +153,16 @@ Public methods to leverage a global error handler are provided to be used when t
 
 > [!WARNING]
 > The error classes and type guards below are deprecated in favour of [`@lokalise/errors`](https://www.npmjs.com/package/@lokalise/errors) and will be removed in a future major version. Use `InternalError.from()` for internal errors, and `definePublicError()` with `PublicError.from()` for public errors.
+>
+> Replacements for the type guards depend on which package created the error. `isInstance()` from `@lokalise/errors` does not match errors created by `node-core`, so keep using `instanceof` with the `node-core` class until those errors are migrated:
+>
+> | Deprecated guard | Errors created by `node-core` | Errors created by `@lokalise/errors` |
+> | --- | --- | --- |
+> | `isInternalError(error)` | `error instanceof InternalError` | `InternalError.isInstance(error)` |
+> | `isPublicNonRecoverableError(error)` | `error instanceof PublicNonRecoverableError` | `PublicError.isInstance(error)` |
+> | `isEntityGoneError(error)` | `error instanceof EntityGoneError` | `YourGoneError.isInstance(error)`, where `YourGoneError` is your own class built with `PublicError.from()` |
+>
+> `isEntityGoneError` matches any `PublicNonRecoverableError` with `httpStatusCode` 410, while `instanceof EntityGoneError` matches only that class. If you create 410 errors directly with `new PublicNonRecoverableError({ httpStatusCode: 410, ... })`, check `error instanceof PublicNonRecoverableError && error.httpStatusCode === 410` instead.
 
 The library exposes classes for the following errors:
 
