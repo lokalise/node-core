@@ -4,6 +4,9 @@ import { InternalError } from '../errors/InternalError'
 
 type RecordKeyType = string | number | symbol
 
+/**
+ * @deprecated Use `copyWithoutUndefined` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export function copyWithoutUndefined<
   T extends Record<RecordKeyType, unknown>,
   TargetRecordType = Pick<
@@ -26,6 +29,9 @@ export function copyWithoutUndefined<
   ) as TargetRecordType
 }
 
+/**
+ * @deprecated Use `copyWithoutEmpty` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export function copyWithoutEmpty<
   T extends Record<RecordKeyType, unknown>,
   TargetRecordType = Pick<
@@ -53,6 +59,9 @@ export function copyWithoutEmpty<
   ) as TargetRecordType
 }
 
+/**
+ * @deprecated Use `pick` from `@lokalise/universal-ts-utils/node` instead. It does not accept interfaces, so declare the source type with `type` instead.
+ */
 export function pick<T, K extends string | number | symbol>(
   source: T,
   propNames: readonly K[],
@@ -70,6 +79,9 @@ export function pick<T, K extends string | number | symbol>(
   return result
 }
 
+/**
+ * @deprecated Use `pick(source, propNames, { keepUndefined: false })` from `@lokalise/universal-ts-utils/node` instead. It does not accept interfaces, so declare the source type with `type` instead.
+ */
 export function pickWithoutUndefined<T, K extends string | number | symbol>(
   source: T,
   propNames: readonly K[],
@@ -87,6 +99,9 @@ export function pickWithoutUndefined<T, K extends string | number | symbol>(
   return result
 }
 
+/**
+ * @deprecated Use `isEmpty` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export function isEmptyObject(params: Record<string, unknown>): boolean {
   for (const key in params) {
     if (Object.hasOwn(params, key) && params[key] !== undefined) {
@@ -102,6 +117,8 @@ type KeysMatching<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T
  * @param array The array of objects to be grouped.
  * @param selector The key used for grouping the objects.
  * @returns An object where the keys are unique values from the given selector and the values are the corresponding objects from the array.
+ *
+ * @deprecated Use `groupBy` from `@lokalise/universal-ts-utils/node` instead.
  */
 export function groupBy<
   T extends object,
@@ -127,6 +144,8 @@ export function groupBy<
  * @param array The array of objects to be grouped.
  * @param selector The key used for grouping the objects. Support nested keys.
  * @returns An object where the keys are unique values from the given selector and the values are the corresponding objects from the array.
+ *
+ * @deprecated Use `groupByPath` from `@lokalise/universal-ts-utils/node` instead. It skips items whose value at the path is not a string, number or symbol (booleans are no longer grouped), and it throws a `TypeError` when the path goes through a primitive value.
  */
 export function groupByPath<T extends object>(array: T[], selector: string): Record<string, T[]> {
   return array.reduce(
@@ -153,6 +172,8 @@ export function groupByPath<T extends object>(array: T[], selector: string): Rec
  * @returns An object where the keys are unique values from the given selector and the value is the
  *  corresponding object from the array.
  * @throws InternalError If a duplicated value is found for the given selector.
+ *
+ * @deprecated Use `groupByUnique` from `@lokalise/universal-ts-utils/node` instead. It throws a plain `Error` instead of an `InternalError` with code `DUPLICATED_ITEM`.
  */
 export function groupByUnique<
   T extends object,
@@ -182,9 +203,15 @@ type DatesAsString<T> = T extends Date ? string : ExactlyLikeWithDateAsString<T>
 
 type ExactlyLikeWithDateAsString<T> = T extends object ? { [K in keyof T]: DatesAsString<T[K]> } : T
 
+/**
+ * @deprecated Use `convertDateFieldsToIsoString` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export function convertDateFieldsToIsoString<Input extends object>(
   object: Input,
 ): ExactlyLikeWithDateAsString<Input>
+/**
+ * @deprecated Use `convertDateFieldsToIsoString` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export function convertDateFieldsToIsoString<Input extends object>(
   object: Input[],
 ): ExactlyLikeWithDateAsString<Input>[]
@@ -226,6 +253,8 @@ function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
  *
  * Please Note: This uses structuredClone, which has the limitations of these restricted Types: functions,
  * Error objects, WeakMap, WeakSet, DOM nodes, and certain other browser-specific objects like Window.
+ *
+ * @deprecated Use `deepClone` from `@lokalise/universal-ts-utils/node` instead.
  */
 export function deepClone<T extends object | undefined | null>(object: T): T {
   if (object === undefined || object === null) {
@@ -249,12 +278,17 @@ type TransformToKebabCaseReturnType<Input, Output> = Input extends Record<string
 /**
  * Transforms an object's keys from camelCase or snake_case to kebab-case.
  * @param object
+ *
+ * @deprecated Use `transformToKebabCase` from `@lokalise/universal-ts-utils/node` instead.
  */
 export function transformToKebabCase<
   Output extends Record<string, unknown>,
   Input extends TransformToKebabCaseInputType,
 >(object: Input): TransformToKebabCaseReturnType<Input, Output>
 
+/**
+ * @deprecated Use `transformToKebabCase` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export function transformToKebabCase<
   Output extends Record<string, unknown>,
   Input extends TransformToKebabCaseInputType,

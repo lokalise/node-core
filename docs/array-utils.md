@@ -1,5 +1,13 @@
 # arrayUtils
 
+> [!WARNING]
+> These utilities are deprecated in favour of [`@lokalise/universal-ts-utils`](https://www.npmjs.com/package/@lokalise/universal-ts-utils) and will be removed in a future major version. Each function has an export with the same name there, except `removeDuplicates`, which is replaced by `unique`.
+>
+> Differences to watch for:
+>
+> - `callChunked`: `processFn` must return `void` or `Promise<void>`.
+> - `unique`: takes a mutable array, so spread a readonly one (`unique([...array])`).
+
 `chunk<T>(array: T[], chunkSize: number): T[][]`
 
 Splits `array` into an array of arrays, each sub-array being no larger than the provided `chunkSize`,

@@ -1,5 +1,20 @@
 # objectUtils
 
+> [!WARNING]
+> These utilities are deprecated in favour of [`@lokalise/universal-ts-utils`](https://www.npmjs.com/package/@lokalise/universal-ts-utils) and will be removed in a future major version. Each function has an export with the same name there, except:
+>
+> | Deprecated | Replacement |
+> | --- | --- |
+> | `pickWithoutUndefined(source, propNames)` | `pick(source, propNames, { keepUndefined: false })` |
+> | `isEmptyObject(params)` | `isEmpty(params)` |
+>
+> Differences to watch for:
+>
+> - `pick`: does not accept interfaces, so declare the source type with `type` instead.
+> - `groupByPath`: skips items whose value at the path is not a string, number or symbol (booleans are no longer grouped), and throws a `TypeError` when the path goes through a primitive value.
+> - `groupByUnique`: throws a plain `Error` instead of an `InternalError` with code `DUPLICATED_ITEM`.
+> - `copyWithoutUndefined`: the return type keeps keys typed as `null`. They were already kept at runtime.
+
 `copyWithoutUndefined<T extends Record<K, V>, K extends string | number | symbol, V>(
   originalValue: T,
 ): T`

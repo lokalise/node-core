@@ -180,6 +180,9 @@ The library exposes classes for the following errors:
 
 ### Either
 
+> [!WARNING]
+> `Either`, `DefiniteEither`, `success`, `failure`, `isSuccess` and `isFailure` are deprecated in favour of the same exports from [`@lokalise/universal-ts-utils`](https://www.npmjs.com/package/@lokalise/universal-ts-utils) and will be removed in a future major version.
+
 The library provides the type `Either` for error handling in the functional paradigm. The two possible values are:
 
 - `result` is defined, `error` is undefined;
@@ -192,6 +195,9 @@ Read [this article](https://antman-does-software.com/stop-catching-errors-in-typ
 Additionally, `DefiniteEither` is also provided. It is a variation of the aforementioned `Either`, which may or may not have `error` set, but always has `result`.
 
 ### waitAndRetry
+
+> [!WARNING]
+> `waitAndRetry` is deprecated in favour of the same export from [`@lokalise/universal-ts-utils`](https://www.npmjs.com/package/@lokalise/universal-ts-utils) and will be removed in a future major version.
 
 There is helper function available for writing event-driven assertions in automated tests, which rely on something eventually happening:
 
