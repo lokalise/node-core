@@ -1,5 +1,8 @@
 # Custom types
 
+> [!WARNING]
+> `AtLeastOne`, `MayOmit` and `FreeformRecord` are deprecated in favour of the same exports from [`@lokalise/universal-ts-utils`](https://www.npmjs.com/package/@lokalise/universal-ts-utils) and will be removed in a future major version.
+
 `AtLeastOne`
 
 Can be used when you want to make at least one key of an object required.

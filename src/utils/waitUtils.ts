@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use `waitAndRetry` from `@lokalise/universal-ts-utils/node` instead.
+ */
 export const waitAndRetry = async <T>(
   predicateFn: () => T,
   sleepTime = 20,
