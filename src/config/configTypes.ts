@@ -36,7 +36,7 @@ export type RedisConfig = {
   lazyConnect?: boolean
   useTls: boolean
 
-  // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+  // biome-ignore lint/suspicious/noConfusingVoidType: matches the ioredis retryStrategy signature
   retryStrategy?(times: number): number | void | null
   reconnectOnError?(error: Error): boolean | 1 | 2
   dnsLookup?: DNSLookupFunction | undefined

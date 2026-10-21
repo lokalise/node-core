@@ -6,7 +6,7 @@ export const waitAndRetry = async <T>(
   sleepTime = 20,
   maxRetryCount = 15,
 ): Promise<T> => {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     let retryCount = 0
     function performCheck() {
       // amount of retries exceeded

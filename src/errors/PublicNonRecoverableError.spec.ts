@@ -1,5 +1,5 @@
 import { stdSerializers } from 'pino'
-import { PublicNonRecoverableError, isPublicNonRecoverableError } from './PublicNonRecoverableError'
+import { isPublicNonRecoverableError, PublicNonRecoverableError } from './PublicNonRecoverableError'
 
 describe('PublicNonRecoverableError', () => {
   it('sets http status code to 500 by default', () => {
