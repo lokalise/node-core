@@ -29,7 +29,7 @@ export class InternalError<
     })
     // set the name as the class name for every class that extends InternalError
     this.name = this.constructor.name
-    // @ts-ignore
+    // @ts-expect-error
     this.details = params.details
     this.errorCode = params.errorCode
   }

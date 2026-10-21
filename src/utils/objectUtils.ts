@@ -18,9 +18,9 @@ export function copyWithoutUndefined<
 >(originalValue: T): TargetRecordType {
   return Object.keys(originalValue).reduce(
     (acc, key) => {
-      // @ts-ignore
+      // @ts-expect-error
       if (originalValue[key] !== undefined) {
-        // @ts-ignore
+        // @ts-expect-error
         acc[key] = originalValue[key]
       }
       return acc
@@ -46,11 +46,11 @@ export function copyWithoutEmpty<
       if (
         originalValue[key] !== undefined &&
         originalValue[key] !== null &&
-        // @ts-ignore
+        // @ts-expect-error
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         (typeof originalValue[key] !== 'string' || originalValue[key].trim().length > 0)
       ) {
-        // @ts-ignore
+        // @ts-expect-error
         acc[key] = originalValue[key]
       }
       return acc
@@ -69,9 +69,9 @@ export function pick<T, K extends string | number | symbol>(
   const result = {} as T
   let idx = 0
   while (idx < propNames.length) {
-    // @ts-ignore
+    // @ts-expect-error
     if (propNames[idx] in source) {
-      // @ts-ignore
+      // @ts-expect-error
       result[propNames[idx]] = source[propNames[idx]]
     }
     idx += 1
@@ -89,9 +89,9 @@ export function pickWithoutUndefined<T, K extends string | number | symbol>(
   const result = {} as T
   let idx = 0
   while (idx < propNames.length) {
-    // @ts-ignore
+    // @ts-expect-error
     if (propNames[idx] in source && source[propNames[idx]] !== undefined) {
-      // @ts-ignore
+      // @ts-expect-error
       result[propNames[idx]] = source[propNames[idx]]
     }
     idx += 1
@@ -219,13 +219,13 @@ export function convertDateFieldsToIsoString<Input extends object>(
   object: Input | Input[],
 ): ExactlyLikeWithDateAsString<Input> | ExactlyLikeWithDateAsString<Input>[] {
   if (Array.isArray(object)) {
-    // @ts-ignore
+    // @ts-expect-error
     return object.map(convertDateFieldsToIsoStringAux)
   }
 
   return Object.entries(object).reduce(
     (result, [key, value]) => {
-      // @ts-ignore
+      // @ts-expect-error
       result[key] = convertDateFieldsToIsoStringAux(value)
       return result
     },
@@ -235,16 +235,16 @@ export function convertDateFieldsToIsoString<Input extends object>(
 
 function convertDateFieldsToIsoStringAux<T>(item: T): DatesAsString<T> {
   if (item instanceof Date) {
-    // @ts-ignore
+    // @ts-expect-error
     return item.toISOString()
   }
 
   if (item && typeof item === 'object') {
-    // @ts-ignore
+    // @ts-expect-error
     return convertDateFieldsToIsoString(item)
   }
 
-  // @ts-ignore
+  // @ts-expect-error
   return item
 }
 
@@ -272,9 +272,8 @@ function transformKey(key: string): string {
 }
 
 type TransformToKebabCaseInputType = Record<string, unknown> | null | undefined
-type TransformToKebabCaseReturnType<Input, Output> = Input extends Record<string, unknown>
-  ? Output
-  : Input
+type TransformToKebabCaseReturnType<Input, Output> =
+  Input extends Record<string, unknown> ? Output : Input
 /**
  * Transforms an object's keys from camelCase or snake_case to kebab-case.
  * @param object
@@ -298,7 +297,7 @@ export function transformToKebabCase<Output, Input>(
   object: Input | Input[],
 ): TransformToKebabCaseReturnType<Input, Output> | TransformToKebabCaseReturnType<Input, Output>[] {
   if (Array.isArray(object)) {
-    // @ts-ignore
+    // @ts-expect-error
     return object.map(transformToKebabCase)
   }
   if (typeof object !== 'object' || object === null || object === undefined) {

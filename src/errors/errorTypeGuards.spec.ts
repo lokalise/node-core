@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
-
-import { InternalError } from './InternalError'
 import { isEntityGoneError } from './errorTypeGuards'
+import { InternalError } from './InternalError'
 import { EntityGoneError, EntityNotFoundError } from './publicErrors'
 
 describe('errorTypeGuards', () => {
