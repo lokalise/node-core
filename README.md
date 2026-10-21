@@ -218,13 +218,22 @@ expect(someEventEmitter.emittedEvents.length).toBe(1)
 
 ## Encryption
 
+> [!WARNING]
+> `EncryptionUtility` is deprecated in favour of the same export from [`@lokalise/crypto`](https://www.npmjs.com/package/@lokalise/crypto) and will be removed in a future major version. It decrypts values encrypted by this one.
+
 - `EncryptionUtility` - small class for encrypting/decrypting using aes-256-gcm. Adapted from: https://github.com/MauriceButler/cryptr
 
 ## Hashing
 
+> [!WARNING]
+> `generateHash`, `generateHmac`, `HashAlgorithm` and `HashEncoding` are deprecated in favour of `calculateHash`, `calculateHmac`, `HashAlgorithm` and `HashEncoding` from [`@lokalise/crypto`](https://www.npmjs.com/package/@lokalise/crypto) and will be removed in a future major version. `HashAlgorithm` and `HashEncoding` are const objects there, not enums.
+
 - `HashUtils` - utils for hashing using sha256/sha512 algorithms
 
 ## Checksum
+
+> [!WARNING]
+> The checksum utils are deprecated in favour of [`@lokalise/crypto`](https://www.npmjs.com/package/@lokalise/crypto) and will be removed in a future major version. Replace `generateChecksumForBufferOrString` with `calculateChecksum` and `generateChecksumForReadable` with `calculateStreamChecksum`. Replace `generateChecksumForObject(object)` with `calculateChecksum(JSON.stringify(object))` to keep the same checksums; `calculateChecksum(object)` ignores key order, but its checksums differ.
 
 - `ChecksumUtils` - utils for insecure hashing using the MD5 algorithm
 

@@ -12,6 +12,9 @@ type DNSLookupFunction = (
   callback: (err: NodeJS.ErrnoException | null, address: string, family?: number) => void,
 ) => void
 
+/**
+ * @deprecated Use `RedisOptions` from `ioredis` instead, and `createRedisConfigSchema` from `@lokalise/config` to read it from env vars. The schema sets `tls` instead of `useTls`.
+ */
 export type RedisConfig = {
   host: string
   /**
@@ -39,6 +42,9 @@ export type RedisConfig = {
   dnsLookup?: DNSLookupFunction | undefined
 }
 
+/**
+ * @deprecated Use `AppConfig` from `@lokalise/config` instead, and `createAppConfigSchema` to read it from env vars.
+ */
 export type AppConfig = {
   port: number
   bindAddress: string

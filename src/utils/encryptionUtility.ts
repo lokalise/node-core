@@ -7,6 +7,9 @@ const defaultEncoding = 'hex'
 const defaultSaltLength = 64
 const defaultPbkdf2Iterations = 100000
 
+/**
+ * @deprecated Use `EncryptionUtilityOptions` from `@lokalise/crypto` instead.
+ */
 export type Options = {
   saltLength?: number
   pbkdf2Iterations?: number
@@ -15,6 +18,8 @@ export type Options = {
 
 /**
  * Type-scripted version of https://github.com/MauriceButler/cryptr
+ *
+ * @deprecated Use `EncryptionUtility` from `@lokalise/crypto` instead. It decrypts values encrypted by this class.
  */
 export class EncryptionUtility {
   private readonly secret: string
