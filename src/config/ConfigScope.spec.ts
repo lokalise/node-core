@@ -21,7 +21,6 @@ const maybeEnsureClosingSlashTransformer = <T extends string | undefined | null>
 describe('ConfigScope', () => {
   describe('getBySchema', () => {
     it('throws when param is missing and schema is not optional', () => {
-      // biome-ignore lint/performance/noDelete: envvar must be deleted
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -56,7 +55,6 @@ describe('ConfigScope', () => {
     })
 
     it('returns undefined if value is missing and schema is optional', () => {
-      // biome-ignore lint/performance/noDelete: envvar must be deleted
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -66,7 +64,6 @@ describe('ConfigScope', () => {
     })
 
     it('returns default value if value is missing and schema has default value defined', () => {
-      // biome-ignore lint/performance/noDelete: envvar must be deleted
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -121,7 +118,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error on missing value', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -149,7 +145,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error on missing value', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -180,7 +175,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error on missing value', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -220,7 +214,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error on missing value', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -250,7 +243,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error on missing value', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -280,7 +272,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error on missing value', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -301,7 +292,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -311,7 +301,6 @@ describe('ConfigScope', () => {
     })
 
     it('keeps null if preferred', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -341,7 +330,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -420,7 +408,6 @@ describe('ConfigScope', () => {
     })
 
     it('returns default if env value not exists and the default one exists on the list', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -439,7 +426,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error if env value not exists and the default one not exists on the list', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -460,7 +446,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -489,7 +474,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -522,7 +506,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -541,7 +524,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws when default value fails validation', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -566,7 +548,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -585,7 +566,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws when default value fails validation', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -606,7 +586,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -616,7 +595,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default undefined value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -626,7 +604,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default null value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -647,7 +624,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -657,7 +633,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default undefined value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -667,7 +642,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default null value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -692,7 +666,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -735,7 +708,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -777,7 +749,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -791,7 +762,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default undefined value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -832,7 +802,6 @@ describe('ConfigScope', () => {
     })
 
     it('throws an error if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 
@@ -862,7 +831,6 @@ describe('ConfigScope', () => {
     })
 
     it('uses default value if not set', () => {
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env.value
       const configScope = new ConfigScope()
 

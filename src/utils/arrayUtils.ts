@@ -11,7 +11,7 @@ export function chunk<T>(array: T[], chunkSize: number): T[][] {
   const result = new Array(Math.ceil(length / chunkSize))
 
   while (index < length) {
-    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+    // biome-ignore lint/suspicious/noAssignInExpressions: advances the index while slicing the chunk
     result[resIndex++] = array.slice(index, (index += chunkSize))
   }
 

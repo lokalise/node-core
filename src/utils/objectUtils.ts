@@ -18,9 +18,7 @@ export function copyWithoutUndefined<
 >(originalValue: T): TargetRecordType {
   return Object.keys(originalValue).reduce(
     (acc, key) => {
-      // @ts-expect-error
       if (originalValue[key] !== undefined) {
-        // @ts-expect-error
         acc[key] = originalValue[key]
       }
       return acc
@@ -46,11 +44,9 @@ export function copyWithoutEmpty<
       if (
         originalValue[key] !== undefined &&
         originalValue[key] !== null &&
-        // @ts-expect-error
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         (typeof originalValue[key] !== 'string' || originalValue[key].trim().length > 0)
       ) {
-        // @ts-expect-error
         acc[key] = originalValue[key]
       }
       return acc

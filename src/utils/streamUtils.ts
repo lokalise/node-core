@@ -71,7 +71,7 @@ export class FsReadableProvider implements ReadableProvider {
 
   protected async persist(sourceReadable: Readable): Promise<void> {
     const writable = createWriteStream(this.storageFile)
-    return new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       pipeline(sourceReadable, writable, (err) => {
         if (err) {
           /* c8 ignore next 1 */
