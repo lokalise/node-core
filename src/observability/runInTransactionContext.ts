@@ -21,6 +21,8 @@ import type { TransactionObservabilityManager } from './observabilityTypes'
  * @param manager - the manager the transaction was started on
  * @param uniqueTransactionKey - the key the transaction was started with
  * @param fn - executed within the transaction context, its return value is passed through
+ *
+ * @deprecated Use `runInTransactionContext` from `@lokalise/observability` instead.
  */
 export const runInTransactionContext = <T>(
   manager: TransactionObservabilityManager | undefined,

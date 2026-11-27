@@ -2,6 +2,9 @@ import type { Level, Logger, LoggerOptions } from 'pino'
 import pino, { levels } from 'pino'
 import pretty from 'pino-pretty'
 
+/**
+ * @deprecated Use `ResolveLoggerOptions` from `@lokalise/observability` instead. It has no `base`.
+ */
 export type AppLoggerConfig = {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
   nodeEnv: 'production' | 'development' | 'test'
@@ -9,12 +12,18 @@ export type AppLoggerConfig = {
   redact?: LoggerOptions['redact']
 }
 
+/**
+ * @deprecated Will be removed without a replacement. Use `resolveLogger` from `@lokalise/observability` instead.
+ */
 export type MonorepoAppLoggerConfig = AppLoggerConfig & {
   targetFile?: string
   append?: boolean
 }
 
 /* c8 ignore next 8 */
+/**
+ * @deprecated Will be removed without a replacement. Use `resolveLogger` from `@lokalise/observability` instead.
+ */
 export function resolveMonorepoLogger(appConfig: MonorepoAppLoggerConfig): Logger {
   if (appConfig.nodeEnv !== 'development') {
     return resolveLogger(appConfig)
@@ -26,6 +35,9 @@ export function resolveMonorepoLogger(appConfig: MonorepoAppLoggerConfig): Logge
 
 // Note that transports do not work in vitest, likely because pino attempts to run them in a separate worker
 /* c8 ignore next 25 */
+/**
+ * @deprecated Will be removed without a replacement. Use `resolveLogger` from `@lokalise/observability` instead.
+ */
 export function resolveMonorepoLoggerConfiguration(
   appConfig: MonorepoAppLoggerConfig,
 ): LoggerOptions {
@@ -48,6 +60,9 @@ export function resolveMonorepoLoggerConfiguration(
   } satisfies LoggerOptions
 }
 
+/**
+ * @deprecated Use `resolveLogger` from `@lokalise/observability` instead. It takes the same options except `base`, and returns a `CommonLogger`.
+ */
 export function resolveLogger(appConfig: AppLoggerConfig): Logger {
   const configuration = resolveLoggerConfiguration(appConfig)
 
@@ -67,6 +82,9 @@ export function resolveLogger(appConfig: AppLoggerConfig): Logger {
   return pino(configuration)
 }
 
+/**
+ * @deprecated Will be removed without a replacement. Use `resolveLogger` from `@lokalise/observability` and pass the logger to Fastify as `loggerInstance`.
+ */
 export function resolveLoggerConfiguration(appConfig: AppLoggerConfig): LoggerOptions {
   return {
     level: appConfig.logLevel,

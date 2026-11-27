@@ -5,6 +5,8 @@
  * Max length is set to 8100 (+4 for quotes) characters to prevent issues with log collectors
  * (Graylog) that have a limit of 32766 bytes per field. In the worst case scenario, each character
  * is 4 bytes (UTF-32), so we limit the string to 8100 characters to stay within the limit.
+ *
+ * @deprecated Use `stringifyForLog` from `@lokalise/observability` instead. It doesn't wrap strings in extra quotes, and it serializes errors, circular references and functions.
  */
 export const stringValueSerializer = (value: unknown, maxLength = 8100): string => {
   const baseValue = valueToString(value)

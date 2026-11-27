@@ -10,6 +10,9 @@ type LogObject = {
   error?: SerializedError
 }
 
+/**
+ * @deprecated Use `globalLogger` from `@lokalise/observability` instead.
+ */
 export const globalLogger: CommonLogger = pino({
   formatters: {
     level: (_label, numericLevel): { level: string } => {
@@ -19,6 +22,9 @@ export const globalLogger: CommonLogger = pino({
   },
 })
 
+/**
+ * @deprecated Log the error directly with `logger.error(err)` or `logger.error({ err })`. The logger from `resolveLogger` in `@lokalise/observability` serializes it with its causes.
+ */
 export function resolveGlobalErrorLogObject(err: unknown, correlationId?: string): LogObject {
   if (isError(err)) {
     return {
@@ -41,6 +47,9 @@ export function resolveGlobalErrorLogObject(err: unknown, correlationId?: string
   }
 }
 
+/**
+ * @deprecated Use `runOrExit` from `@lokalise/observability` instead. It logs the error under `err`.
+ */
 export function executeAndHandleGlobalErrors<T>(operation: () => T) {
   try {
     const result = operation()
@@ -52,10 +61,16 @@ export function executeAndHandleGlobalErrors<T>(operation: () => T) {
   }
 }
 
+/**
+ * @deprecated Use `runOrExit` from `@lokalise/observability` instead. It takes async operations too. With `stopOnError: false`, catch and log the error instead.
+ */
 export async function executeAsyncAndHandleGlobalErrors<T>(
   operation: () => Promise<T>,
   stopOnError?: true,
 ): Promise<T>
+/**
+ * @deprecated Use `runOrExit` from `@lokalise/observability` instead. It takes async operations too. With `stopOnError: false`, catch and log the error instead.
+ */
 export async function executeAsyncAndHandleGlobalErrors<T>(
   operation: () => Promise<T>,
   stopOnError: false,
@@ -76,10 +91,16 @@ export async function executeAsyncAndHandleGlobalErrors<T>(
   }
 }
 
+/**
+ * @deprecated Use `runOrExit(() => Promise.all(promises))` from `@lokalise/observability` instead. It logs the first rejection, not each one.
+ */
 export async function executeSettleAllAndHandleGlobalErrors<T>(
   promises: Promise<T>[],
   stopOnError?: true,
 ): Promise<PromiseSettledResult<T>[]>
+/**
+ * @deprecated Use `runOrExit(() => Promise.all(promises))` from `@lokalise/observability` instead. It logs the first rejection, not each one.
+ */
 export async function executeSettleAllAndHandleGlobalErrors<T>(
   promises: Promise<T>[],
   stopOnError: false,

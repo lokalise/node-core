@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use `TransactionObservabilityManager` from `@lokalise/observability` instead.
+ */
 export type TransactionObservabilityManager = {
   /**
    * Creates and starts a background transaction to record work done

@@ -6,10 +6,14 @@ Core libraries for Node.js backend services.
 - [ConfigScope](#configscope)
 - [Error Handling](#error-handling)
 - [Observability](#observability)
+- [Migrating to @lokalise/observability](#migrating-to-lokaliseobservability)
 
 See [docs](/docs) for further instructions on how to use.
 
 ## Default Logging Configuration
+
+> [!WARNING]
+> The logging exports are deprecated in favour of [`@lokalise/observability`](https://www.npmjs.com/package/@lokalise/observability) and will be removed in a future major version. See [Migrating to @lokalise/observability](#migrating-to-lokaliseobservability).
 
 The library provides methods to resolve the default logging configuration. Public methods available are:
 
@@ -143,6 +147,9 @@ The library provides classes and methods for error handling.
 
 ### Global Error Handler
 
+> [!WARNING]
+> The global error handler, `ErrorReport`, `ErrorReporter` and `ErrorResolver` are deprecated in favour of [`@lokalise/observability`](https://www.npmjs.com/package/@lokalise/observability) and will be removed in a future major version. See [Migrating to @lokalise/observability](#migrating-to-lokaliseobservability).
+
 Public methods to leverage a global error handler are provided to be used when the process is run outside of the context of the request (e. g. in a queue where no one would catch an error if thrown):
 
 - `resolveGlobalErrorLogObject()`, which accepts `err` and optionally `correlationID` as parameters and converts the plain error into a serializable object. If the error is not a built-in `Error` type and doesn't have any message, a fixed string is returned instead;
@@ -244,6 +251,9 @@ expect(someEventEmitter.emittedEvents.length).toBe(1)
 
 ## Observability
 
+> [!WARNING]
+> The exports in this section are deprecated in favour of the same exports from [`@lokalise/observability`](https://www.npmjs.com/package/@lokalise/observability) and will be removed in a future major version.
+
 The library provides utilities for transaction observability management through the `TransactionObservabilityManager` interface.
 
 ### TransactionObservabilityManager
@@ -320,4 +330,48 @@ import { NoopObservabilityManager } from '@lokalise/node-core'
 const noopManager = new NoopObservabilityManager()
 // Pass to any component requiring a TransactionObservabilityManager
 const service = new MyService({ observabilityManager: noopManager })
+```
+
+## Migrating to @lokalise/observability
+
+Install the package and pino, which it takes as a peer dependency:
+
+```sh
+pnpm add @lokalise/observability pino
+```
+
+| node-core | `@lokalise/observability` |
+| --- | --- |
+| `resolveLogger(config)` | `resolveLogger(options)`. Same options except `base`, returns a `CommonLogger` |
+| `AppLoggerConfig` | `ResolveLoggerOptions` |
+| `resolveLoggerConfiguration`, `resolveMonorepoLogger`, `resolveMonorepoLoggerConfiguration`, `MonorepoAppLoggerConfig` | No replacement. Use `resolveLogger` |
+| `CommonLogger` | `CommonLogger` |
+| `logger.isLevelEnabled(level)` | `isLevelEnabled(logger, level)` |
+| `stringValueSerializer` | `stringifyForLog` |
+| `globalLogger` | `globalLogger` |
+| `resolveGlobalErrorLogObject(err)` | `logger.error(err)` or `logger.error({ err })` |
+| `executeAndHandleGlobalErrors`, `executeAsyncAndHandleGlobalErrors` | `runOrExit` |
+| `executeSettleAllAndHandleGlobalErrors(promises)` | `runOrExit(() => Promise.all(promises))` |
+| `ErrorReport`, `ErrorReporter` | `ErrorReport`, `ErrorReporter` |
+| `ErrorResolver` | No replacement |
+| `TransactionObservabilityManager`, `MultiTransactionObservabilityManager`, `NoopObservabilityManager`, `runInTransactionContext` | Same names |
+
+What behaves differently:
+
+- **Errors are logged under `err`.** The logger from `resolveLogger` serializes an `Error` under `err` with its type, message, stack and causes, each cause with its own fields. An `Error` under `error` is logged as `{}`, so replace `logger.error({ error })` and objects built with `resolveGlobalErrorLogObject` with `logger.error(err)` or `logger.error({ err, 'x-request-id': requestId })`.
+- **`CommonLogger` is narrower.** It has the log methods, `level` and `child`, so `app.log` and `request.log` fit without an `as CommonLogger`. `msgPrefix` and `isLevelEnabled` are gone.
+- **`runOrExit` handles sync and async operations.** It returns the result, or logs the error with `globalLogger` and exits with code 1. There's no `stopOnError: false`. Catch and log the error where the process should keep running. With `Promise.all`, only the first rejection is logged.
+- **`stringifyForLog` writes plain JSON.** It doesn't wrap strings in extra quotes, so update Datadog queries that match them. Errors, circular references and functions come out readable, and truncated text ends with a marker.
+
+```ts
+import { resolveLogger, runOrExit } from '@lokalise/observability'
+
+const config = runOrExit(() => getConfig())
+const logger = resolveLogger({ logLevel: config.logLevel, nodeEnv: config.nodeEnv })
+
+try {
+  await importFile(file)
+} catch (err) {
+  logger.error({ err, fileId: file.id }, 'Import failed')
+}
 ```
