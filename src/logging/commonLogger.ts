@@ -1,5 +1,8 @@
 import type { BaseLogger, Bindings, ChildLoggerOptions } from 'pino'
 
+/**
+ * @deprecated Use `CommonLogger` from `@lokalise/observability` instead. It has the log methods, `level` and `child`. Replace `logger.isLevelEnabled(level)` with `isLevelEnabled(logger, level)`.
+ */
 export type CommonLogger = BaseLogger & {
   /**
    * Creates a child logger, setting all key-value pairs in `bindings` as properties in the log lines. All serializers will be applied to the given pair.

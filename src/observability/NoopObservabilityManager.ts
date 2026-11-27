@@ -14,6 +14,8 @@ import type { TransactionObservabilityManager } from './observabilityTypes'
  * // Pass to any component requiring a TransactionObservabilityManager
  * const service = new MyService({ observabilityManager: noopManager })
  * ```
+ *
+ * @deprecated Use `NoopObservabilityManager` from `@lokalise/observability` instead.
  */
 export class NoopObservabilityManager implements TransactionObservabilityManager {
   /**

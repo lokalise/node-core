@@ -4,6 +4,8 @@ import { runInTransactionContext } from './runInTransactionContext'
 /**
  * Groups different TransactionObservabilityManager instances into one
  * to facilitate tracking transactions across multiple observability tools.
+ *
+ * @deprecated Use `MultiTransactionObservabilityManager` from `@lokalise/observability` instead.
  */
 export class MultiTransactionObservabilityManager implements TransactionObservabilityManager {
   private readonly managers: TransactionObservabilityManager[]
